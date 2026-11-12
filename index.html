@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Rapor SDIT Al-Iqra | Semester Ganjil TA 2026/2027</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <!-- Google Fonts: Plus Jakarta Sans & Amiri (nuansa Islami) -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .font-arab {
+            font-family: 'Amiri', serif;
+        }
+        /* Hilangkan panah default pada input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* Animasi Running Teks pada Footer */
+        @keyframes marqueeRun {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marqueeRun 22s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        /* Penyesuaian warna latar body saat Dark Mode aktif */
+        html.dark body {
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body class="text-slate-800 dark:text-slate-100 antialiased min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Navbar / Header -->
+    <header class="bg-emerald-800 dark:bg-emerald-950 text-white shadow-lg sticky top-0 z-30 border-b border-transparent dark:border-emerald-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-700 p-2.5 rounded-xl border border-emerald-600 shadow-inner">
+                        <i data-lucide="book-open-check" class="w-7 h-7 text-amber-300"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-xl font-bold tracking-tight">E-RAPOR SDIT AL-IQRA</h1>
+                            <span class="bg-amber-400 text-emerald-950 text-xs font-bold px-2.5 py-0.5 rounded-full">TA 2026/2027</span>
+                        </div>
+                        <p class="text-emerald-200 text-xs sm:text-sm">Sistem Pengolahan Nilai Akhir Semester Ganjil</p>
+                    </div>
+                </div>
+
+                <!-- Status Koneksi & Pengaturan GAS -->
+                <div class="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+                    <div id="connectionBadge" class="flex items-center gap-1.5 bg-emerald-900/80 px-3 py-1.5 rounded-lg border border-emerald-700 text-xs">
+                        <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                    </div>
+                    <!-- Tombol Pengalih Mode Light / Dark -->
+                    <button id="btnThemeToggle" onclick="toggleTheme()" title="Ganti Mode Tampilan (Terang/Gelap)" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm border border-emerald-600 dark:border-slate-600">
+                        <i id="themeIcon" data-lucide="moon" class="w-4 h-4 text-amber-300"></i>
+                        <span id="themeLabel">Dark</span>
+                    </button>
+                    <button onclick="toggleModal('modalConfig')" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm border border-emerald-600">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        <span>Koneksi GAS</span>
+                    </button>
+                    <button id="btnLogout" onclick="logoutWaliKelas()" class="hidden flex items-center gap-1.5 bg-rose-700 hover:bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm border border-rose-600">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <span>Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gerbang Login Wali Kelas (Tampil sebelum terotentikasi) -->
+    <section id="loginSection" class="flex-grow flex items-center justify-center px-4 py-10">
+        <div class="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
+            <div class="bg-gradient-to-br from-emerald-800 to-teal-900 dark:from-emerald-950 dark:to-slate-900 p-6 text-center text-white space-y-2">
+                <p class="font-arab text-2xl text-amber-300">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
+                <div class="w-14 h-14 bg-emerald-700/80 border border-emerald-500 rounded-2xl mx-auto flex items-center justify-center shadow-inner">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-amber-300"></i>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight pt-1">Login Wali Kelas SDIT</h2>
+                <p class="text-xs text-emerald-200">Masuk menggunakan akun Wali Kelas atau Operator Sekolah untuk penginputan E-Rapor Semester Ganjil TA 2026/2027.</p>
+            </div>
+
+            <form onsubmit="prosesLogin(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">Username / Kode Wali Kelas</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                        <input type="text" id="loginUsername" required placeholder="Contoh: wali5a atau operator" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500 font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">Kata Sandi / PIN</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                        <input type="password" id="loginPassword" required placeholder="Masukkan kata sandi" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <button type="submit" id="btnSubmitLogin" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span>Masuk ke Aplikasi E-Rapor</span>
+                </button>
+
+                <!-- Panduan Akun Simulasi untuk Uji Coba -->
+                <div class="bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 text-xs text-emerald-900 dark:text-emerald-200 space-y-1.5">
+                    <p class="font-bold flex items-center gap-1.5">
+                        <i data-lucide="key-round" class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400"></i>
+                        <span>Gunakan Akun Yang Diberikan Operator.</span>
+                    </p>
+                    <ul class="list-disc list-inside text-[11px] text-emerald-800 dark:text-emerald-300 space-y-0.5">
+                        <li><strong>Pastikan User dan PIN Benar!.</strong><code class="bg-white dark:bg-slate-800 px-1 rounded border dark:border-slate-600"></code><code class="bg-white dark:bg-slate-800 px-1 rounded border dark:border-slate-600"></code><code class="bg-white dark:bg-slate-800 px-1 rounded border dark:border-slate-600"></code></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Main Content (Tersembunyi sampai berhasil login) -->
+    <main id="appMainSection" class="hidden flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        
+        <!-- Banner Identitas Wali Kelas Aktif -->
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-emerald-950/60 border border-emerald-200 dark:border-emerald-800/70 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full bg-emerald-700 text-amber-300 flex items-center justify-center shrink-0 shadow-sm">
+                    <i data-lucide="user-check" class="w-5 h-5"></i>
+                </div>
+                <div class="text-sm text-emerald-900 dark:text-emerald-100">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <p class="font-bold text-base" id="displayNamaWali">Ustadzah Siti Aminah, S.Pd.</p>
+                        <span id="displayRoleBadge" class="bg-emerald-700 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full">Wali Kelas 5A</span>
+                    </div>
+                    <p class="text-emerald-700 dark:text-emerald-300 text-xs mt-1">
+                        Rumus Baku: <code class="bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 font-semibold text-emerald-800 dark:text-emerald-300">Nilai Rapor = (Rata-Rata NH + UTS + ASAS) / 3</code>
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                <!-- Widget Jam Digital Real-Time -->
+                <div class="bg-white/90 dark:bg-slate-900/90 border border-emerald-200 dark:border-slate-700 px-3.5 py-2 rounded-xl shadow-xs flex items-center gap-2.5">
+                    <div class="p-1.5 bg-emerald-100 dark:bg-emerald-900/70 text-emerald-700 dark:text-emerald-300 rounded-lg">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                    </div>
+                    <div class="text-left">
+                        <p id="digitalClockTime" class="font-mono text-sm font-bold text-emerald-950 dark:text-emerald-200 tracking-wider leading-none">00:00:00 WIB</p>
+                        <p id="digitalClockDate" class="text-[11px] text-emerald-700 dark:text-slate-400 font-medium mt-0.5">Memuat tanggal...</p>
+                    </div>
+                </div>
+                <div class="text-right hidden lg:block">
+                    <p class="font-arab text-2xl text-emerald-800 dark:text-amber-300">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Kelas, Mapel, dan KKM -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 transition-colors">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Fase Kurikulum</label>
+                    <select id="selectFase" onchange="onFaseChange()" class="w-full bg-emerald-50/70 dark:bg-slate-900 border border-emerald-300 dark:border-slate-600 text-emerald-950 dark:text-emerald-300 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 font-bold">
+                        <option value="A">Fase A (Kelas 1 - 2)</option>
+                        <option value="B">Fase B (Kelas 3 - 4)</option>
+                        <option value="C" selected>Fase C (Kelas 5 - 6)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Rombongan Belajar</label>
+                    <select id="selectKelas" onchange="loadDataKelas()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 font-medium">
+                        <!-- Diisi otomatis via JS berdasarkan Fase -->
+                    </select>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Mata Pelajaran (CP/ATP 2026/2027)</label>
+                    <select id="selectMapel" onchange="loadDataKelas()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 font-medium">
+                        <!-- Diisi otomatis via JS berdasarkan Fase -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">KKTP / KKM Mapel</label>
+                    <div class="relative">
+                        <input type="number" id="inputKKM" value="75" min="0" max="100" onchange="recalculateAll()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 font-bold">
+                        <span class="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">Poin</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                    <span>Deskripsi <strong>Capaian Kompetensi</strong> terisi otomatis mengacu pada CP/ATP Terbaru TA 2026/2027 sesuai Predikat.</span>
+                </p>
+                <button onclick="tambahSiswaModal()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 self-start sm:self-auto">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-emerald-700 dark:text-emerald-400"></i>
+                    <span>Tambah Siswa</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Ringkasan Statistik Kelas -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5 transition-colors">
+                <div class="p-3 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-xl">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Siswa</p>
+                    <p id="statTotalSiswa" class="text-xl font-bold text-slate-800 dark:text-slate-100">0</p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5 transition-colors">
+                <div class="p-3 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                    <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Rata-Rata Kelas</p>
+                    <p id="statRataKelas" class="text-xl font-bold text-emerald-700 dark:text-emerald-400">0.0</p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5 transition-colors">
+                <div class="p-3 bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 rounded-xl">
+                    <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Tuntas (≥ KKTP)</p>
+                    <p id="statTuntas" class="text-xl font-bold text-teal-700 dark:text-teal-400">0</p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5 transition-colors">
+                <div class="p-3 bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 rounded-xl">
+                    <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Perlu Bimbingan</p>
+                    <p id="statRemedial" class="text-xl font-bold text-rose-600 dark:text-rose-400">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Input Nilai -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
+            <div class="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50 dark:bg-slate-800/80">
+                <div>
+                    <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i data-lucide="table" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+                        <span>Daftar Nilai Siswa - <span id="labelHeaderKelas" class="text-emerald-700 dark:text-emerald-400">Kelas 5A (Matematika)</span></span>
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Isi nilai rentang 0 - 100. Nilai Rapor dihitung otomatis oleh sistem.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="exportCSV()" class="bg-white hover:bg-slate-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-medium py-2 px-3.5 rounded-xl text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
+                        <i data-lucide="download" class="w-4 h-4 text-slate-500 dark:text-slate-300"></i>
+                        <span>Unduh CSV</span>
+                    </button>
+                    <button id="btnSimpanSheets" onclick="simpanKeGoogleSheets()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
+                        <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                        <span>Simpan ke Google Sheets</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100/80 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                            <th class="py-3.5 px-3 text-center w-12">No</th>
+                            <th class="py-3.5 px-3 w-28">NISN</th>
+                            <th class="py-3.5 px-4 min-w-[190px]">Nama Lengkap Siswa</th>
+                            <th class="py-3.5 px-2 text-center bg-blue-50/50 dark:bg-blue-950/30 border-l border-slate-200 dark:border-slate-700 w-24">
+                                Rata-Rata NH<br><span class="text-[10px] font-normal text-slate-400">(Harian)</span>
+                            </th>
+                            <th class="py-3.5 px-2 text-center bg-indigo-50/50 dark:bg-indigo-950/30 border-l border-slate-200 dark:border-slate-700 w-24">
+                                Nilai UTS<br><span class="text-[10px] font-normal text-slate-400">(Tengah Sem)</span>
+                            </th>
+                            <th class="py-3.5 px-2 text-center bg-purple-50/50 dark:bg-purple-950/30 border-l border-slate-200 dark:border-slate-700 w-24">
+                                Nilai ASAS<br><span class="text-[10px] font-normal text-slate-400">(Akhir Sem)</span>
+                            </th>
+                            <th class="py-3.5 px-3 text-center bg-emerald-50 dark:bg-emerald-950/40 border-l border-slate-200 dark:border-slate-700 w-28 text-emerald-900 dark:text-emerald-300">
+                                Nilai Rapor<br><span class="text-[10px] font-normal text-emerald-700 dark:text-emerald-400">(NH+UTS+ASAS)/3</span>
+                            </th>
+                            <th class="py-3.5 px-2 text-center border-l border-slate-200 dark:border-slate-700 w-20">Predikat</th>
+                            <th class="py-3.5 px-3 text-center border-l border-slate-200 dark:border-slate-700 w-28">Status</th>
+                            <th class="py-3.5 px-4 border-l border-slate-200 dark:border-slate-700 min-w-[320px] bg-amber-50/40 dark:bg-amber-950/20 text-amber-950 dark:text-amber-200">
+                                Capaian Kompetensi<br><span class="text-[10px] font-normal text-amber-700 dark:text-amber-400">(Otomatis Acuan CP/ATP TA 2026/2027)</span>
+                            </th>
+                            <th class="py-3.5 px-2 text-center border-l border-slate-200 dark:border-slate-700 w-12">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodySiswa" class="divide-y divide-slate-200 dark:divide-slate-700 text-sm">
+                        <!-- Baris siswa akan dirender via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer dengan Running Teks -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-3.5 mt-8 overflow-hidden transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
+            <div class="w-full overflow-hidden">
+                <p class="animate-marquee text-xs sm:text-sm font-semibold text-emerald-800 dark:text-emerald-400 tracking-wide">
+                    &copy; 2026 Tim IT SDIT AL-IQRA. Hak Cipta Dilindungi. Created by : Ari Tristian.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Pengaturan URL Google Apps Script -->
+    <div id="modalConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i data-lucide="link" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+                    <span>Konfigurasi Web App GAS</span>
+                </h3>
+                <button onclick="toggleModal('modalConfig')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <p>Masukkan URL <strong>Web App Google Apps Script (GAS)</strong> yang sudah Anda deploy agar data nilai tersimpan langsung ke Google Sheets sekolah.</p>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">URL Deployment GAS (Exec URL)</label>
+                    <input type="url" id="inputGasUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 text-sm focus:ring-emerald-500 focus:border-emerald-500">
+                </div>
+                <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-200">
+                    <strong>Catatan Operator:</strong> Jika dikosongkan, aplikasi berjalan dalam <em>Mode Lokal (Simulasi)</em> sehingga Anda tetap bisa menguji perhitungan nilai tanpa internet/backend.
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <button onclick="toggleModal('modalConfig')" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl">Batal</button>
+                <button onclick="simpanKonfigurasiGAS()" class="px-4 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm">Simpan URL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Siswa -->
+    <div id="modalTambahSiswa" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+                    <span>Tambah Data Siswa Baru</span>
+                </h3>
+                <button onclick="toggleModal('modalTambahSiswa')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">NISN</label>
+                    <input type="text" id="newNisn" placeholder="Contoh: 0154829102" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 focus:ring-emerald-500 focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="newNama" placeholder="Contoh: Muhammad Fatih Al-Ghazali" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 focus:ring-emerald-500 focus:border-emerald-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <button onclick="toggleModal('modalTambahSiswa')" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl">Batal</button>
+                <button onclick="prosesTambahSiswa()" class="px-4 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm">Tambahkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification (Pengganti alert()) -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        // Manajemen Tema Light / Dark Mode
+        function applyTheme(isDark) {
+            const htmlEl = document.documentElement;
+            const iconEl = document.getElementById('themeIcon');
+            const labelEl = document.getElementById('themeLabel');
+
+            if (isDark) {
+                htmlEl.classList.add('dark');
+                if (iconEl) iconEl.setAttribute('data-lucide', 'sun');
+                if (labelEl) labelEl.textContent = 'Light';
+            } else {
+                htmlEl.classList.remove('dark');
+                if (iconEl) iconEl.setAttribute('data-lucide', 'moon');
+                if (labelEl) labelEl.textContent = 'Dark';
+            }
+            lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            const isCurrentlyDark = document.documentElement.classList.contains('dark');
+            const nextDark = !isCurrentlyDark;
+            localStorage.setItem('erapor_theme', nextDark ? 'dark' : 'light');
+            applyTheme(nextDark);
+        }
+
+        // Terapkan preferensi tema tersimpan saat awal dibuka
+        (function initTheme() {
+            const savedTheme = localStorage.getItem('erapor_theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
+        })();
+
+        // State Aplikasi (In-Memory Database untuk sesi aktif)
+        let gasWebAppUrl = "";
+        let currentUser = null;
+
+        // Database Akun Wali Kelas & Operator (Sinkron dengan default sheet DATA_WALI_KELAS di GAS)
+        const akunWaliKelasLokal = {
+            "operator": { password: "admin2026", nama: "Operator Kurikulum SDIT", role: "OPERATOR", fase: "ALL", kelas: "ALL" },
+            "wali1a": { password: "sdit2026", nama: "Ustadzah Fatimah Az-Zahra, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "1A" },
+            "wali1b": { password: "sdit2026", nama: "Ustadzah Khadijah Al-Kubra, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "1B" },
+            "wali2a": { password: "sdit2026", nama: "Ustadzah Aisyah Humaira, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "2A" },
+            "wali2b": { password: "sdit2026", nama: "Ustadzah Hafshah binti Umar, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "2B" },
+            "wali3a": { password: "sdit2026", nama: "Ustadz Ahmad Fauzi, S.Pd.I.", role: "WALI_KELAS", fase: "B", kelas: "3A" },
+            "wali3b": { password: "sdit2026", nama: "Ustadzah Zainab Al-Ghazali, S.Pd.", role: "WALI_KELAS", fase: "B", kelas: "3B" },
+            "wali4a": { password: "sdit2026", nama: "Ustadz Muhammad Ridwan, S.Pd.", role: "WALI_KELAS", fase: "B", kelas: "4A" },
+            "wali4b": { password: "sdit2026", nama: "Ustadzah Maryam Jameelah, S.Pd.", role: "WALI_KELAS", fase: "B", kelas: "4B" },
+            "wali5a": { password: "sdit2026", nama: "Ustadz Abdullah Al-Mubarak, S.Pd.", role: "WALI_KELAS", fase: "C", kelas: "5A" },
+            "wali5b": { password: "sdit2026", nama: "Ustadzah Nusaibah binti Ka'ab, S.Pd.", role: "WALI_KELAS", fase: "C", kelas: "5B" },
+            "wali6a": { password: "sdit2026", nama: "Ustadz Hasan Al-Banna, M.Pd.", role: "WALI_KELAS", fase: "C", kelas: "6A" },
+            "wali6b": { password: "sdit2026", nama: "Ustadzah Sumayyah binti Khayyat, S.Pd.", role: "WALI_KELAS", fase: "C", kelas: "6B" }
+        };
+
+        // Fungsi Proses Otentikasi Login
+        async function prosesLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value.trim();
+            const btn = document.getElementById('btnSubmitLogin');
+            const originalHTML = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Memverifikasi Akun...</span>`;
+            lucide.createIcons();
+
+            try {
+                // Jika terhubung ke Google Apps Script, validasi ke sheet DATA_WALI_KELAS terlebih dahulu
+                if (gasWebAppUrl) {
+                    const response = await fetch(gasWebAppUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: "login",
+                            username: username,
+                            password: password
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.status === "success") {
+                        aktifkanSesiUser(result.user);
+                        return;
+                    } else {
+                        showToast(result.message || "Username atau kata sandi salah!", "error");
+                        return;
+                    }
+                }
+
+                // Mode Lokal (Simulasi)
+                await new Promise(r => setTimeout(r, 400));
+                const akun = akunWaliKelasLokal[username];
+                if (akun && akun.password === password) {
+                    aktifkanSesiUser({
+                        username: username,
+                        nama: akun.nama,
+                        role: akun.role,
+                        fase: akun.fase,
+                        kelas: akun.kelas
+                    });
+                } else {
+                    showToast("Username atau kata sandi tidak sesuai!", "error");
+                }
+            } catch (err) {
+                console.error("Login error:", err);
+                showToast("Gagal terhubung ke server otentikasi GAS.", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                lucide.createIcons();
+            }
+        }
+
+        // Mengatur Hak Akses UI setelah Login Berhasil
+        function aktifkanSesiUser(user) {
+            currentUser = user;
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appMainSection').classList.remove('hidden');
+            document.getElementById('btnLogout').classList.remove('hidden');
+
+            document.getElementById('displayNamaWali').textContent = user.nama;
+            const selectFase = document.getElementById('selectFase');
+            const selectKelas = document.getElementById('selectKelas');
+
+            if (user.role === "OPERATOR") {
+                document.getElementById('displayRoleBadge').textContent = "Operator Sekolah (Akses Penuh)";
+                selectFase.disabled = false;
+                selectKelas.disabled = false;
+                selectFase.classList.remove('opacity-75', 'cursor-not-allowed');
+                selectKelas.classList.remove('opacity-75', 'cursor-not-allowed');
+                onFaseChange();
+                selectKelas.value = "5A";
+            } else {
+                // Kunci Fase & Kelas sesuai rombel wali kelas yang login
+                document.getElementById('displayRoleBadge').textContent = `Wali Kelas ${user.kelas} (Fase ${user.fase})`;
+                selectFase.value = user.fase;
+                onFaseChange();
+                selectKelas.value = user.kelas;
+                selectFase.disabled = true;
+                selectKelas.disabled = true;
+                selectFase.classList.add('opacity-75', 'cursor-not-allowed');
+                selectKelas.classList.add('opacity-75', 'cursor-not-allowed');
+            }
+
+            loadDataKelas();
+            showToast(`Ahlan wa Sahlan, ${user.nama}!`, "success");
+        }
+
+        // Logout Wali Kelas
+        function logoutWaliKelas() {
+            currentUser = null;
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('appMainSection').classList.add('hidden');
+            document.getElementById('btnLogout').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            showToast("Anda telah keluar dari sesi E-Rapor.", "info");
+        }
+
+        // Konfigurasi Fase, Kelas, dan Daftar Mata Pelajaran SDIT (Kurikulum 2026/2027)
+        const configKurikulum = {
+            "A": {
+                kelas: [
+                    { kode: "1A", nama: "Kelas 1A - Abu Bakar Ash-Shiddiq" },
+                    { kode: "1B", nama: "Kelas 1B - Khadijah Al-Kubra" },
+                    { kode: "2A", nama: "Kelas 2A - Umar bin Khattab" },
+                    { kode: "2B", nama: "Kelas 2B - Aisyah Ash-Shiddiqah" }
+                ],
+                mapel: [
+                    { kode: "PAI", nama: "Pendidikan Agama Islam & Budi Pekerti" },
+                    { kode: "PPKN", nama: "Pendidikan Pancasila dan Kewarganegaraan" },
+                    { kode: "BIN", nama: "Bahasa Indonesia" },
+                    { kode: "MTK", nama: "Matematika" },
+                    { kode: "BING", nama: "Bahasa Inggris" },
+                    { kode: "SBDP", nama: "Seni Budaya dan Prakarya" },
+                    { kode: "PJOK", nama: "Pendidikan Jasmani Olahraga dan Kesehatan" },
+                    { kode: "BSUN", nama: "Bahasa Sunda" },
+                    { kode: "QH", nama: "Al Qur'an Hadits" },
+                    { kode: "AA", nama: "Akidah Akhlak" },
+                    { kode: "FIK", nama: "Fikih" },
+                    { kode: "BAR", nama: "Bahasa Arab" },
+                    { kode: "BTA", nama: "Baca Tulis Al-Qur'an" },
+                    { kode: "THF", nama: "Tahfizh" }
+                ]
+            },
+            "B": {
+                kelas: [
+                    { kode: "3A", nama: "Kelas 3A - Utsman bin Affan" },
+                    { kode: "3B", nama: "Kelas 3B - Fatimah Az-Zahra" },
+                    { kode: "4A", nama: "Kelas 4A - Ali bin Abi Thalib" },
+                    { kode: "4B", nama: "Kelas 4B - Hafshah binti Umar" }
+                ],
+                mapel: [
+                    { kode: "PAI", nama: "Pendidikan Agama Islam & Budi Pekerti" },
+                    { kode: "PPKN", nama: "Pendidikan Pancasila dan Kewarganegaraan" },
+                    { kode: "BIN", nama: "Bahasa Indonesia" },
+                    { kode: "MTK", nama: "Matematika" },
+                    { kode: "BING", nama: "Bahasa Inggris" },
+                    { kode: "SBDP", nama: "Seni Budaya dan Prakarya" },
+                    { kode: "PJOK", nama: "Pendidikan Jasmani Olahraga dan Kesehatan" },
+                    { kode: "IPAS", nama: "Ilmu Pengetahuan Alam dan Sosial" },
+                    { kode: "BSUN", nama: "Bahasa Sunda" },
+                    { kode: "QH", nama: "Al Qur'an Hadits" },
+                    { kode: "AA", nama: "Akidah Akhlak" },
+                    { kode: "FIK", nama: "Fikih" },
+                    { kode: "BAR", nama: "Bahasa Arab" },
+                    { kode: "BTA", nama: "Baca Tulis Al-Qur'an" },
+                    { kode: "THF", nama: "Tahfizh" }
+                ]
+            },
+            "C": {
+                kelas: [
+                    { kode: "5A", nama: "Kelas 5A - Salahuddin Al-Ayyubi" },
+                    { kode: "5B", nama: "Kelas 5B - Nusaibah binti Ka'ab" },
+                    { kode: "6A", nama: "Kelas 6A - Muhammad Al-Fatih" },
+                    { kode: "6B", nama: "Kelas 6B - Maryam Al-Asturlabi" }
+                ],
+                mapel: [
+                    { kode: "PAI", nama: "Pendidikan Agama Islam & Budi Pekerti" },
+                    { kode: "PPKN", nama: "Pendidikan Pancasila dan Kewarganegaraan" },
+                    { kode: "BIN", nama: "Bahasa Indonesia" },
+                    { kode: "MTK", nama: "Matematika" },
+                    { kode: "BING", nama: "Bahasa Inggris" },
+                    { kode: "SBDP", nama: "Seni Budaya dan Prakarya" },
+                    { kode: "PJOK", nama: "Pendidikan Jasmani Olahraga dan Kesehatan" },
+                    { kode: "IPAS", nama: "Ilmu Pengetahuan Alam dan Sosial" },
+                    { kode: "BSUN", nama: "Bahasa Sunda" },
+                    { kode: "QH", nama: "Al Qur'an Hadits" },
+                    { kode: "AA", nama: "Akidah Akhlak" },
+                    { kode: "FIK", nama: "Fikih" },
+                    { kode: "BAR", nama: "Bahasa Arab" },
+                    { kode: "BTA", nama: "Baca Tulis Al-Qur'an" },
+                    { kode: "THF", nama: "Tahfizh" }
+                ]
+            }
+        };
+
+        // Referensi Tujuan Pembelajaran (ATP) Semester Ganjil TA 2026/2027 per Fase & Mapel
+        const bankATP = {
+            "PAI": {
+                "A": "mengenal huruf hijaiyah berharakat, rukun iman, rukun Islam, serta membiasakan perilaku jujur dan kasih sayang dalam keseharian",
+                "B": "memahami pesan pokok surah-surah pendek Al-Qur'an, Asmaul Husna, tata cara bersuci dan salat fardu, serta meneladani kisah keteladanan Nabi",
+                "C": "menganalisis makna surah-surah pilihan Al-Qur'an, memahami iman kepada hari akhir dan qada qadar, serta menerapkan akhlak terpuji dan kepedulian sosial"
+            },
+            "PPKN": {
+                "A": "mengenal simbol-simbol Pancasila dalam lambang negara Garuda Pancasila dan menaati aturan di lingkungan keluarga serta sekolah",
+                "B": "memahami makna sila-sila Pancasila, mengidentifikasi hak dan kewajiban sebagai anggota keluarga dan warga sekolah, serta menghargai keberagaman",
+                "C": "menganalisis penerapan nilai-nilai Pancasila dalam kehidupan bermasyarakat, memahami norma dan aturan, serta menjaga persatuan dalam keragaman"
+            },
+            "BIN": {
+                "A": "menyimak, membaca, dan menulis kosakata sederhana serta mengungkapkan gagasan lisan dengan santun",
+                "B": "memahami ide pokok dari teks narasi dan informasi, serta menyampaikan pendapat menggunakan kalimat efektif dan kosakata baku",
+                "C": "menganalisis informasi dari berbagai teks nonsastra dan sastra, serta menulis teks eksplanasi dan ringkasan secara runtut dan komunikatif"
+            },
+            "MTK": {
+                "A": "membilang, membandingkan, dan melakukan operasi penjumlahan serta pengurangan bilangan cacah hingga 100 dan mengenal bangun datar",
+                "B": "memahami nilai tempat bilangan cacah hingga 10.000, melakukan operasi hitung perkalian dan pembagian, serta mengenal konsep pecahan dan pengukuran luas",
+                "C": "melakukan operasi hitung bilangan cacah besar, pecahan, desimal, rasio, serta menghitung keliling, luas, dan volume bangun ruang sederhana"
+            },
+            "BING": {
+                "A": "merespons instruksi sederhana dan mengenal kosakata dasar bahasa Inggris terkait sapaan, angka, warna, dan benda di sekitar",
+                "B": "berinteraksi menggunakan ungkapan sederhana dalam situasi sehari-hari serta memahami teks pendek bergambar",
+                "C": "memahami informasi rinci dari teks lisan dan tulis sederhana serta menyusun kalimat deskriptif terkait aktivitas sehari-hari"
+            },
+            "SBDP": {
+                "A": "mengenal unsur rupa, bunyi, dan gerak tari sederhana melalui kegiatan berkarya kreatif",
+                "B": "mengeksplorasi teknik dasar seni rupa, pola irama lagu daerah/nasional, dan gerak tari kreasi",
+                "C": "menciptakan karya seni rupa terapan, menyanyikan lagu dengan ekspresi yang tepat, dan meragakan pola lantai tari kreasi"
+            },
+            "PJOK": {
+                "A": "mempraktikkan gerak dasar lokomotor, nonlokomotor, dan manipulatif dalam permainan sederhana serta menjaga kebersihan diri",
+                "B": "menerapkan kombinasi pola gerak dasar dalam berbagai aktivitas permainan dan olahraga serta memahami pola hidup sehat",
+                "C": "menganalisis dan mempraktikkan variasi kombinasi gerak dasar olahraga permainan, kebugaran jasmani, dan pencegahan cedera"
+            },
+            "IPAS": {
+                "A": "mengamati fenomena alam dan lingkungan sosial di sekitar rumah dan sekolah",
+                "B": "memahami siklus hidup makhluk hidup, wujud zat dan perubahannya, gaya dan energi, serta keragaman budaya di lingkungan sekitar",
+                "C": "menganalisis sistem organ tubuh manusia, ekosistem, gelombang bunyi dan cahaya, serta kondisi geografis dan sejarah perjuangan bangsa"
+            },
+            "BSUN": {
+                "A": "memahami kosakata dasar bahasa Sunda dalam percakapan sederhana sehari-hari dengan menerapkan tatakrama (undak-usuk basa) dasar",
+                "B": "menyimak dan memahami isi pupuh serta carita pondok sederhana, serta berkomunikasi menggunakan basa Sunda yang santun",
+                "C": "menganalisis teks biantara, aksara Sunda dasar, dan dongeng daerah serta mengekspresikannya secara lisan maupun tulisan"
+            },
+            "QH": {
+                "A": "melafalkan dan menghafal surah-surah pendek juz 30 serta memahami hadits tentang kebersihan dan berbakti kepada orang tua",
+                "B": "menerapkan hukum bacaan tajwid dasar (ikhfa, idgham, iqlab) dan memahami kandungan hadits tentang niat serta silaturahmi",
+                "C": "menganalisis hukum bacaan mad dan waqaf dalam Al-Qur'an serta mengamalkan kandungan hadits tentang keutamaan menuntut ilmu dan amal saleh"
+            },
+            "AA": {
+                "A": "mengenal kalimat tayyibah, dua kalimat syahadat, dan membiasakan adab islami saat makan, minum, dan belajar",
+                "B": "memahami sifat wajib Allah, beriman kepada malaikat dan kitab Allah, serta menghindari akhlak tercela",
+                "C": "memahami makna kalimat hauqalah, Asmaul Husna (Al-Qawiyy, Al-Qayyum), serta meneladani sikap sabar, syukur, dan tawadhu"
+            },
+            "FIK": {
+                "A": "mempraktikkan tata cara bersuci (wudu dan tayamum) serta gerakan dan bacaan salat fardu dengan tertib",
+                "B": "memahami ketentuan salat berjamaah, azan dan iqamah, serta tata cara salat bagi orang yang sakit dan musafir",
+                "C": "memahami ketentuan zakat fitrah, infak, sedekah, serta tata cara ibadah puasa dan kurban sesuai syariat Islam"
+            },
+            "BAR": {
+                "A": "mengenal bunyi huruf dan kosakata dasar bahasa Arab (mufradat) tentang perkenalan, anggota tubuh, dan peralatan sekolah",
+                "B": "memahami struktur kalimat sederhana (mubtada khabar) dan melakukan percakapan pendek (hiwar) tentang profesi dan alamat",
+                "C": "membaca, menerjemahkan, dan menyusun kalimat bahasa Arab sederhana terkait aktivitas harian dan lingkungan madrasah"
+            },
+            "BTA": {
+                "A": "mengenal huruf hijaiyah sambung, harakat tanwin, dan membaca rangkaian kata pendek sesuai makharijul huruf",
+                "B": "membaca ayat-ayat Al-Qur'an dengan tartil memperhatikan panjang pendek bacaan (mad asli) dan tanda waqaf",
+                "C": "membaca Al-Qur'an secara fasih dan tartil sesuai kaidah ilmu tajwid serta menulis ayat-ayat pilihan dengan kaidah khath dasar"
+            },
+            "THF": {
+                "A": "menghafal dan memurajaah surah-surah pendek Juz 30 (An-Nas hingga Ad-Dhuha) dengan makhraj dan kelancaran yang baik",
+                "B": "menghafal dan memurajaah surah-surah pilihan Juz 30 (Al-Lail hingga An-Naba) beserta hukum bacaan tajwidnya",
+                "C": "menghafal dan memurajaah target hafalan Juz 29 dan Juz 30 secara mutqin dengan memperhatikan kelancaran dan fasahah"
+            }
+        };
+        
+        // Data Dummy Siswa SDIT yang realistis
+        let databaseNilai = {
+            "5A_MTK": [
+                { nisn: "0158291001", nama: "Ahmad Zaki Al-Fatih", nh: 92, uts: 90, asas: 94 },
+                { nisn: "0158291002", nama: "Aisyah Humaira Azzahra", nh: 86, uts: 84, asas: 85 },
+                { nisn: "0158291003", nama: "Fathimah Az-Zahra", nh: 76, uts: 75, asas: 78 },
+                { nisn: "0158291004", nama: "Muhammad Ibrahim Al-Ghazali", nh: 68, uts: 65, asas: 70 },
+                { nisn: "0158291005", nama: "Khadijah Putri Salsabila", nh: 95, uts: 92, asas: 96 },
+                { nisn: "0158291006", nama: "Umar Abdurrahman", nh: 80, uts: 82, asas: 81 },
+                { nisn: "0158291007", nama: "Zaidan Habibi", nh: 74, uts: 72, asas: 76 }
+            ]
+        };
+
+        // Fungsi Notifikasi Toast (Menggantikan alert browser)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgColors = {
+                success: 'bg-emerald-800 text-white border-emerald-700',
+                error: 'bg-rose-700 text-white border-rose-600',
+                info: 'bg-slate-800 text-white border-slate-700'
+            };
+
+            const icons = {
+                success: 'check-circle',
+                error: 'alert-triangle',
+                info: 'info'
+            };
+
+            toast.className = `${bgColors[type]} border px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `
+                <i data-lucide="${icons[type]}" class="w-5 h-5 shrink-0"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            // Animasi masuk
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            // Hilangkan setelah 3.5 detik
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Toggle Modal
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden');
+        }
+
+        // Simpan URL GAS
+        function simpanKonfigurasiGAS() {
+            const urlInput = document.getElementById('inputGasUrl').value.trim();
+            gasWebAppUrl = urlInput;
+            
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+
+            if (gasWebAppUrl && gasWebAppUrl.startsWith('https://script.google.com/')) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+                text.textContent = "Terhubung ke Google Sheets";
+                showToast("URL Web App GAS berhasil disimpan!", "success");
+            } else {
+                gasWebAppUrl = "";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
+                text.textContent = "Mode Lokal (Simulasi)";
+                showToast("Berjalan dalam Mode Lokal (URL kosong/tidak valid).", "info");
+            }
+            toggleModal('modalConfig');
+        }
+
+        // Mendapatkan Key aktif (Kombinasi Kelas & Mapel)
+        function getCurrentKey() {
+            const kelas = document.getElementById('selectKelas').value;
+            const mapel = document.getElementById('selectMapel').value;
+            return `${kelas}_${mapel}`;
+        }
+
+        // Handler saat Fase berubah -> Perbarui daftar Kelas & Mata Pelajaran
+        function onFaseChange() {
+            const fase = document.getElementById('selectFase').value;
+            const selectKelas = document.getElementById('selectKelas');
+            const selectMapel = document.getElementById('selectMapel');
+
+            const dataFase = configKurikulum[fase];
+
+            // Isi ulang dropdown Kelas
+            selectKelas.innerHTML = dataFase.kelas.map(k => 
+                `<option value="${k.kode}">${k.nama}</option>`
+            ).join('');
+
+            // Isi ulang dropdown Mata Pelajaran
+            selectMapel.innerHTML = dataFase.mapel.map(m => 
+                `<option value="${m.kode}">${m.nama}</option>`
+            ).join('');
+
+            loadDataKelas();
+        }
+
+        // Rumus Inti: Nilai Rapor = (Rata-Rata Nilai Harian + Nilai UTS + Nilai ASAS) / 3
+        function hitungNilaiRapor(nh, uts, asas) {
+            const nHarian = parseFloat(nh) || 0;
+            const nUts = parseFloat(uts) || 0;
+            const nAsas = parseFloat(asas) || 0;
+            const hasil = (nHarian + nUts + nAsas) / 3;
+            return Math.round(hasil * 100) / 100; // Pembulatan 2 desimal
+        }
+
+        // Menentukan Predikat SDIT
+        function getPredikat(nilai) {
+            if (nilai >= 90) return { huruf: 'A', warna: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700' };
+            if (nilai >= 80) return { huruf: 'B', warna: 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700' };
+            if (nilai >= 70) return { huruf: 'C', warna: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-700' };
+            return { huruf: 'D', warna: 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-700' };
+        }
+
+        // Generator Deskripsi Capaian Kompetensi Otomatis (Acuan CP/ATP TA 2026/2027)
+        function generateCapaianKompetensi(predikatHuruf, fase, mapelKode) {
+            const materiATP = (bankATP[mapelKode] && bankATP[mapelKode][fase]) 
+                ? bankATP[mapelKode][fase] 
+                : "menguasai tujuan pembelajaran esensial pada semester ganjil tahun ajaran 2026/2027";
+
+            switch (predikatHuruf) {
+                case 'A':
+                    return `Menunjukkan penguasaan yang sangat baik dan melampaui ekspektasi dalam ${materiATP}.`;
+                case 'B':
+                    return `Menunjukkan penguasaan yang baik sesuai capaian pembelajaran dalam ${materiATP}.`;
+                case 'C':
+                    return `Cukup mampu menguasai kompetensi dalam ${materiATP}, namun perlu peningkatan ketelitian dalam penerapannya.`;
+                default:
+                    return `Memerlukan bimbingan intensif dan pendampingan khusus dalam ${materiATP}.`;
+            }
+        }
+
+        // Render Tabel Siswa
+        function loadDataKelas() {
+            const key = getCurrentKey();
+            const fase = document.getElementById('selectFase').value;
+            const mapelKode = document.getElementById('selectMapel').value;
+            const selectKelas = document.getElementById('selectKelas');
+            const selectMapel = document.getElementById('selectMapel');
+            
+            const namaKelas = selectKelas.options[selectKelas.selectedIndex].text.split(' - ')[0];
+            const namaMapel = selectMapel.options[selectMapel.selectedIndex].text;
+            document.getElementById('labelHeaderKelas').textContent = `Fase ${fase} • ${namaKelas} (${namaMapel})`;
+
+            // Jika belum ada data di kombinasi kelas_mapel ini, buat template dari daftar siswa 5A_MTK dengan nilai 0
+            if (!databaseNilai[key]) {
+                databaseNilai[key] = databaseNilai["5A_MTK"].map(s => ({
+                    nisn: s.nisn,
+                    nama: s.nama,
+                    nh: 0,
+                    uts: 0,
+                    asas: 0
+                }));
+            }
+
+            const siswaList = databaseNilai[key];
+            const tbody = document.getElementById('tbodySiswa');
+            const kkm = parseFloat(document.getElementById('inputKKM').value) || 75;
+
+            tbody.innerHTML = '';
+
+            siswaList.forEach((siswa, index) => {
+                const nilaiRapor = hitungNilaiRapor(siswa.nh, siswa.uts, siswa.asas);
+                const predikat = getPredikat(nilaiRapor);
+                const isTuntas = nilaiRapor >= kkm;
+                const capaianText = generateCapaianKompetensi(predikat.huruf, fase, mapelKode);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 dark:hover:bg-slate-700/40 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 text-center font-medium text-slate-500 dark:text-slate-400">${index + 1}</td>
+                    <td class="py-3 px-3 font-mono text-xs text-slate-600 dark:text-slate-400">${siswa.nisn}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-100">${siswa.nama}</td>
+                    
+                    <!-- Input Nilai Harian -->
+                    <td class="py-2.5 px-2 text-center bg-blue-50/30 dark:bg-blue-950/15 border-l border-slate-200 dark:border-slate-700">
+                        <input type="number" min="0" max="100" value="${siswa.nh}" 
+                            onchange="updateNilai(${index}, 'nh', this.value)"
+                            class="w-16 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg py-1.5 px-1 font-semibold text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </td>
+
+                    <!-- Input Nilai UTS -->
+                    <td class="py-2.5 px-2 text-center bg-indigo-50/30 dark:bg-indigo-950/15 border-l border-slate-200 dark:border-slate-700">
+                        <input type="number" min="0" max="100" value="${siswa.uts}" 
+                            onchange="updateNilai(${index}, 'uts', this.value)"
+                            class="w-16 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg py-1.5 px-1 font-semibold text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </td>
+
+                    <!-- Input Nilai ASAS -->
+                    <td class="py-2.5 px-2 text-center bg-purple-50/30 dark:bg-purple-950/15 border-l border-slate-200 dark:border-slate-700">
+                        <input type="number" min="0" max="100" value="${siswa.asas}" 
+                            onchange="updateNilai(${index}, 'asas', this.value)"
+                            class="w-16 text-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg py-1.5 px-1 font-semibold text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </td>
+
+                    <!-- Nilai Rapor (Otomatis) -->
+                    <td id="rapor_${index}" class="py-3 px-3 text-center bg-emerald-50/60 dark:bg-emerald-950/25 border-l border-slate-200 dark:border-slate-700 font-bold text-base text-emerald-900 dark:text-emerald-300">
+                        ${nilaiRapor.toFixed(2)}
+                    </td>
+
+                    <!-- Predikat -->
+                    <td id="predikat_${index}" class="py-3 px-2 text-center border-l border-slate-200 dark:border-slate-700">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold border ${predikat.warna}">
+                            ${predikat.huruf}
+                        </span>
+                    </td>
+
+                    <!-- Status Ketuntasan -->
+                    <td id="status_${index}" class="py-3 px-3 text-center border-l border-slate-200 dark:border-slate-700">
+                        ${isTuntas 
+                            ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-teal-100 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300">Tuntas</span>' 
+                            : '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300">Remedial</span>'}
+                    </td>
+
+                    <!-- Capaian Kompetensi Otomatis -->
+                    <td id="capaian_${index}" class="py-2.5 px-4 border-l border-slate-200 dark:border-slate-700 bg-amber-50/20 dark:bg-amber-950/10 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                        ${capaianText}
+                    </td>
+
+                    <!-- Hapus Baris -->
+                    <td class="py-3 px-2 text-center border-l border-slate-200 dark:border-slate-700">
+                        <button onclick="hapusSiswa(${index})" title="Hapus Siswa" class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1 rounded-lg transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+            updateStatistik();
+        }
+
+        // Update nilai saat input berubah
+        function updateNilai(index, field, value) {
+            let val = parseFloat(value);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 100) {
+                val = 100;
+                showToast("Maksimal nilai adalah 100", "info");
+            }
+
+            const key = getCurrentKey();
+            const fase = document.getElementById('selectFase').value;
+            const mapelKode = document.getElementById('selectMapel').value;
+            databaseNilai[key][index][field] = val;
+
+            // Update tampilan baris tersebut secara langsung tanpa reload penuh
+            const siswa = databaseNilai[key][index];
+            const nilaiRapor = hitungNilaiRapor(siswa.nh, siswa.uts, siswa.asas);
+            const predikat = getPredikat(nilaiRapor);
+            const kkm = parseFloat(document.getElementById('inputKKM').value) || 75;
+            const isTuntas = nilaiRapor >= kkm;
+            const capaianText = generateCapaianKompetensi(predikat.huruf, fase, mapelKode);
+
+            document.getElementById(`rapor_${index}`).textContent = nilaiRapor.toFixed(2);
+            document.getElementById(`predikat_${index}`).innerHTML = `
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold border ${predikat.warna}">
+                    ${predikat.huruf}
+                </span>
+            `;
+            document.getElementById(`status_${index}`).innerHTML = isTuntas 
+                ? '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-teal-100 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300">Tuntas</span>' 
+                : '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300">Remedial</span>';
+            document.getElementById(`capaian_${index}`).textContent = capaianText;
+
+            updateStatistik();
+        }
+
+        // Hitung ulang semua jika KKTP diubah
+        function recalculateAll() {
+            loadDataKelas();
+            showToast("Status ketuntasan disesuaikan dengan KKTP terbaru.", "info");
+        }
+
+        // Update Kartu Statistik
+        function updateStatistik() {
+            const key = getCurrentKey();
+            const list = databaseNilai[key] || [];
+            const kkm = parseFloat(document.getElementById('inputKKM').value) || 75;
+
+            let totalNilai = 0;
+            let tuntas = 0;
+            let remedial = 0;
+
+            list.forEach(s => {
+                const nr = hitungNilaiRapor(s.nh, s.uts, s.asas);
+                totalNilai += nr;
+                if (nr >= kkm) tuntas++;
+                else remedial++;
+            });
+
+            const rataKelas = list.length > 0 ? (totalNilai / list.length).toFixed(2) : "0.00";
+
+            document.getElementById('statTotalSiswa').textContent = list.length;
+            document.getElementById('statRataKelas').textContent = rataKelas;
+            document.getElementById('statTuntas').textContent = tuntas;
+            document.getElementById('statRemedial').textContent = remedial;
+        }
+
+        // Tambah Siswa
+        function tambahSiswaModal() {
+            document.getElementById('newNisn').value = '';
+            document.getElementById('newNama').value = '';
+            toggleModal('modalTambahSiswa');
+        }
+
+        function prosesTambahSiswa() {
+            const nisn = document.getElementById('newNisn').value.trim();
+            const nama = document.getElementById('newNama').value.trim();
+
+            if (!nisn || !nama) {
+                showToast("NISN dan Nama Siswa wajib diisi!", "error");
+                return;
+            }
+
+            const key = getCurrentKey();
+            databaseNilai[key].push({
+                nisn: nisn,
+                nama: nama,
+                nh: 0,
+                uts: 0,
+                asas: 0
+            });
+
+            toggleModal('modalTambahSiswa');
+            loadDataKelas();
+            showToast(`Siswa ${nama} berhasil ditambahkan.`, "success");
+        }
+
+        function hapusSiswa(index) {
+            const key = getCurrentKey();
+            const nama = databaseNilai[key][index].nama;
+            databaseNilai[key].splice(index, 1);
+            loadDataKelas();
+            showToast(`Data ${nama} dihapus dari daftar.`, "info");
+        }
+
+        // Kirim Data ke Backend Google Apps Script (GAS)
+        async function simpanKeGoogleSheets() {
+            const key = getCurrentKey();
+            const fase = document.getElementById('selectFase').value;
+            const kelas = document.getElementById('selectKelas').value;
+            const selectMapel = document.getElementById('selectMapel');
+            const mapel = selectMapel.value;
+            const namaMapel = selectMapel.options[selectMapel.selectedIndex].text;
+            const kkm = parseFloat(document.getElementById('inputKKM').value) || 75;
+
+            const payload = {
+                action: "simpan_nilai",
+                tahunAjaran: "2026/2027",
+                semester: "Ganjil",
+                penginput: currentUser ? `${currentUser.nama} (${currentUser.username})` : "Anonim",
+                fase: fase,
+                kelas: kelas,
+                mapel: mapel,
+                namaMapel: namaMapel,
+                kkm: kkm,
+                timestamp: new Date().toISOString(),
+                data: databaseNilai[key].map(s => {
+                    const nr = hitungNilaiRapor(s.nh, s.uts, s.asas);
+                    const pred = getPredikat(nr).huruf;
+                    return {
+                        nisn: s.nisn,
+                        nama: s.nama,
+                        rataNH: s.nh,
+                        nilaiUTS: s.uts,
+                        nilaiASAS: s.asas,
+                        nilaiRapor: nr,
+                        predikat: pred,
+                        status: nr >= kkm ? "Tuntas" : "Remedial",
+                        capaianKompetensi: generateCapaianKompetensi(pred, fase, mapel)
+                    };
+                })
+            };
+
+            const btn = document.getElementById('btnSimpanSheets');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Menyimpan...</span>`;
+            lucide.createIcons();
+
+            if (!gasWebAppUrl) {
+                // Simulasi penyimpanan lokal jika URL GAS belum diset
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                    lucide.createIcons();
+                    showToast("Simulasi Berhasil! Set URL GAS di menu 'Koneksi GAS' untuk kirim ke Google Sheets asli.", "success");
+                    console.log("Payload siap kirim ke GAS:", payload);
+                }, 800);
+                return;
+            }
+
+            try {
+                // Menggunakan mode 'no-cors' atau text/plain agar terhindar dari preflight CORS GAS
+                const response = await fetch(gasWebAppUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showToast(`Alhamdulillah! ${result.message}`, "success");
+                } else {
+                    showToast(`Gagal menyimpan: ${result.message}`, "error");
+                }
+            } catch (error) {
+                console.error("Error GAS:", error);
+                showToast("Terjadi kendala jaringan saat menghubungi server Google Sheets.", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                lucide.createIcons();
+            }
+        }
+
+        // Export CSV sebagai cadangan offline guru
+        function exportCSV() {
+            const key = getCurrentKey();
+            const fase = document.getElementById('selectFase').value;
+            const kelas = document.getElementById('selectKelas').value;
+            const mapel = document.getElementById('selectMapel').value;
+            const kkm = parseFloat(document.getElementById('inputKKM').value) || 75;
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "No,NISN,Nama Siswa,Rata-Rata NH,Nilai UTS,Nilai ASAS,Nilai Rapor,Predikat,Status,Capaian Kompetensi (CP/ATP 2026/2027)\n";
+
+            databaseNilai[key].forEach((s, idx) => {
+                const nr = hitungNilaiRapor(s.nh, s.uts, s.asas);
+                const pred = getPredikat(nr).huruf;
+                const status = nr >= kkm ? "Tuntas" : "Remedial";
+                const capaian = generateCapaianKompetensi(pred, fase, mapel);
+                csvContent += `${idx + 1},"${s.nisn}","${s.nama}",${s.nh},${s.uts},${s.asas},${nr.toFixed(2)},${pred},${status},"${capaian}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Rapor_SDIT_Fase${fase}_${kelas}_${mapel}_Ganjil_2026_2027.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("File CSV beserta Capaian Kompetensi berhasil diunduh!", "success");
+        }
+
+        // Fungsi Jam Digital Real-Time (WIB)
+        function updateDigitalClock() {
+            const now = new Date();
+            const jam = String(now.getHours()).padStart(2, '0');
+            const menit = String(now.getMinutes()).padStart(2, '0');
+            const detik = String(now.getSeconds()).padStart(2, '0');
+
+            const hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const bulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            const namaHari = hariList[now.getDay()];
+            const tanggal = now.getDate();
+            const namaBulan = bulanList[now.getMonth()];
+            const tahun = now.getFullYear();
+
+            const elTime = document.getElementById('digitalClockTime');
+            const elDate = document.getElementById('digitalClockDate');
+
+            if (elTime) elTime.textContent = `${jam}:${menit}:${detik} WIB`;
+            if (elDate) elDate.textContent = `${namaHari}, ${tanggal} ${namaBulan} ${tahun}`;
+        }
+
+        // Load awal saat halaman dibuka
+        window.onload = function() {
+            updateDigitalClock();
+            setInterval(updateDigitalClock, 1000);
+
+            onFaseChange();
+            // Set default awal ke Kelas 5A & Matematika di balik layar sebelum login
+            document.getElementById('selectKelas').value = "5A";
+            document.getElementById('selectMapel').value = "MTK";
+            loadDataKelas();
+        };
+    </script>
+</body>
+</html>
