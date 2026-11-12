@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Rapor SDIT Al-Iqra | Semester Ganjil TA 2026/2027</title>
+    <title>E-Rapor SDIT AL-IQRA | Semester Ganjil TA 2026/2027</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -58,8 +58,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-emerald-700 p-2.5 rounded-xl border border-emerald-600 shadow-inner">
-                        <i data-lucide="book-open-check" class="w-7 h-7 text-amber-300"></i>
+                    <div class="bg-white/95 dark:bg-slate-800 p-1.5 rounded-xl border border-emerald-600 shadow-inner flex items-center justify-center w-12 h-12 shrink-0 overflow-hidden">
+                        <img src="./logo.png" alt="Logo SDIT AL-IQRA" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                        <i data-lucide="book-open-check" class="w-7 h-7 text-emerald-700 dark:text-amber-300 hidden"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
@@ -73,16 +74,13 @@
                 <!-- Status Koneksi & Pengaturan GAS -->
                 <div class="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
                     <div id="connectionBadge" class="flex items-center gap-1.5 bg-emerald-900/80 px-3 py-1.5 rounded-lg border border-emerald-700 text-xs">
-                        <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <span id="statusText">Terhubung ke Google Sheets</span>
                     </div>
                     <!-- Tombol Pengalih Mode Light / Dark -->
                     <button id="btnThemeToggle" onclick="toggleTheme()" title="Ganti Mode Tampilan (Terang/Gelap)" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm border border-emerald-600 dark:border-slate-600">
                         <i id="themeIcon" data-lucide="moon" class="w-4 h-4 text-amber-300"></i>
                         <span id="themeLabel">Dark</span>
-                    </button>
-                    <button onclick="toggleModal('modalConfig')" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-800 dark:hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm border border-emerald-600">
-                        <i data-lucide="settings" class="w-4 h-4"></i>
-                        <span>Koneksi GAS</span>
                     </button>
                     <button id="btnLogout" onclick="logoutWaliKelas()" class="hidden flex items-center gap-1.5 bg-rose-700 hover:bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm border border-rose-600">
                         <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -96,12 +94,13 @@
     <!-- Gerbang Login Wali Kelas (Tampil sebelum terotentikasi) -->
     <section id="loginSection" class="flex-grow flex items-center justify-center px-4 py-10">
         <div class="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
-            <div class="bg-gradient-to-br from-emerald-800 to-teal-900 dark:from-emerald-950 dark:to-slate-900 p-6 text-center text-white space-y-2">
+            <div class="bg-gradient-to-br from-emerald-800 to-teal-900 dark:from-emerald-950 dark:to-slate-900 p-6 text-center text-white space-y-2.5">
                 <p class="font-arab text-2xl text-amber-300">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</p>
-                <div class="w-14 h-14 bg-emerald-700/80 border border-emerald-500 rounded-2xl mx-auto flex items-center justify-center shadow-inner">
-                    <i data-lucide="shield-check" class="w-8 h-8 text-amber-300"></i>
+                <div class="w-20 h-20 bg-white dark:bg-slate-800 border-2 border-amber-300/80 rounded-2xl mx-auto p-2 flex items-center justify-center shadow-md overflow-hidden">
+                    <img src="./logo.png" alt="Logo SDIT AL-IQRA" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <i data-lucide="shield-check" class="w-9 h-9 text-emerald-700 dark:text-amber-300 hidden"></i>
                 </div>
-                <h2 class="text-xl font-bold tracking-tight pt-1">Login Wali Kelas SDIT</h2>
+                <h2 class="text-xl font-bold tracking-tight pt-1">Login Wali Kelas SDIT AL-IQRA</h2>
                 <p class="text-xs text-emerald-200">Masuk menggunakan akun Wali Kelas atau Operator Sekolah untuk penginputan E-Rapor Semester Ganjil TA 2026/2027.</p>
             </div>
 
@@ -126,17 +125,6 @@
                     <i data-lucide="log-in" class="w-4 h-4"></i>
                     <span>Masuk ke Aplikasi E-Rapor</span>
                 </button>
-
-                <!-- Panduan Akun Simulasi untuk Uji Coba -->
-                <div class="bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 text-xs text-emerald-900 dark:text-emerald-200 space-y-1.5">
-                    <p class="font-bold flex items-center gap-1.5">
-                        <i data-lucide="key-round" class="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400"></i>
-                        <span>Gunakan Akun Yang Diberikan Operator.</span>
-                    </p>
-                    <ul class="list-disc list-inside text-[11px] text-emerald-800 dark:text-emerald-300 space-y-0.5">
-                        <li><strong>Pastikan User dan PIN Benar!.</strong><code class="bg-white dark:bg-slate-800 px-1 rounded border dark:border-slate-600"></code><code class="bg-white dark:bg-slate-800 px-1 rounded border dark:border-slate-600"></code><code class="bg-white dark:bg-slate-800 px-1 rounded border dark:border-slate-600"></code></li>
-                    </ul>
-                </div>
             </form>
         </div>
     </section>
@@ -279,6 +267,10 @@
                         <i data-lucide="download" class="w-4 h-4 text-slate-500 dark:text-slate-300"></i>
                         <span>Unduh CSV</span>
                     </button>
+                    <button onclick="loadDataKelas(true)" title="Muat Ulang Data dari Google Sheets" class="bg-white hover:bg-slate-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-slate-600 font-medium py-2 px-3.5 rounded-xl text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Sinkron Data</span>
+                    </button>
                     <button id="btnSimpanSheets" onclick="simpanKeGoogleSheets()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
                         <i data-lucide="cloud-upload" class="w-4 h-4"></i>
                         <span>Simpan ke Google Sheets</span>
@@ -332,35 +324,6 @@
         </div>
     </footer>
 
-    <!-- Modal Pengaturan URL Google Apps Script -->
-    <div id="modalConfig" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 dark:border-slate-700 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                    <i data-lucide="link" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
-                    <span>Konfigurasi Web App GAS</span>
-                </h3>
-                <button onclick="toggleModal('modalConfig')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <p>Masukkan URL <strong>Web App Google Apps Script (GAS)</strong> yang sudah Anda deploy agar data nilai tersimpan langsung ke Google Sheets sekolah.</p>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">URL Deployment GAS (Exec URL)</label>
-                    <input type="url" id="inputGasUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 text-sm focus:ring-emerald-500 focus:border-emerald-500">
-                </div>
-                <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-200">
-                    <strong>Catatan Operator:</strong> Jika dikosongkan, aplikasi berjalan dalam <em>Mode Lokal (Simulasi)</em> sehingga Anda tetap bisa menguji perhitungan nilai tanpa internet/backend.
-                </div>
-            </div>
-            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
-                <button onclick="toggleModal('modalConfig')" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl">Batal</button>
-                <button onclick="simpanKonfigurasiGAS()" class="px-4 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm">Simpan URL</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Tambah Siswa -->
     <div id="modalTambahSiswa" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 dark:border-slate-700 space-y-4">
@@ -390,20 +353,20 @@
         </div>
     </div>
 
-    <!-- Custom Toast Notification (Pengganti alert()) -->
+    <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <script>
-        // Inisialisasi ikon Lucide
+        // Inisialisasi Lucide Icons
         lucide.createIcons();
 
-        // Manajemen Tema Light / Dark Mode
-        function applyTheme(isDark) {
+        // Manajemen Mode Tampilan Light / Dark
+        function applyTheme(theme) {
             const htmlEl = document.documentElement;
             const iconEl = document.getElementById('themeIcon');
             const labelEl = document.getElementById('themeLabel');
 
-            if (isDark) {
+            if (theme === 'dark') {
                 htmlEl.classList.add('dark');
                 if (iconEl) iconEl.setAttribute('data-lucide', 'sun');
                 if (labelEl) labelEl.textContent = 'Light';
@@ -416,26 +379,25 @@
         }
 
         function toggleTheme() {
-            const isCurrentlyDark = document.documentElement.classList.contains('dark');
-            const nextDark = !isCurrentlyDark;
-            localStorage.setItem('erapor_theme', nextDark ? 'dark' : 'light');
-            applyTheme(nextDark);
+            const isDark = document.documentElement.classList.contains('dark');
+            const nextTheme = isDark ? 'light' : 'dark';
+            localStorage.setItem('erapor_theme', nextTheme);
+            applyTheme(nextTheme);
+            showToast(`Mode tampilan diubah ke ${nextTheme === 'dark' ? 'Dark Mode' : 'Light Mode'}`, "info");
         }
 
-        // Terapkan preferensi tema tersimpan saat awal dibuka
-        (function initTheme() {
-            const savedTheme = localStorage.getItem('erapor_theme');
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
-        })();
+        // Terapkan tema tersimpan sejak awal
+        const savedTheme = localStorage.getItem('erapor_theme') || 'light';
+        applyTheme(savedTheme);
 
-        // State Aplikasi (In-Memory Database untuk sesi aktif)
-        let gasWebAppUrl = "";
+        // State Aplikasi & Konfigurasi URL GAS Permanen (Hardcoded)
+        const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbxXtUJdhu0ks2iXzO1KiMZHaAjwA0en3Gr_tWhDHpSth9LskwlU9mtKzKTGo63dRi0/exec";
+        const gasWebAppUrl = DEFAULT_GAS_URL;
         let currentUser = null;
 
         // Database Akun Wali Kelas & Operator (Sinkron dengan default sheet DATA_WALI_KELAS di GAS)
         const akunWaliKelasLokal = {
-            "operator": { password: "admin2026", nama: "Operator Kurikulum SDIT", role: "OPERATOR", fase: "ALL", kelas: "ALL" },
+            "operator": { password: "admin2026", nama: "Operator Kurikulum SDIT AL-IQRA", role: "OPERATOR", fase: "ALL", kelas: "ALL" },
             "wali1a": { password: "sdit2026", nama: "Ustadzah Fatimah Az-Zahra, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "1A" },
             "wali1b": { password: "sdit2026", nama: "Ustadzah Khadijah Al-Kubra, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "1B" },
             "wali2a": { password: "sdit2026", nama: "Ustadzah Aisyah Humaira, S.Pd.", role: "WALI_KELAS", fase: "A", kelas: "2A" },
@@ -463,29 +425,28 @@
             lucide.createIcons();
 
             try {
-                // Jika terhubung ke Google Apps Script, validasi ke sheet DATA_WALI_KELAS terlebih dahulu
+                // Jika terhubung ke GAS, coba verifikasi akun dari sheet DATA_WALI_KELAS terlebih dahulu
                 if (gasWebAppUrl) {
-                    const response = await fetch(gasWebAppUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({
-                            action: "login",
-                            username: username,
-                            password: password
-                        })
-                    });
-                    const result = await response.json();
-                    if (result.status === "success") {
-                        aktifkanSesiUser(result.user);
-                        return;
-                    } else {
-                        showToast(result.message || "Username atau kata sandi salah!", "error");
-                        return;
+                    try {
+                        const response = await fetch(gasWebAppUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({ action: "login", username: username, password: password })
+                        });
+                        const result = await response.json();
+                        if (result.status === "success" && result.user) {
+                            aktifkanSesiUser(result.user);
+                            return;
+                        } else if (result.status === "error") {
+                            showToast(result.message || "Username atau kata sandi salah!", "error");
+                            return;
+                        }
+                    } catch (errGas) {
+                        console.warn("Fallback ke otentikasi lokal karena kendala jaringan GAS:", errGas);
                     }
                 }
 
-                // Mode Lokal (Simulasi)
-                await new Promise(r => setTimeout(r, 400));
+                // Verifikasi Akun Lokal / Fallback
                 const akun = akunWaliKelasLokal[username];
                 if (akun && akun.password === password) {
                     aktifkanSesiUser({
@@ -496,11 +457,8 @@
                         kelas: akun.kelas
                     });
                 } else {
-                    showToast("Username atau kata sandi tidak sesuai!", "error");
+                    showToast("Username atau Kata Sandi tidak valid!", "error");
                 }
-            } catch (err) {
-                console.error("Login error:", err);
-                showToast("Gagal terhubung ke server otentikasi GAS.", "error");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalHTML;
@@ -710,19 +668,9 @@
                 "C": "menghafal dan memurajaah target hafalan Juz 29 dan Juz 30 secara mutqin dengan memperhatikan kelancaran dan fasahah"
             }
         };
-        
-        // Data Dummy Siswa SDIT yang realistis
-        let databaseNilai = {
-            "5A_MTK": [
-                { nisn: "0158291001", nama: "Ahmad Zaki Al-Fatih", nh: 92, uts: 90, asas: 94 },
-                { nisn: "0158291002", nama: "Aisyah Humaira Azzahra", nh: 86, uts: 84, asas: 85 },
-                { nisn: "0158291003", nama: "Fathimah Az-Zahra", nh: 76, uts: 75, asas: 78 },
-                { nisn: "0158291004", nama: "Muhammad Ibrahim Al-Ghazali", nh: 68, uts: 65, asas: 70 },
-                { nisn: "0158291005", nama: "Khadijah Putri Salsabila", nh: 95, uts: 92, asas: 96 },
-                { nisn: "0158291006", nama: "Umar Abdurrahman", nh: 80, uts: 82, asas: 81 },
-                { nisn: "0158291007", nama: "Zaidan Habibi", nh: 74, uts: 72, asas: 76 }
-            ]
-        };
+
+        // Penyimpanan cache memori sesi (Tanpa Data Dummy - Murni dari Google Sheets)
+        let databaseNilai = {};
 
         // Fungsi Notifikasi Toast (Menggantikan alert browser)
         function showToast(message, type = 'success') {
@@ -768,27 +716,6 @@
             modal.classList.toggle('hidden');
         }
 
-        // Simpan URL GAS
-        function simpanKonfigurasiGAS() {
-            const urlInput = document.getElementById('inputGasUrl').value.trim();
-            gasWebAppUrl = urlInput;
-            
-            const dot = document.getElementById('statusDot');
-            const text = document.getElementById('statusText');
-
-            if (gasWebAppUrl && gasWebAppUrl.startsWith('https://script.google.com/')) {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
-                text.textContent = "Terhubung ke Google Sheets";
-                showToast("URL Web App GAS berhasil disimpan!", "success");
-            } else {
-                gasWebAppUrl = "";
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
-                text.textContent = "Mode Lokal (Simulasi)";
-                showToast("Berjalan dalam Mode Lokal (URL kosong/tidak valid).", "info");
-            }
-            toggleModal('modalConfig');
-        }
-
         // Mendapatkan Key aktif (Kombinasi Kelas & Mapel)
         function getCurrentKey() {
             const kelas = document.getElementById('selectKelas').value;
@@ -802,84 +729,142 @@
             const selectKelas = document.getElementById('selectKelas');
             const selectMapel = document.getElementById('selectMapel');
 
-            const dataFase = configKurikulum[fase];
+            const prevKelas = selectKelas.value;
+            const prevMapel = selectMapel.value;
 
-            // Isi ulang dropdown Kelas
-            selectKelas.innerHTML = dataFase.kelas.map(k => 
-                `<option value="${k.kode}">${k.nama}</option>`
-            ).join('');
+            const daftarKelas = configKurikulum[fase].kelas;
+            selectKelas.innerHTML = daftarKelas.map(k => `<option value="${k.kode}">${k.nama}</option>`).join('');
+            if (daftarKelas.some(k => k.kode === prevKelas)) {
+                selectKelas.value = prevKelas;
+            }
 
-            // Isi ulang dropdown Mata Pelajaran
-            selectMapel.innerHTML = dataFase.mapel.map(m => 
-                `<option value="${m.kode}">${m.nama}</option>`
-            ).join('');
+            const daftarMapel = configKurikulum[fase].mapel;
+            selectMapel.innerHTML = daftarMapel.map(m => `<option value="${m.kode}">${m.nama}</option>`).join('');
+            if (daftarMapel.some(m => m.kode === prevMapel)) {
+                selectMapel.value = prevMapel;
+            }
 
-            loadDataKelas();
-        }
-
-        // Rumus Inti: Nilai Rapor = (Rata-Rata Nilai Harian + Nilai UTS + Nilai ASAS) / 3
-        function hitungNilaiRapor(nh, uts, asas) {
-            const nHarian = parseFloat(nh) || 0;
-            const nUts = parseFloat(uts) || 0;
-            const nAsas = parseFloat(asas) || 0;
-            const hasil = (nHarian + nUts + nAsas) / 3;
-            return Math.round(hasil * 100) / 100; // Pembulatan 2 desimal
-        }
-
-        // Menentukan Predikat SDIT
-        function getPredikat(nilai) {
-            if (nilai >= 90) return { huruf: 'A', warna: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700' };
-            if (nilai >= 80) return { huruf: 'B', warna: 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700' };
-            if (nilai >= 70) return { huruf: 'C', warna: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-700' };
-            return { huruf: 'D', warna: 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-700' };
-        }
-
-        // Generator Deskripsi Capaian Kompetensi Otomatis (Acuan CP/ATP TA 2026/2027)
-        function generateCapaianKompetensi(predikatHuruf, fase, mapelKode) {
-            const materiATP = (bankATP[mapelKode] && bankATP[mapelKode][fase]) 
-                ? bankATP[mapelKode][fase] 
-                : "menguasai tujuan pembelajaran esensial pada semester ganjil tahun ajaran 2026/2027";
-
-            switch (predikatHuruf) {
-                case 'A':
-                    return `Menunjukkan penguasaan yang sangat baik dan melampaui ekspektasi dalam ${materiATP}.`;
-                case 'B':
-                    return `Menunjukkan penguasaan yang baik sesuai capaian pembelajaran dalam ${materiATP}.`;
-                case 'C':
-                    return `Cukup mampu menguasai kompetensi dalam ${materiATP}, namun perlu peningkatan ketelitian dalam penerapannya.`;
-                default:
-                    return `Memerlukan bimbingan intensif dan pendampingan khusus dalam ${materiATP}.`;
+            if (currentUser) {
+                loadDataKelas();
             }
         }
 
-        // Render Tabel Siswa
-        function loadDataKelas() {
+        // Rumus Nilai Rapor: (Rata-rata NH + UTS + ASAS) / 3
+        function hitungNilaiRapor(nh, uts, asas) {
+            const valNH = parseFloat(nh) || 0;
+            const valUTS = parseFloat(uts) || 0;
+            const valASAS = parseFloat(asas) || 0;
+            return (valNH + valUTS + valASAS) / 3;
+        }
+
+        // Penentuan Predikat Nilai Rapor
+        function getPredikat(nilai) {
+            if (nilai >= 90) return { huruf: 'A', warna: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700' };
+            if (nilai >= 80) return { huruf: 'B', warna: 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700' };
+            if (nilai >= 70) return { huruf: 'C', warna: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700' };
+            return { huruf: 'D', warna: 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-700' };
+        }
+
+        // Generator Deskripsi Capaian Kompetensi Otomatis (CP/ATP TA 2026/2027)
+        function generateCapaianKompetensi(predikatHuruf, fase, mapelKode) {
+            const materi = (bankATP[mapelKode] && bankATP[mapelKode][fase]) 
+                ? bankATP[mapelKode][fase] 
+                : "memahami konsep dan kompetensi dasar mata pelajaran sesuai capaian pembelajaran fase ini";
+
+            switch (predikatHuruf) {
+                case 'A':
+                    return `Menunjukkan penguasaan yang sangat baik dalam ${materi}.`;
+                case 'B':
+                    return `Menunjukkan penguasaan yang baik dalam ${materi}.`;
+                case 'C':
+                    return `Cukup menguasai dalam ${materi}, namun perlu peningkatan ketelitian dalam penerapannya.`;
+                default:
+                    return `Perlu bimbingan dan pendampingan intensif dalam ${materi}.`;
+            }
+        }
+
+        // Render Tabel Siswa (Menarik Data Real-Time dari Google Sheets)
+        async function loadDataKelas(forceRefresh = false) {
             const key = getCurrentKey();
             const fase = document.getElementById('selectFase').value;
+            const kelas = document.getElementById('selectKelas').value;
             const mapelKode = document.getElementById('selectMapel').value;
             const selectKelas = document.getElementById('selectKelas');
             const selectMapel = document.getElementById('selectMapel');
             
+            if (!selectKelas.options[selectKelas.selectedIndex] || !selectMapel.options[selectMapel.selectedIndex]) return;
+
             const namaKelas = selectKelas.options[selectKelas.selectedIndex].text.split(' - ')[0];
             const namaMapel = selectMapel.options[selectMapel.selectedIndex].text;
             document.getElementById('labelHeaderKelas').textContent = `Fase ${fase} • ${namaKelas} (${namaMapel})`;
 
-            // Jika belum ada data di kombinasi kelas_mapel ini, buat template dari daftar siswa 5A_MTK dengan nilai 0
-            if (!databaseNilai[key]) {
-                databaseNilai[key] = databaseNilai["5A_MTK"].map(s => ({
-                    nisn: s.nisn,
-                    nama: s.nama,
-                    nh: 0,
-                    uts: 0,
-                    asas: 0
-                }));
-            }
-
-            const siswaList = databaseNilai[key];
             const tbody = document.getElementById('tbodySiswa');
             const kkm = parseFloat(document.getElementById('inputKKM').value) || 75;
 
+            // Ambil data dari Google Sheets jika belum ada di cache atau diminta muat ulang
+            if ((!databaseNilai[key] || forceRefresh) && gasWebAppUrl) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="py-10 text-center text-slate-500 dark:text-slate-400">
+                            <div class="flex flex-col items-center justify-center gap-2">
+                                <i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-600"></i>
+                                <span class="text-sm font-medium">Mengambil data siswa & nilai ${namaKelas} dari Google Sheets...</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                lucide.createIcons();
+
+                try {
+                    const response = await fetch(gasWebAppUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: "get_nilai",
+                            fase: fase,
+                            kelas: kelas,
+                            mapel: mapelKode
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.status === "success" && Array.isArray(result.data)) {
+                        databaseNilai[key] = result.data;
+                        if (forceRefresh) {
+                            showToast(`Data ${namaKelas} (${namaMapel}) berhasil disinkronkan dari Google Sheets.`, "success");
+                        }
+                    } else {
+                        databaseNilai[key] = [];
+                    }
+                } catch (err) {
+                    console.error("Gagal membaca data dari Google Sheets:", err);
+                    databaseNilai[key] = databaseNilai[key] || [];
+                    showToast("Gagal memuat data dari Google Sheets. Pastikan deployment GAS versi terbaru sudah aktif.", "error");
+                }
+            }
+
+            if (!databaseNilai[key]) {
+                databaseNilai[key] = [];
+            }
+
+            const siswaList = databaseNilai[key];
             tbody.innerHTML = '';
+
+            if (siswaList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="py-10 text-center text-slate-500 dark:text-slate-400">
+                            <div class="flex flex-col items-center justify-center gap-2">
+                                <i data-lucide="folder-open" class="w-8 h-8 text-slate-400"></i>
+                                <p class="text-sm font-semibold">Belum ada data siswa di Google Sheets untuk ${namaKelas}.</p>
+                                <p class="text-xs">Silakan isi daftar siswa kelas ${kelas} pada sheet <strong>MASTER_SISWA</strong> di Google Sheets atau klik tombol <strong>+ Tambah Siswa</strong>.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                lucide.createIcons();
+                updateStatistik();
+                return;
+            }
 
             siswaList.forEach((siswa, index) => {
                 const nilaiRapor = hitungNilaiRapor(siswa.nh, siswa.uts, siswa.asas);
@@ -1108,7 +1093,7 @@
                     btn.disabled = false;
                     btn.innerHTML = originalHTML;
                     lucide.createIcons();
-                    showToast("Simulasi Berhasil! Set URL GAS di menu 'Koneksi GAS' untuk kirim ke Google Sheets asli.", "success");
+                    showToast("Simulasi Berhasil! Data nilai tersimpan di mode lokal.", "success");
                     console.log("Payload siap kirim ke GAS:", payload);
                 }, 800);
                 return;
@@ -1162,7 +1147,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Rapor_SDIT_Fase${fase}_${kelas}_${mapel}_Ganjil_2026_2027.csv`);
+            link.setAttribute("download", `Rapor_SDIT_AL-IQRA_Fase${fase}_${kelas}_${mapel}_Ganjil_2026_2027.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1196,11 +1181,14 @@
             updateDigitalClock();
             setInterval(updateDigitalClock, 1000);
 
+            // Set indikator status koneksi ke Google Sheets
+            document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+            document.getElementById('statusText').textContent = "Terhubung ke Google Sheets";
+
             onFaseChange();
             // Set default awal ke Kelas 5A & Matematika di balik layar sebelum login
             document.getElementById('selectKelas').value = "5A";
             document.getElementById('selectMapel').value = "MTK";
-            loadDataKelas();
         };
     </script>
 </body>
