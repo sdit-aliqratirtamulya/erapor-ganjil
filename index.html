@@ -33,7 +33,17 @@
       animation-play-state: paused;
     }
 
+    .rapor-page-number::after {
+      content: "Halaman 1";
+    }
+
     @media print {
+      @page {
+        margin: 12mm 14mm 16mm 14mm;
+      }
+      body {
+        counter-reset: page;
+      }
       body * { visibility: hidden; }
       #print-area, #print-area * { visibility: visible; }
       #print-area {
@@ -47,6 +57,16 @@
         margin: 0 !important;
         box-shadow: none !important;
         border: none !important;
+      }
+      .rapor-footer-fixed {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white !important;
+      }
+      .rapor-page-number::after {
+        content: "Halaman " counter(page);
       }
       .no-print { display: none !important; }
       .page-break { page-break-before: always; }
@@ -943,10 +963,10 @@
                   </div>
                 </div>
 
-                <!-- FOOTER RAPOR -->
-                <div class="mt-8 pt-2 border-t border-slate-400 flex items-center justify-between text-[10px] text-slate-700">
+                <!-- FOOTER RAPOR OTOMATIS -->
+                <div class="rapor-footer-fixed mt-8 pt-2 border-t border-slate-400 flex items-center justify-between text-[10px] text-slate-700">
                   <div class="italic" x-text="getRaporFooterLeft()"></div>
-                  <div class="font-medium text-center">Halaman Rapor</div>
+                  <div class="font-medium text-center rapor-page-number"></div>
                   <div class="italic text-right" x-text="raporData.siswa.nama_siswa + ' | ' + raporData.siswa.nis + ' | ' + raporData.siswa.nisn"></div>
                 </div>
 
