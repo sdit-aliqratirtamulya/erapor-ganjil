@@ -594,7 +594,7 @@
                       <tr>
                         <th class="px-4 py-3 w-12">No</th>
                         <th class="px-4 py-3 w-48">Nama Peserta Didik</th>
-                        <th class="px-4 py-3 w-48">1. Ekskul Wajib: Pramuka</th>
+                        <th class="px-4 py-3 w-64">1. Ekskul Wajib: Pramuka & Prestasi</th>
                         <th class="px-4 py-3">2. Ekstrakurikuler Pilihan & Prestasi</th>
                       </tr>
                     </thead>
@@ -603,12 +603,14 @@
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
                           <td class="px-4 py-3 text-slate-500 dark:text-slate-400" x-text="idx + 1"></td>
                           <td class="px-4 py-3 font-bold text-slate-800 dark:text-white" x-text="row.nama_siswa"></td>
-                          <td class="px-4 py-3">
+                          <td class="px-4 py-3 space-y-2">
                             <select x-model="row.ekskul_wajib" class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-2 font-medium">
                               <option value="Sangat Baik">Sangat Baik</option>
                               <option value="Baik">Baik</option>
                               <option value="Cukup">Cukup</option>
                             </select>
+                            <input type="text" x-model="row.prestasi_pramuka" placeholder="Jenis Prestasi Pramuka (opsional)"
+                                   class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5">
                           </td>
                           <td class="px-4 py-3 space-y-2">
                             <template x-for="(ep, epIdx) in row.ekskul_pilihan" :key="epIdx">
@@ -1507,8 +1509,16 @@
           this.formWali = siswaList.map(s => {
             const ex = this.kelasData.dataWali.find(w => w.id_siswa === s.id_siswa);
             let pilihan = [];
+            let prestasiPramuka = '';
             if (ex?.ekskul_pilihan_json) {
-              try { pilihan = JSON.parse(ex.ekskul_pilihan_json); } catch (e) { pilihan = []; }
+              try {
+                const parsed = JSON.parse(ex.ekskul_pilihan_json);
+                if (Array.isArray(parsed)) {
+                  const pramukaMeta = parsed.find(item => item.is_wajib_pramuka);
+                  if (pramukaMeta) prestasiPramuka = pramukaMeta.prestasi || '';
+                  pilihan = parsed.filter(item => !item.is_wajib_pramuka);
+                }
+              } catch (e) { pilihan = []; }
             }
             return {
               id_catatan: ex?.id_catatan || '',
@@ -1518,7 +1528,8 @@
               izin: ex?.izin || 0,
               alpa: ex?.alpa || 0,
               ekskul_wajib: ex?.ekskul_wajib || 'Baik',
-              ekskul_pilihan: Array.isArray(pilihan) ? pilihan : [],
+              prestasi_pramuka: prestasiPramuka,
+              ekskul_pilihan: pilihan,
               catatan_wali: ex?.catatan_wali || '',
               status_naik: ex?.status_naik || '-'
             };
@@ -1529,10 +1540,26 @@
           this.loading = true;
           this.loadingText = 'Menyimpan data Ekstrakurikuler & Wali Kelas...';
           try {
+            const payloadRecords = this.formWali.map(r => {
+              const combinedPilihan = [...(r.ekskul_pilihan || [])];
+              if (r.prestasi_pramuka && String(r.prestasi_pramuka).trim() !== '') {
+                combinedPilihan.unshift({
+                  nama: 'Pramuka (Ekstrakurikuler Wajib)',
+                  predikat: r.ekskul_wajib || 'Baik',
+                  prestasi: String(r.prestasi_pramuka).trim(),
+                  is_wajib_pramuka: true
+                });
+              }
+              return {
+                ...r,
+                ekskul_pilihan: combinedPilihan
+              };
+            });
+
             await this.callApi('SAVE_WALI_BATCH', {
               tahun_ajaran: this.master.settings.tahun_ajaran,
               semester: this.master.settings.semester,
-              records: this.formWali
+              records: payloadRecords
             });
             await this.loadNilaiKelas();
             this.notify('Data Ekstrakurikuler & Wali Kelas berhasil disimpan!');
@@ -1662,7 +1689,7 @@
             try {
               const arr = JSON.parse(wali.ekskul_pilihan_json);
               arr.forEach(item => {
-                if (item.nama) {
+                if (item.nama && !item.is_wajib_pramuka) {
                   list.push({
                     nama: item.nama,
                     predikat: item.predikat || 'Baik',
