@@ -305,8 +305,14 @@
           </template>
 
           <template x-if="user.role === 'admin'">
-            <div>
+            <div class="space-y-1">
               <div class="pt-3 pb-1 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">Administrator</div>
+              <button @click="selectMenu('statistik_admin'); loadAdminStats()"
+                      :class="activeMenu === 'statistik_admin' ? 'bg-blue-700 text-white font-semibold shadow-sm' : 'text-blue-200 hover:bg-blue-900/60'"
+                      class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                <span>Statistik Progres</span>
+              </button>
               <button @click="selectMenu('referensi')"
                       :class="activeMenu === 'referensi' ? 'bg-blue-700 text-white font-semibold shadow-sm' : 'text-blue-200 hover:bg-blue-900/60'"
                       class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition">
@@ -824,18 +830,166 @@
             <template x-if="raporData">
               <div id="print-area" class="bg-white max-w-4xl mx-auto p-8 md:p-10 rounded-2xl border border-slate-300 shadow-lg text-black text-[12px] leading-snug">
                 
-                <!-- KOP RAPOR -->
-                <div class="relative flex items-center justify-center border-b-2 border-black pb-3 mb-5 min-h-[76px]">
+                <!-- KOP RAPOR (LOGO DI BAGIAN PALING ATAS TENGAH) -->
+                <div class="flex flex-col items-center justify-center text-center border-b-2 border-black pb-3.5 mb-5">
                   <template x-if="master.settings.logo_sekolah">
                     <img :src="getLogoUrl()" alt="Logo Sekolah"
                          onerror="this.style.display='none'"
-                         class="w-16 h-16 object-contain sm:absolute sm:left-2 shrink-0 mr-3 sm:mr-0">
+                         class="w-20 h-20 object-contain mb-2">
                   </template>
-                  <div class="text-center px-2 sm:px-20">
+                  <div>
                     <h1 class="text-base font-bold uppercase tracking-wide">LAPORAN HASIL BELAJAR (RAPOR)</h1>
                     <h2 class="text-sm font-bold uppercase" x-text="master.settings.nama_sekolah"></h2>
                     <p class="text-[11px] font-semibold tracking-wide" x-text="'NPSN : ' + (master.settings.npsn || '-')"></p>
                     <p class="text-[11px]">Kp. Tangkil RT.001 RW.002 Desa Citarik Kec. Tirtamulya Kab. Karawang 41372</p>
+                  </div>
+                </div>
+
+                <!-- IDENTITAS MURID -->
+                <div class="grid grid-cols-2 gap-x-8 gap-y-1 mb-5 text-[11.5px]">
+                  <div class="flex"><span class="w-32">Nama Murid</span><span class="mr-2">:</span><span class="font-bold uppercase" x-text="raporData.siswa.nama_siswa"></span></div>
+                  <div class="flex"><span class="w-28">Kelas</span><span class="mr-2">:</span><span class="font-bold" x-text="getKelasOnlyName(raporData.siswa.id_kelas)"></span></div>
+                  <div class="flex"><span class="w-32">NIS / NISN</span><span class="mr-2">:</span><span x-text="raporData.siswa.nis + ' / ' + raporData.siswa.nisn"></span></div>
+                  <div class="flex"><span class="w-28">Fase</span><span class="mr-2">:</span><span x-text="getKelasFase(raporData.siswa.id_kelas)"></span></div>
+                  <div class="flex"><span class="w-32">Nama Sekolah</span><span class="mr-2">:</span><span x-text="master.settings.nama_sekolah"></span></div>
+                  <div class="flex"><span class="w-28">Semester</span><span class="mr-2">:</span><span x-text="master.settings.semester"></span></div>
+                  <div class="flex"><span class="w-32">Alamat Sekolah</span><span class="mr-2">:</span><span>Kp. Tangkil Desa Citarik - Tirtamulya</span></div>
+                  <div class="flex"><span class="w-28">Tahun Ajaran</span><span class="mr-2">:</span><span x-text="master.settings.tahun_ajaran"></span></div>
+                </div>
+
+                <!-- A. INTRAKURIKULER & MUATAN LOKAL -->
+                <div class="font-bold mb-1.5 text-xs">A. INTRAKURIKULER</div>
+                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                  <thead>
+                    <tr class="bg-slate-100 text-center font-bold">
+                      <th class="border border-black px-2 py-2 w-9">No</th>
+                      <th class="border border-black px-3 py-2 w-48">Mata Pelajaran</th>
+                      <th class="border border-black px-2 py-2 w-16">Nilai Akhir</th>
+                      <th class="border border-black px-3 py-2">Capaian Kompetensi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Kelompok Intrakurikuler -->
+                    <template x-for="(m, idx) in getRaporMapelByGroup('Intrakurikuler')" :key="m.id_mapel">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
+                        <td class="border border-black px-3 py-1.5 font-medium" x-text="m.nama_mapel"></td>
+                        <td class="border border-black px-2 py-1.5 text-center font-bold" x-text="getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir || '-'"></td>
+                        <td class="border border-black px-3 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
+                      </tr>
+                    </template>
+                    <!-- Sub-header Muatan Lokal -->
+                    <tr class="bg-slate-50 font-bold">
+                      <td class="border border-black px-3 py-1.5" colspan="4">Muatan Lokal</td>
+                    </tr>
+                    <template x-for="(m, idx) in getRaporMapelByGroup('Mulok')" :key="m.id_mapel">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
+                        <td class="border border-black px-3 py-1.5 font-medium" x-text="m.nama_mapel"></td>
+                        <td class="border border-black px-2 py-1.5 text-center font-bold" x-text="getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir || '-'"></td>
+                        <td class="border border-black px-3 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
+                      </tr>
+                    </template>
+                    <!-- Baris Jumlah Nilai Keseluruhan Otomatis -->
+                    <tr class="bg-slate-100 font-bold">
+                      <td class="border border-black px-3 py-2 text-center uppercase" colspan="2">Jumlah Nilai</td>
+                      <td class="border border-black px-2 py-2 text-center" x-text="getRaporTotalNilai()"></td>
+                      <td class="border border-black px-3 py-2 text-slate-500 text-[10.5px] font-normal italic">Total akumulasi nilai akhir Intrakurikuler dan Muatan Lokal</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- B. KOKURIKULER (DIMENSI PROFIL LULUSAN - PEMBELAJARAN MENDALAM) -->
+                <div class="font-bold mb-1.5 text-xs">B. KOKURIKULER (DIMENSI PROFIL LULUSAN)</div>
+                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                  <thead>
+                    <tr class="bg-slate-100 text-center font-bold">
+                      <th class="border border-black px-3 py-1.5 w-1/3">Tema / Kegiatan Kokurikuler</th>
+                      <th class="border border-black px-3 py-1.5">Capaian Dimensi Profil Lulusan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="border border-black px-3 py-2 align-top font-medium" x-text="raporData.nilaiKokurikuler?.tema_projek || 'Projek Penguatan Dimensi Profil Lulusan'"></td>
+                      <td class="border border-black px-3 py-2 text-justify" x-text="raporData.nilaiKokurikuler?.catatan_kokurikuler || 'Murid menunjukkan perkembangan positif dalam Dimensi Profil Lulusan selama kegiatan kokurikuler berlangsung.'"></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- C. EKSTRAKURIKULER & PRESTASI EKSTRAKURIKULER -->
+                <div class="font-bold mb-1.5 text-xs">C. EKSTRAKURIKULER</div>
+                <table class="w-full border-collapse border border-black text-[11.5px] mb-3">
+                  <thead>
+                    <tr class="bg-slate-100 text-center font-bold">
+                      <th class="border border-black px-2 py-1.5 w-9">No</th>
+                      <th class="border border-black px-3 py-1.5 w-56">Kegiatan Ekstrakurikuler</th>
+                      <th class="border border-black px-3 py-1.5 w-32">Predikat</th>
+                      <th class="border border-black px-3 py-1.5">Keterangan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="(ek, idx) in getRaporEkskulList()" :key="idx">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
+                        <td class="border border-black px-3 py-1.5 font-medium" x-text="ek.nama"></td>
+                        <td class="border border-black px-3 py-1.5 text-center font-semibold" x-text="ek.predikat"></td>
+                        <td class="border border-black px-3 py-1.5" x-text="ek.keterangan"></td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+
+                <!-- TABEL PRESTASI EKSTRAKURIKULER -->
+                <div class="font-bold mb-1.5 text-[11.5px]">Prestasi Ekstrakurikuler</div>
+                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                  <thead>
+                    <tr class="bg-slate-100 text-center font-bold">
+                      <th class="border border-black px-2 py-1.5 w-9">No</th>
+                      <th class="border border-black px-3 py-1.5 w-64">Kegiatan Ekstrakurikuler</th>
+                      <th class="border border-black px-3 py-1.5">Jenis Prestasi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-if="getRaporPrestasiEkskulList().length === 0">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center">-</td>
+                        <td class="border border-black px-3 py-1.5 text-center">-</td>
+                        <td class="border border-black px-3 py-1.5 text-center">-</td>
+                      </tr>
+                    </template>
+                    <template x-for="(pr, pIdx) in getRaporPrestasiEkskulList()" :key="pIdx">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center" x-text="pIdx + 1"></td>
+                        <td class="border border-black px-3 py-1.5 font-medium" x-text="pr.nama"></td>
+                        <td class="border border-black px-3 py-1.5" x-text="pr.prestasi"></td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+
+                <!-- D. KETIDAKHADIRAN & E. CATATAN WALI KELAS -->
+                <div class="grid grid-cols-12 gap-4 mb-5 text-[11.5px]">
+                  <div class="col-span-5">
+                    <div class="font-bold mb-1">D. KETIDAKHADIRAN</div>
+                    <table class="w-full border-collapse border border-black">
+                      <tr>
+                        <td class="border border-black px-3 py-1">Sakit</td>
+                        <td class="border border-black px-3 py-1 w-24 text-center" x-text="(raporData.dataWali?.sakit || 0) + ' hari'"></td>
+                      </tr>
+                      <tr>
+                        <td class="border border-black px-3 py-1">Izin</td>
+                        <td class="border border-black px-3 py-1 text-center" x-text="(raporData.dataWali?.izin || 0) + ' hari'"></td>
+                      </tr>
+                      <tr>
+                        <td class="border border-black px-3 py-1">Tanpa Keterangan</td>
+                        <td class="border border-black px-3 py-1 text-center" x-text="(raporData.dataWali?.alpa || 0) + ' hari'"></td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-span-7">
+                    <div class="font-bold mb-1">E. CATATAN WALI KELAS</div>
+                    <div class="border border-black p-2.5 min-h-[76px] text-justify"
+                         x-text="raporData.dataWali?.catatan_wali || 'Ananda menunjukkan semangat belajar yang baik. Terus tingkatkan kedisiplinan, ibadah, dan kepedulian terhadap sesama.'"></div>
                   </div>
                 </div>
 
@@ -872,9 +1026,9 @@
 
                 <!-- FOOTER RAPOR OTOMATIS -->
                 <div class="rapor-footer-fixed mt-8 pt-2 border-t border-slate-400 flex items-center justify-between text-[10px] text-slate-700">
-                  <div class="italic" x-text="getRaporFooterLeft()"></div>
-                  <div class="font-medium text-center rapor-page-number"></div>
-                  <div class="italic text-right" x-text="raporData.siswa.nama_siswa + ' | ' + raporData.siswa.nis + ' | ' + raporData.siswa.nisn"></div>
+                  <div class="italic text-[10px]" x-text="getRaporFooterLeft()"></div>
+                  <div class="font-medium text-center text-[10px] rapor-page-number"></div>
+                  <div class="italic text-right text-[10px]" x-text="getRaporFooterRight()"></div>
                 </div>
 
               </div>
@@ -884,1023 +1038,144 @@
           <!-- =============================================================== -->
           <!-- TAB 7: REFERENSI SEKOLAH (ADMIN)                                -->
           <!-- =============================================================== -->
-          <div x-show="activeMenu === 'referensi'" class="space-y-4">
-            <h2 class="text-lg font-bold text-slate-800 dark:text-white">Pengaturan & Data Referensi Sekolah</h2>
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs text-sm space-y-4">
-              <p class="text-xs text-slate-600 dark:text-slate-300">Seluruh data kelas (1A–6B), mata pelajaran Intrakurikuler & Mulok, serta plotting guru terhubung langsung dengan Google Sheets database.</p>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <template x-for="(val, key) in master.settings" :key="key">
-                  <div class="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl border border-slate-200 dark:border-slate-700">
-                    <div class="text-[11px] uppercase font-bold text-slate-400" x-text="key.replace('_', ' ')"></div>
-                    <div class="font-semibold text-slate-800 dark:text-slate-100 mt-0.5 text-xs" x-text="key === 'tanggal_rapor' ? formatTanggalIndo(val) : val"></div>
+          <!-- TAB 7: STATISTIK PROGRES PENGINPUTAN (KHUSUS ADMIN)             -->
+          <!-- =============================================================== -->
+          <div x-show="activeMenu === 'statistik_admin'" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Statistik Progres Penginputan Rapor</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Pemantauan persentase kelengkapan input Wali Kelas &amp; Guru Mata Pelajaran • Tahun Ajaran <span x-text="master.settings.tahun_ajaran"></span> (<span x-text="master.settings.semester"></span>)
+                </p>
+              </div>
+              <button type="button" @click="loadAdminStats()"
+                      class="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 px-4 rounded-xl text-xs shadow transition flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-rotate"></i> Perbarui Statistik
+              </button>
+            </div>
+
+            <!-- KARTU RINGKASAN PROGRES SEKOLAH -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Progres Keseluruhan</span>
+                  <span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-chart-line"></i>
+                  </span>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 dark:text-white tabular-nums" x-text="getOverallAdminProgress().total + '%'">0%</div>
+                <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 mt-2.5 overflow-hidden">
+                  <div class="bg-blue-700 h-2 rounded-full transition-all duration-500" :style="'width:' + getOverallAdminProgress().total + '%'"></div>
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Nilai Intra &amp; Mulok</span>
+                  <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-book-open"></i>
+                  </span>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 dark:text-white tabular-nums" x-text="getOverallAdminProgress().intra + '%'">0%</div>
+                <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 mt-2.5 overflow-hidden">
+                  <div class="bg-emerald-600 h-2 rounded-full transition-all duration-500" :style="'width:' + getOverallAdminProgress().intra + '%'"></div>
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Kokurikuler (DPL)</span>
+                  <span class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-cubes"></i>
+                  </span>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 dark:text-white tabular-nums" x-text="getOverallAdminProgress().kokurikuler + '%'">0%</div>
+                <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 mt-2.5 overflow-hidden">
+                  <div class="bg-indigo-600 h-2 rounded-full transition-all duration-500" :style="'width:' + getOverallAdminProgress().kokurikuler + '%'"></div>
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Ekskul, Absensi &amp; Wali</span>
+                  <span class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-user-check"></i>
+                  </span>
+                </div>
+                <div class="text-2xl font-bold text-slate-800 dark:text-white tabular-nums" x-text="getOverallAdminProgress().wali + '%'">0%</div>
+                <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 mt-2.5 overflow-hidden">
+                  <div class="bg-amber-500 h-2 rounded-full transition-all duration-500" :style="'width:' + getOverallAdminProgress().wali + '%'"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BAGIAN 1: PROGRES GURU MATA PELAJARAN -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+              <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Progres Guru Mata Pelajaran (Plotting Mengajar)
+                </h3>
+                <span class="text-xs text-slate-500 dark:text-slate-400" x-text="adminStats.guruStats.length + ' Guru Terdaftar'"></span>
+              </div>
+              <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <template x-if="adminStats.guruStats.length === 0">
+                  <div class="col-span-2 text-center text-xs text-slate-400 py-4">Belum ada data plotting guru mata pelajaran.</div>
+                </template>
+                <template x-for="g in adminStats.guruStats" :key="g.id_guru">
+                  <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <div class="font-bold text-sm text-slate-800 dark:text-white" x-text="g.nama_guru"></div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400" x-text="'NIP/NIK: ' + (g.nip_nik || '-') + ' • ' + g.total_terisi + '/' + g.total_target + ' Nilai Terisi'"></div>
+                      </div>
+                      <span :class="g.persen_total === 100 ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : (g.persen_total > 0 ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-slate-200 text-slate-700 border-slate-300')"
+                            class="px-2.5 py-1 rounded-lg text-xs font-bold border tabular-nums"
+                            x-text="g.persen_total + '%'"></span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                      <div :class="g.persen_total === 100 ? 'bg-emerald-600' : 'bg-blue-600'"
+                           class="h-2 rounded-full transition-all duration-500"
+                           :style="'width:' + g.persen_total + '%'"></div>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                      <template x-for="(dk, dIdx) in g.detail_kelas" :key="dIdx">
+                        <span :class="dk.persen === 100 ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'"
+                              class="text-[11px] px-2 py-0.5 rounded-md border font-medium"
+                              x-text="dk.nama_kelas + ' (' + dk.nama_mapel + '): ' + dk.persen + '%'"></span>
+                      </template>
+                    </div>
                   </div>
                 </template>
               </div>
             </div>
-          </div>
 
-        </main>
-
-        <!-- FOOTER RUNNING TEXT -->
-        <footer class="h-10 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 flex items-center overflow-hidden shrink-0 no-print transition-colors">
-          <div class="w-full overflow-hidden">
-            <div class="animate-marquee text-xs font-medium text-slate-600 dark:text-slate-300 tracking-wide">
-              © 2026. SD IT AL-IQRA. Tirtamulya. Created by : Ari Tristian 🧟‍♂️
-            </div>
-          </div>
-        </footer>
-      </div>
-    </div>
-  </template>
-
-  <!-- ===================================================================== -->
-  <!-- LOGIKA JAVASCRIPT & BANK CP 2025/2026 (BKPDM 020/2026 & BSKAP 046)    -->
-  <!-- ===================================================================== -->
-  <script>
-    // Bank Capaian Pembelajaran (CP) Resmi per Tingkat Kelas (1–6)
-    // Merujuk pada Alur Perkembangan Kepka BKPDM No. 020/2026 & Kepka BSKAP No. 046/H/KR/2025
-    const CP_BANK_2026 = {
-      // 1. Pendidikan Agama Islam & Budi Pekerti (Kepka BKPDM No. 020 Tahun 2026)
-      MPL_PAI: {
-        1: 'mengenal huruf hijaiah dan harakatnya secara sederhana, melafalkan Surah al-Fatihah dan Surah al-Ikhlas, mengenal rukun iman dan rukun Islam, membiasakan perilaku jujur dan kasih sayang, mengenal tata cara bersuci (wudu), serta mengenal kisah keteladanan Nabi Muhammad saw. dan nabi terdahulu',
-        2: 'membaca dan membedakan huruf hijaiah berharakat serta bersambung, menghafal beberapa surah pendek pilihan, meyakini asmaulhusna pilihan, menerapkan akhlak terpuji kepada orang tua dan sesama, mempraktikkan gerakan dan bacaan salat fardu, serta menceritakan kisah keteladanan nabi dan rasul',
-        3: 'membaca dan menulis huruf hijaiah bersambung dengan tartil, menghafal surah pendek serta hadis kewajiban salat, meyakini sifat-sifat wajib Allah Swt., menerapkan perilaku hormat dan patuh kepada orang tua serta guru, menerapkan ketentuan salat berjamaah, serta menceritakan kisah Nabi Muhammad saw. masa kanak-kanak hingga remaja',
-        4: 'membaca dan menjelaskan kandungan surah pendek serta hadis tentang keragaman dan silaturahmi, meyakini iman kepada malaikat dan rasul-rasul Allah Swt., menerapkan akhlak santun dan menghargai teman, menerapkan salat sunah serta ketentuan tanda-tanda balig, serta menceritakan kisah Nabi Muhammad saw. periode Makkah',
-        5: 'membaca dan menjelaskan makna surah pendek serta hadis menyayangi anak yatim, meyakini asmaulhusna dan iman kepada hari akhir, menerapkan akhlak terpuji dalam berteman dan bermasyarakat, menerapkan ketentuan zakat fitrah, infak, sedekah, serta ibadah haji/kurban, dan menceritakan kisah Nabi Muhammad saw. periode Madinah',
-        6: 'membaca dan menjelaskan pesan pokok surah pendek serta hadis berbuat baik kepada sesama, meyakini iman kepada qada dan qadar, menerapkan sikap bertawakal, peduli lingkungan, dan toleransi, menerapkan ketentuan puasa, makanan dan minuman halal-haram, serta menceritakan kisah keteladanan Khulafaurasyidin'
-      },
-      // 2. Pendidikan Pancasila & Kewarganegaraan (Kepka BSKAP No. 046/H/KR/2025)
-      MPL_PPKN: {
-        1: 'mengenal bendera negara, lagu kebangsaan Indonesia Raya, simbol dan sila-sila Pancasila, mengenal identitas diri serta anggota keluarga, dan mematuhi aturan sederhana di lingkungan keluarga',
-        2: 'menerapkan nilai-nilai sila Pancasila di lingkungan keluarga dan sekolah, menghargai perbedaan identitas teman dalam bingkai Bhinneka Tunggal Ika, mematuhi aturan di sekolah, serta bekerja sama menjaga kebersihan lingkungan sekitar',
-        3: 'mengidentifikasi makna sila-sila Pancasila dan karakter para perumusnya, mengenal identitas diri, keluarga, serta teman sesuai budaya dan agamanya, serta melaksanakan aturan di lingkungan sekolah dan tempat tinggal',
-        4: 'menerapkan nilai-nilai Pancasila dalam kehidupan bermasyarakat, melaksanakan hak dan kewajiban sebagai warga sekolah dan warga negara secara seimbang, menghargai keragaman budaya daerah, serta bekerja sama dalam keberagaman di lingkungan wilayahnya',
-        5: 'memahami kronologi sejarah kelahiran Pancasila dan menerapkannya dalam kehidupan sehari-hari, mematuhi norma dan aturan di lingkungan masyarakat, serta melestarikan keberagaman budaya daerah dalam bingkai Bhinneka Tunggal Ika',
-        6: 'mengimplementasikan Pancasila sebagai satu kesatuan yang utuh, mempraktikkan musyawarah untuk mufakat dalam mengambil keputusan bersama, menghormati hak asasi dan keberagaman suku bangsa, serta bergotong royong menjaga persatuan NKRI'
-      },
-      // 3. Bahasa Indonesia (Kepka BSKAP No. 046/H/KR/2025)
-      MPL_BINDO: {
-        1: 'menyimak informasi sederhana dari teks aural tentang diri dan keluarga, melafalkan bunyi huruf serta membaca suku kata dan kata sederhana dengan fasih, berbicara santun, dan menulis permulaan huruf serta kata dengan benar',
-        2: 'memahami informasi dari teks aural maupun bacaan sederhana, membaca kalimat dan teks pendek dengan intonasi yang tepat, menceritakan pengalaman secara lisan dengan santun, serta menulis kalimat sederhana menggunakan huruf kapital dan tanda baca dasar',
-        3: 'memahami ide pokok dari teks aural dan bacaan cetak, membaca teks narasi dan deskripsi sederhana dengan lancar, menyampaikan pendapat dalam diskusi kelompok dengan santun, serta menulis paragraf sederhana menggunakan ejaan yang sesuai',
-        4: 'menganalisis ide pokok dan ide pendukung dari teks aural maupun bacaan cetak/elektronik, menyampaikan gagasan dengan pilihan kata dan intonasi yang tepat, serta menulis berbagai tipe teks (narasi, prosedur, dan deskripsi) sesuai kaidah kebahasaan',
-        5: 'memahami dan menyimpulkan informasi dari teks aural, visual, dan audiovisual, mempresentasikan gagasan secara runtut dan santun, serta menulis teks eksplanasi, laporan pengamatan, dan surat sederhana dengan kosakata yang tepat',
-        6: 'menganalisis dan mengevaluasi informasi dari berbagai sumber teks, berdiskusi dan mempresentasikan gagasan secara kritis dan persuasif, serta menulis berbagai tipe teks secara kreatif dengan memadukan makna denotatif dan konotatif'
-      },
-      // 4. Matematika (Kepka BSKAP No. 046/H/KR/2025)
-      MPL_MTK: {
-        1: 'membilang dan memahami bilangan cacah sampai 20, melakukan penjumlahan dan pengurangan bilangan sampai 20, membandingkan panjang dan berat benda secara langsung, mengenal bangun datar dan bangun ruang sederhana, serta mengelompokkan data benda',
-        2: 'memahami bilangan cacah sampai 100, melakukan penjumlahan dan pengurangan sampai 100, mengenal pecahan setengah dan seperempat, mengukur panjang dan berat dengan satuan tidak baku, mengenal ciri bangun datar, serta menyajikan data dengan piktogram',
-        3: 'memahami bilangan cacah sampai 1.000, melakukan operasi penjumlahan, pengurangan, perkalian, dan pembagian dasar, mengenal pecahan sederhana, mengukur panjang dan berat dengan satuan baku, serta membaca data pada tabel dan diagram gambar',
-        4: 'memahami bilangan cacah sampai 10.000, menyelesaikan operasi hitung campuran, menerapkan pecahan senilai dan desimal, mengukur keliling, luas, dan volume dengan satuan baku, mendeskripsikan ciri bangun datar, serta menginterpretasi diagram batang',
-        5: 'memahami bilangan cacah sampai 100.000 serta menentukan KPK dan FPB, melakukan operasi hitung pecahan dan desimal, menghitung keliling dan luas bangun datar serta sudut, mengkonstruksi jaring-jaring kubus dan balok, serta menganalisis data',
-        6: 'memahami bilangan cacah sampai 1.000.000 dan bilangan negatif, bernalar proporsional tentang rasio dan persentase, menghitung luas permukaan dan volume bangun ruang sederhana, membaca lokasi pada sistem berpetak, serta menganalisis data dan peluang'
-      },
-      // 5. Ilmu Pengetahuan Alam dan Sosial / IPAS (Fase B & C - Kepka BSKAP No. 046/H/KR/2025)
-      MPL_IPAS: {
-        1: '',
-        2: '',
-        3: 'memahami fungsi pancaindra, siklus hidup makhluk hidup dan pelestariannya, mengenal wujud zat dan perubahannya, mengidentifikasi sumber energi di sekitar, serta mengenal denah dan bentang alam lingkungan tempat tinggal',
-        4: 'memahami hubungan bentuk dan fungsi bagian tubuh tumbuhan/hewan, menganalisis gaya dan perubahan energi dalam kehidupan sehari-hari, mengenal keragaman budaya dan kearifan lokal daerah, serta memahami peran dan tanggung jawab di masyarakat',
-        5: 'menganalisis sistem pernapasan, pencernaan, dan peredaran darah manusia, memahami ekosistem dan jaring-jaring makanan, sifat gelombang bunyi dan cahaya, serta mengenal kondisi geografis dan sejarah perjuangan bangsa Indonesia',
-        6: 'menganalisis sistem gerak dan saraf manusia, memahami krisis energi dan pelestarian lingkungan, mengenal sistem tata surya dan rotasi-revolusi bumi, serta menganalisis kegiatan ekonomi dan peran Indonesia di lingkup global'
-      },
-      // 6. Bahasa Inggris (Kepka BSKAP No. 046/H/KR/2025)
-      MPL_BING: {
-        1: 'mengenal dan mengucapkan kosakata dasar bahasa Inggris terkait sapaan, perkenalan diri, angka 1–10, dan warna dengan percaya diri',
-        2: 'mengenal kosakata bahasa Inggris terkait anggota keluarga, benda di kelas, hewan, dan buah-buahan serta merespons instruksi sederhana secara lisan',
-        3: 'memahami dan merespons teks lisan maupun tulis pendek sederhana tentang aktivitas sehari-hari, waktu, dan makanan dengan pelafalan yang baik',
-        4: 'memahami dan mengomunikasikan gagasan sederhana dalam teks lisan, tulis pendek, dan multimodal terkait hobi, lingkungan sekolah, dan kegiatan sehari-hari sesuai konteks',
-        5: 'memahami informasi spesifik dari teks pendek maupun multimodal tentang pengalaman pribadi dan deskripsi orang/benda serta mengungkapkannya secara lisan dan tertulis',
-        6: 'memahami alur informasi secara keseluruhan dari beragam teks pendek maupun multimodal tentang topik kehidupan sehari-hari serta mengomunikasikan ide dan pengalaman secara runtut'
-      },
-      // 7. Seni Budaya dan Prakarya (Kepka BSKAP No. 046/H/KR/2025)
-      MPL_SBDP: {
-        1: 'mengenal unsur rupa (titik, garis, warna), bunyi ritmis, dan gerak sederhana melalui pengamatan lingkungan sekitar serta mengekspresikannya secara gembira',
-        2: 'membuat karya seni rupa dua/tiga dimensi sederhana, menyanyikan lagu anak dengan irama yang tepat, serta memperagakan gerak tari sederhana dengan penuh percaya diri',
-        3: 'memahami prinsip dasar komposisi warna, pola irama sederhana, dan gerak tari daerah dalam menciptakan karya seni rupa maupun pertunjukan sederhana',
-        4: 'menerapkan teknik dasar seni rupa, musik, tari, atau teater untuk menciptakan karya kreatif yang mencerminkan kepekaan estetis dan budaya lokal daerah',
-        5: 'mengeksplorasi berbagai teknik dan bahan alam maupun buatan dalam menciptakan karya seni rupa, musik, atau prakarya yang bernilai estetis dan fungsional',
-        6: 'menciptakan dan menyajikan karya seni budaya dan prakarya secara mandiri maupun kolaboratif dengan memadukan teknik, inovasi, dan nilai kearifan lokal'
-      },
-      // 8. Pendidikan Jasmani Olahraga dan Kesehatan / PJOK (Kepka BSKAP No. 046/H/KR/2025)
-      MPL_PJOK: {
-        1: 'mengenal dan mempraktikkan pola gerak dasar lokomotor (berjalan, berlari, melompat) dan non-lokomotor dalam permainan sederhana serta membiasakan kebersihan diri',
-        2: 'mempraktikkan kombinasi pola gerak dasar lokomotor, non-lokomotor, dan manipulatif dalam permainan sederhana serta membiasakan perilaku hidup bersih dan sehat',
-        3: 'menerapkan variasi pola gerak dasar dalam aktivitas permainan bola kecil/besar, senam lantai dasar, dan gerak berirama dengan menjunjung sportivitas',
-        4: 'menerapkan variasi dan kombinasi pola gerak dasar dalam berbagai permainan olahraga dan aktivitas kebugaran jasmani serta menjaga kebersihan alat reproduksi dan lingkungan',
-        5: 'mempraktikkan keterampilan gerak spesifik cabang olahraga permainan, atletik, dan senam ketangkasan serta memahami bahaya merokok dan zat adiktif bagi kesehatan',
-        6: 'mempraktikkan keterampilan gerak spesifik berbagai cabang olahraga, aktivitas kebugaran jasmani, serta menerapkan pola hidup sehat, keselamatan diri, dan pencegahan cedera secara mandiri'
-      },
-      // 9. Muatan Lokal: Bahasa Sunda
-      MPL_SUNDA: {
-        1: 'ngaregepkeun sareng ngucapkeun kecap katut kalimah basajan ngeunaan ngawanohkeun diri sareng anggota kulawarga nganggo basa Sunda anu sopan',
-        2: 'nyangkem eusi carita pondok sareng kakawihan barudak Sunda, sarta ngagunakeun tatakrama basa Sunda anu merenah dina paguneman sapopoe',
-        3: 'maca sareng maham eusi dongéng atanapi pupuh Sunda, sarta nyaritakeun pangalaman sapopoe nganggo pilihan kecap basa Sunda anu luyu',
-        4: 'maham rupa-rupa téks carita pondok jeung kawih Sunda, sarta nulis kalimah maké éjahan sareng tatakrama basa Sunda anu merenah',
-        5: 'nganalisis eusi téks biantara jeung carita rayat Sunda, sarta nyarita dina sawala kelompok maké undak-usuk basa Sunda anu sopan',
-        6: 'nganalisis rupa-rupa téks sastra jeung nonsastra basa Sunda, biantara kalayan percaya diri, sarta ngamumulé budaya jeung kearifan lokal Sunda'
-      },
-      // 10. Muatan Lokal Keagamaan: Al-Qur'an Hadits (Selaras BKPDM No. 020/2026)
-      MPL_QH: {
-        1: 'mengenal dan melafalkan huruf hijaiah berharakat fathah, kasrah, dan dammah secara tartil, menghafal Surah al-Fatihah dan Surah an-Nas sampai al-Lahab, serta mengenal hadis kebersihan',
-        2: 'membaca dan menulis huruf hijaiah bersambung dengan tartil, menghafal Surah an-Nasr sampai al-Ma\'un, serta memahami kandungan hadis tentang mencintai Al-Qur\'an dan berbakti kepada orang tua',
-        3: 'membaca dan menerapkan hukum bacaan mad thabi\'i dan qalqalah pada surah-surah pendek pilihan (Surah al-Quraisy sampai at-Takasur), serta menghafal hadis tentang salat berjamaah dan persaudaraan',
-        4: 'membaca, menulis, dan menerapkan hukum bacaan idzhar dan ikhfa pada surah-surah pendek pilihan (Surah al-Qari\'ah sampai az-Zalzalah), serta mengamalkan hadis tentang niat dan silaturahmi',
-        5: 'membaca Al-Qur\'an dengan menerapkan hukum bacaan idgham dan iqlab secara fasih, menghafal dan memahami kandungan Surah al-Bayyinah sampai at-Tin, serta mengamalkan hadis tentang menyayangi anak yatim',
-        6: 'membaca Al-Qur\'an dengan memperhatikan hukum tajwid secara tartil, menghafal dan memahami pesan pokok Surah al-Insyirah sampai ad-Duha, serta mengamalkan hadis tentang berbuat baik kepada sesama dan amal saleh'
-      },
-      // 11. Muatan Lokal Keagamaan: Akidah Akhlak (Selaras BKPDM No. 020/2026)
-      MPL_AA: {
-        1: 'mengenal dua kalimat syahadat, rukun iman, dan kalimat tayyibah (basmalah dan hamdalah), serta membiasakan akhlak terpuji jujur, bersih, dan santun kepada orang tua serta guru',
-        2: 'meyakini sifat-sifat Allah Swt. melalui asmaulhusna pilihan, mengenal tugas malaikat Allah, serta membiasakan sikap disiplin, rendah hati, dan menghindari sifat tercela dalam pergaulan',
-        3: 'meyakini asmaulhusna pilihan dan iman kepada kitab-kitab Allah Swt., serta membiasakan sikap bersyukur, pantang menyerah, dan menghormati orang tua serta guru',
-        4: 'meyakini iman kepada rasul-rasul Allah Swt. dan sifat-sifat mulianya, serta membiasakan sikap amanah, berbaik sangka, santun kepada teman, dan menjauhi sifat munafik',
-        5: 'meyakini asmaulhusna dan iman kepada hari akhir, serta menerapkan akhlak terpuji dermawan, tanggung jawab, dan menjaga adab bertamu serta berteman',
-        6: 'meyakini asmaulhusna serta iman kepada qada dan qadar Allah Swt., dan menerapkan akhlak berdoa, bertawakal, toleransi terhadap sesama, serta peduli terhadap hewan dan tumbuhan'
-      },
-      // 12. Muatan Lokal Keagamaan: Fikih (Selaras BKPDM No. 020/2026)
-      MPL_FIKIH: {
-        1: 'memahami rukun Islam, melafalkan syahadatain, mempraktikkan tata cara bersuci dari najis dan berwudu dengan tertib, serta mengenal bilangan rakaat salat fardu',
-        2: 'memahami dan mempraktikkan tata cara tayamum, gerakan dan bacaan salat fardu secara tertib, serta membiasakan zikir dan doa setelah salat fardu',
-        3: 'memahami dan menerapkan ketentuan salat sunah rawatib, ketentuan puasa Ramadan secara dasar, serta tata cara salat bagi orang yang sakit',
-        4: 'memahami dan menerapkan ketentuan azan dan ikamah, salat berjamaah, salat Jumat, salat sunah duha dan idain, serta memahami tanda-tanda balig dan kewajiban taklif',
-        5: 'memahami dan menerapkan ketentuan zakat fitrah, infak, sedekah, serta tata cara pelaksanaan kurban dan ibadah haji secara sederhana',
-        6: 'memahami dan menerapkan ketentuan puasa wajib dan puasa sunah, membedakan makanan dan minuman yang halal dan haram, serta memahami ketentuan jual beli dan pinjam-meminjam'
-      },
-      // 13. Muatan Lokal: Bahasa Arab
-      MPL_BARAB: {
-        1: 'menyimak, menirukan, dan melafalkan mufradat (kosakata) bahasa Arab sederhana tentang perkenalan diri, anggota keluarga, dan alat tulis sekolah',
-        2: 'melafalkan mufradat bahasa Arab terkait benda di rumah, nama-nama hari, dan warna serta menyalin huruf hijaiah terpisah maupun bersambung dengan benar',
-        3: 'memahami dan mempraktikkan hiwar (percakapan) sederhana terkait aktivitas di madrasah/sekolah dan nama-nama pelajaran dalam bahasa Arab',
-        4: 'memahami dan mempraktikkan hiwar sederhana terkait anggota tubuh, profesi, dan alamat rumah serta menulis kalimat pendek berbahasa Arab dengan struktur dasar',
-        5: 'memahami teks bacaan sederhana berbahasa Arab tentang kegiatan sehari-hari dan kegemaran serta melakukan tanya jawab lisan dengan pelafalan yang tepat',
-        6: 'memahami teks bacaan berbahasa Arab tentang waktu, wisata, dan lingkungan sekitar serta menyusun kalimat sederhana sesuai kaidah bahasa Arab dasar'
-      },
-      // 14. Muatan Lokal: Baca Tulis Al-Qur'an (BTQ)
-      MPL_BTQ: {
-        1: 'mengenal bentuk dan makhraj huruf hijaiah tunggal berharakat fathah, kasrah, dan dammah serta menyalin huruf hijaiah tunggal dengan rapi',
-        2: 'membedakan bacaan harakat tanwin, sukun, dan tasydid serta menyalin huruf hijaiah bersambung awal, tengah, dan akhir dengan tepat',
-        3: 'membaca rangkaian ayat Al-Qur\'an dengan makhraj yang jelas, menerapkan kaidah mad thabi\'i dan ghunnah, serta menulis kata dan kalimat Al-Qur\'an dengan benar',
-        4: 'membaca ayat-ayat Al-Qur\'an dengan menerapkan kaidah qalqalah dan hukum nun sukun/tanwin (idzhar, idgham, iqlab, ikhfa) secara tartil',
-        5: 'membaca Al-Qur\'an secara tartil dengan menerapkan hukum mim sukun (ikhfa syafawi, idgham mimi, idzhar syafawi) dan lam ta\'rif, serta menulis ayat Al-Qur\'an dengan rapi',
-        6: 'membaca Al-Qur\'an secara fasih dan tartil dengan menerapkan hukum mad far\'i serta tanda-tanda waqaf secara tepat, dan menyalin ayat Al-Qur\'an sesuai kaidah khat dasar'
-      },
-      // 15. Muatan Lokal: Tahfizh
-      MPL_TAHFIZH: {
-        1: 'menghafal surah-surah pendek pilihan dalam Juz 30 (Surah an-Nas sampai al-Fil) dengan pelafalan makhraj yang jelas dan adab tilawah yang baik',
-        2: 'menghafal dan menjaga kelancaran hafalan surah-surah pendek dalam Juz 30 (Surah al-Humazah sampai al-Zalzalah) dengan bacaan yang jelas dan tartil',
-        3: 'menghafal dan memurojaah surah-surah dalam Juz 30 (Surah al-Bayyinah sampai ad-Duha) secara tartil sesuai kaidah tajwid dasar',
-        4: 'menghafal dan menjaga kelancaran hafalan surah-surah dalam Juz 30 (Surah al-Lail sampai al-Buruj) dengan ketepatan makhraj dan hukum tajwid yang konsisten',
-        5: 'menghafal dan memurojaah surah-surah dalam Juz 30 (Surah al-Insyiqaq sampai an-Naba\') secara tartil, fasih, dan lancar',
-        6: 'menghafal dan menjaga kelancaran hafalan Juz 30 secara utuh serta surah-surah pilihan pada Juz 29 dengan bacaan yang tartil dan sesuai kaidah ilmu tajwid'
-      }
-    };
-
-    function eraporApp() {
-      return {
-        apiUrl: localStorage.getItem('erapor_gas_url') || '',
-        showApiInput: !localStorage.getItem('erapor_gas_url'),
-        user: JSON.parse(localStorage.getItem('erapor_user') || 'null'),
-        activeMenu: 'dashboard',
-        sidebarOpen: window.innerWidth >= 768,
-        darkMode: localStorage.getItem('erapor_theme') === 'dark',
-        digitalClock: '',
-        clockInterval: null,
-        loading: false,
-        loadingText: 'Memuat data...',
-        toast: { show: false, message: '', type: 'success' },
-
-        loginForm: { username: '', password: '' },
-
-        master: {
-          settings: {
-            nama_sekolah: 'SD IT AL-IQRA',
-            npsn: '20269988',
-            logo_sekolah: '',
-            tahun_ajaran: '2026/2027',
-            semester: '1 (Ganjil)',
-            tanggal_rapor: '19 Desember 2026',
-            tempat_cetak: 'Tirtamulya'
-          },
-          kelas: [],
-          mapel: [],
-          siswa: [],
-          plotting: [],
-          users: []
-        },
-
-        selectedKelas: '',
-        selectedMapel: '',
-        kelasData: { nilaiIntra: [], nilaiKokurikuler: [], dataWali: [] },
-        formNilaiIntra: [],
-        formKokurikuler: [],
-        formWali: [],
-        temaKokurikulerGlobal: 'Projek Penguatan Dimensi Profil Lulusan & Pembiasaan Karakter',
-
-        // 4 Dimensi Profil Lulusan yang Digunakan
-        dimensiList: [
-          { key: 'keimanan', label: '1. Keimanan & Ketakwaan thd Tuhan YME' },
-          { key: 'penalaran_kritis', label: '2. Penalaran Kritis' },
-          { key: 'kreativitas', label: '3. Kreativitas' },
-          { key: 'kemandirian', label: '4. Kemandirian' }
-        ],
-
-        // Daftar Ekstrakurikuler Pilihan
-        ekskulPilihanList: [
-          'Tahfizh',
-          'English Club',
-          'Calistung',
-          'Taekwondo',
-          'Futsal',
-          'Volly',
-          'Hadroh/Marawis'
-        ],
-
-        selectedSiswaPrint: '',
-        raporData: null,
-
-        async initApp() {
-          this.startClock();
-          if (this.user && this.apiUrl) {
-            await this.refreshMasterData();
-          }
-        },
-
-        toggleTheme() {
-          this.darkMode = !this.darkMode;
-          localStorage.setItem('erapor_theme', this.darkMode ? 'dark' : 'light');
-        },
-
-        getLogoUrl() {
-          const raw = String(this.master.settings.logo_sekolah || '').trim();
-          if (!raw) return '';
-          // Konversi otomatis link share Google Drive menjadi direct image link
-          const driveMatch = raw.match(/\/d\/([a-zA-Z0-9_-]+)/) || raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-          if (raw.includes('drive.google.com') && driveMatch && driveMatch[1]) {
-            return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
-          }
-          return raw;
-        },
-
-        selectMenu(menu) {
-          this.activeMenu = menu;
-          if (window.innerWidth < 768) {
-            this.sidebarOpen = false;
-          }
-        },
-
-        startClock() {
-          const update = () => {
-            const now = new Date();
-            const jam = String(now.getHours()).padStart(2, '0');
-            const menit = String(now.getMinutes()).padStart(2, '0');
-            const detik = String(now.getSeconds()).padStart(2, '0');
-            this.digitalClock = `${jam}:${menit}:${detik} WIB`;
-          };
-          update();
-          if (this.clockInterval) clearInterval(this.clockInterval);
-          this.clockInterval = setInterval(update, 1000);
-        },
-
-        formatTanggalIndo(rawVal) {
-          if (!rawVal) return '-';
-          const bulanIndo = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-          ];
-
-          // Jika sudah berformat "19 Desember 2026"
-          const str = String(rawVal).trim();
-          if (/^\d{1,2}\s+[A-Za-z]+\s+\d{4}$/.test(str)) {
-            return str;
-          }
-
-          // Jika berformat DD/MM/YYYY atau DD-MM-YYYY
-          const dmyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-          if (dmyMatch) {
-            const d = parseInt(dmyMatch[1], 10);
-            const m = parseInt(dmyMatch[2], 10) - 1;
-            const y = dmyMatch[3];
-            if (bulanIndo[m]) return `${d} ${bulanIndo[m]} ${y}`;
-          }
-
-          // Jika berformat ISO Date (contoh dari Google Sheets: 2026-12-18T17:00:00.000Z atau YYYY-MM-DD)
-          const parsed = new Date(str);
-          if (!isNaN(parsed.getTime())) {
-            const d = parsed.getDate();
-            const m = bulanIndo[parsed.getMonth()];
-            const y = parsed.getFullYear();
-            return `${d} ${m} ${y}`;
-          }
-
-          return str;
-        },
-
-        notify(message, type = 'success') {
-          this.toast = { show: true, message, type };
-          setTimeout(() => { this.toast.show = false; }, 3500);
-        },
-
-        async callApi(action, payload = {}) {
-          if (!this.apiUrl) throw new Error('URL Web App Google Apps Script belum diisi!');
-          const response = await fetch(this.apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action, payload })
-          });
-          const resJson = await response.json();
-          if (resJson.status !== 'success') throw new Error(resJson.message || 'Kesalahan server');
-          return resJson;
-        },
-
-        async login() {
-          if (!this.apiUrl) {
-            this.showApiInput = true;
-            return this.notify('Silakan masukkan URL Web App GAS terlebih dahulu.', 'error');
-          }
-          this.loading = true;
-          this.loadingText = 'Bismillah, cek dulu ya...';
-          try {
-            localStorage.setItem('erapor_gas_url', this.apiUrl.trim());
-            const res = await this.callApi('LOGIN', this.loginForm);
-            this.user = res.user;
-            localStorage.setItem('erapor_user', JSON.stringify(res.user));
-            await this.refreshMasterData();
-            this.notify('Yey, berhasil! Selamat datang, ' + res.user.nama_lengkap);
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        logout() {
-          this.user = null;
-          localStorage.removeItem('erapor_user');
-          this.activeMenu = 'dashboard';
-        },
-
-        async refreshMasterData() {
-          this.loading = true;
-          this.loadingText = 'Ngambil Data dulu sebentar... Sabar...';
-          try {
-            const res = await this.callApi('GET_INIT_DATA');
-            this.master = {
-              ...this.master,
-              ...res.data,
-              settings: { ...this.master.settings, ...(res.data.settings || {}) }
-            };
-
-            const klsList = this.allowedKelas();
-            if (klsList.length > 0) {
-              const waliKlsId = String(this.user.kelas_wali || '').trim();
-              if (this.user.role === 'wali_kelas' && waliKlsId) {
-                this.selectedKelas = waliKlsId;
-              } else if (!this.selectedKelas || !klsList.some(k => String(k.id_kelas).trim() === String(this.selectedKelas).trim())) {
-                this.selectedKelas = String(klsList[0].id_kelas).trim();
-              }
-              await this.onKelasChange();
-            }
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        formatRole(role) {
-          const map = {
-            admin: 'Administrator Sekolah',
-            wali_kelas: 'Wali Kelas',
-            guru_mapel: 'Guru Mata Pelajaran'
-          };
-          return map[role] || role;
-        },
-
-        // Filter Kelas Otomatis sesuai Wali Kelas atau Plotting Guru Tahfizh (1A-3B / 4A-6B)
-        allowedKelas() {
-          if (this.user.role === 'admin') return this.master.kelas;
-          if (this.user.role === 'wali_kelas') {
-            const uKelas = String(this.user.kelas_wali || '').trim();
-            const uId = String(this.user.id_user || '').trim();
-            return this.master.kelas.filter(k =>
-              String(k.id_kelas).trim() === uKelas || String(k.id_wali_kelas).trim() === uId
-            );
-          }
-          const uId = String(this.user.id_user || '').trim();
-          const plotKelasIds = this.master.plotting
-            .filter(p => String(p.id_guru).trim() === uId)
-            .map(p => String(p.id_kelas).trim());
-          return this.master.kelas.filter(k => plotKelasIds.includes(String(k.id_kelas).trim()));
-        },
-
-        allowedSiswaCount() {
-          const klsIds = this.allowedKelas().map(k => String(k.id_kelas).trim());
-          return this.master.siswa.filter(s => klsIds.includes(String(s.id_kelas).trim())).length;
-        },
-
-        // Filter Mata Pelajaran sesuai Fase Kelas (Fase A tanpa IPAS) dan Role Guru
-        allowedMapel() {
-          const selKls = String(this.selectedKelas || '').trim();
-          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === selKls);
-          const fase = kls ? String(kls.fase).trim() : '';
-
-          let list = this.master.mapel.filter(m => {
-            if (!fase) return true;
-            const berlaku = String(m.fase_berlaku || 'A,B,C').split(',').map(x => x.trim());
-            return berlaku.includes(fase);
-          });
-
-          if (this.user.role === 'guru_mapel') {
-            const uId = String(this.user.id_user || '').trim();
-            const plotMapelIds = this.master.plotting
-              .filter(p => String(p.id_guru).trim() === uId && (!selKls || String(p.id_kelas).trim() === selKls))
-              .map(p => String(p.id_mapel).trim());
-            list = list.filter(m => plotMapelIds.includes(String(m.id_mapel).trim()));
-          }
-
-          return list.sort((a, b) => Number(a.urutan_cetak) - Number(b.urutan_cetak));
-        },
-
-        siswaInSelectedKelas() {
-          const selKls = String(this.selectedKelas || '').trim();
-          return this.master.siswa.filter(s => String(s.id_kelas).trim() === selKls);
-        },
-
-        async onKelasChange() {
-          const mapels = this.allowedMapel();
-          if (mapels.length > 0 && !mapels.some(m => String(m.id_mapel).trim() === String(this.selectedMapel).trim())) {
-            this.selectedMapel = String(mapels[0].id_mapel).trim();
-          }
-          await this.loadNilaiKelas();
-        },
-
-        async loadNilaiKelas() {
-          if (!this.selectedKelas) return;
-          this.loading = true;
-          this.loadingText = 'Memuat daftar peserta didik & nilai...';
-          try {
-            const res = await this.callApi('GET_NILAI_KELAS', {
-              tahun_ajaran: this.master.settings.tahun_ajaran,
-              semester: this.master.settings.semester,
-              id_kelas: this.selectedKelas
-            });
-            this.kelasData = res.data;
-            this.prepareFormNilaiIntra();
-            this.prepareFormKokurikuler();
-            this.prepareFormWali();
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        prepareFormNilaiIntra() {
-          const siswaList = this.siswaInSelectedKelas();
-          const selMpl = String(this.selectedMapel || '').trim();
-          this.formNilaiIntra = siswaList.map(s => {
-            const sId = String(s.id_siswa).trim();
-            const ex = this.kelasData.nilaiIntra.find(n => String(n.id_siswa).trim() === sId && String(n.id_mapel).trim() === selMpl);
-            return {
-              id_nilai: ex?.id_nilai || '',
-              id_siswa: sId,
-              nis: s.nis,
-              nisn: s.nisn,
-              nama_siswa: s.nama_siswa,
-              nilai_akhir: ex?.nilai_akhir !== undefined ? ex.nilai_akhir : '',
-              predikat: ex?.predikat || '',
-              deskripsi_otomatis: ex?.deskripsi_otomatis || ''
-            };
-          });
-        },
-
-        // Konversi Nilai -> Predikat Otomatis & Deskripsi CP 2025/2026 Spesifik per Tingkat Kelas (1–6)
-        updatePredikatDanDeskripsi(row) {
-          const val = Number(row.nilai_akhir);
-          if (row.nilai_akhir === '' || row.nilai_akhir === null || isNaN(val)) {
-            row.predikat = '';
-            row.deskripsi_otomatis = '';
-            return;
-          }
-
-          let predikat = 'D';
-          if (val >= 90) predikat = 'A';
-          else if (val >= 80) predikat = 'B';
-          else if (val >= 70) predikat = 'C';
-          row.predikat = predikat;
-
-          const selKls = String(this.selectedKelas || '').trim();
-          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === selKls);
-
-          // Ambil tingkat kelas (1-6) dari kolom tingkat atau dari karakter angka pertama nama_kelas (misal: "1A" -> 1)
-          let tingkat = kls ? parseInt(String(kls.tingkat || '').trim(), 10) : NaN;
-          if (isNaN(tingkat) && kls && kls.nama_kelas) {
-            const matchAngka = String(kls.nama_kelas).match(/\d+/);
-            if (matchAngka) tingkat = parseInt(matchAngka[0], 10);
-          }
-          if (isNaN(tingkat) || tingkat < 1 || tingkat > 6) {
-            const faseFallback = kls ? String(kls.fase).trim() : 'A';
-            tingkat = faseFallback === 'A' ? 1 : (faseFallback === 'B' ? 3 : 5);
-          }
-
-          const cpObj = CP_BANK_2026[String(this.selectedMapel).trim()];
-          const cpText = (cpObj && cpObj[tingkat]) ? cpObj[tingkat] : `memahami dan menerapkan materi pembelajaran kelas ${tingkat} sesuai capaian pembelajaran`;
-
-          const templateNarasi = {
-            A: `Menunjukkan penguasaan yang sangat baik dan mendalam dalam ${cpText}.`,
-            B: `Menunjukkan penguasaan yang baik dalam ${cpText}.`,
-            C: `Cukup menguasai dalam ${cpText}, namun perlu pembiasaan dan latihan lebih lanjut agar semakin optimal.`,
-            D: `Perlu bimbingan dan pendampingan khusus dalam ${cpText}.`
-          };
-
-          row.deskripsi_otomatis = templateNarasi[predikat];
-        },
-
-        getLabelPredikat(p) {
-          const labels = { A: 'Sangat Baik', B: 'Baik', C: 'Cukup', D: 'Perlu Bimbingan' };
-          return labels[p] || '';
-        },
-
-        async saveNilaiIntraBatch() {
-          this.loading = true;
-          this.loadingText = 'Menyimpan nilai mata pelajaran...';
-          try {
-            const validRecords = this.formNilaiIntra.filter(r => r.nilai_akhir !== '');
-            await this.callApi('SAVE_NILAI_BATCH', {
-              tahun_ajaran: this.master.settings.tahun_ajaran,
-              semester: this.master.settings.semester,
-              id_mapel: this.selectedMapel,
-              records: validRecords
-            });
-            await this.loadNilaiKelas();
-            this.notify('Nilai dan deskripsi otomatis berhasil disimpan!');
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        // KOKURIKULER (4 DIMENSI PROFIL LULUSAN)
-        prepareFormKokurikuler() {
-          const siswaList = this.siswaInSelectedKelas();
-          this.formKokurikuler = siswaList.map(s => {
-            const sId = String(s.id_siswa).trim();
-            const ex = this.kelasData.nilaiKokurikuler.find(k => String(k.id_siswa).trim() === sId);
-            let dimObj = {};
-            this.dimensiList.forEach(d => { dimObj[d.key] = 'Berkembang Sesuai Harapan (BSH)'; });
-            if (ex?.dimensi_json) {
-              try {
-                const parsed = JSON.parse(ex.dimensi_json);
-                this.dimensiList.forEach(d => {
-                  if (parsed[d.key]) dimObj[d.key] = parsed[d.key];
-                });
-              } catch (e) {}
-            }
-            if (ex?.tema_projek) this.temaKokurikulerGlobal = ex.tema_projek;
-
-            const row = {
-              id_kokurikuler: ex?.id_kokurikuler || '',
-              id_siswa: sId,
-              nis: s.nis,
-              nama_siswa: s.nama_siswa,
-              tema_projek: ex?.tema_projek || this.temaKokurikulerGlobal,
-              dimensi: dimObj,
-              catatan_kokurikuler: ex?.catatan_kokurikuler || ''
-            };
-            if (!row.catatan_kokurikuler) this.generateCatatanKokurikuler(row);
-            return row;
-          });
-        },
-
-        syncTemaKokurikuler() {
-          this.formKokurikuler.forEach(r => { r.tema_projek = this.temaKokurikulerGlobal; });
-        },
-
-        generateCatatanKokurikuler(row) {
-          const sbList = [];
-          const bshList = [];
-          const perluBimbinganList = [];
-
-          const mapDisiplinIlmu = {
-            keimanan: 'nilai-nilai keagamaan dan pembiasaan ibadah (PAI, Al-Qur\'an Hadits, Akidah Akhlak, Fikih, BTQ, dan Tahfizh)',
-            penalaran_kritis: 'pemecahan masalah dan literasi-numerasi (Matematika, IPAS, dan Bahasa Indonesia)',
-            kreativitas: 'ekspresi karya dan komunikasi budaya (SBdP, Bahasa Sunda, dan Bahasa Inggris)',
-            kemandirian: 'tanggung jawab, kedisiplinan, dan ketangguhan diri (Pendidikan Pancasila, PJOK, dan Bahasa Arab)'
-          };
-
-          const kekuatanDisiplin = [];
-
-          this.dimensiList.forEach(d => {
-            const cleanName = d.label.replace(/^\d+\.\s*/, '');
-            const status = row.dimensi[d.key];
-            if (status === 'Sangat Berkembang (SB)') {
-              sbList.push(cleanName);
-              kekuatanDisiplin.push(mapDisiplinIlmu[d.key]);
-            } else if (status === 'Berkembang Sesuai Harapan (BSH)') {
-              bshList.push(cleanName);
-              kekuatanDisiplin.push(mapDisiplinIlmu[d.key]);
-            } else {
-              perluBimbinganList.push(cleanName);
-            }
-          });
-
-          const temaAktif = (row.tema_projek || this.temaKokurikulerGlobal || 'Projek Penguatan Dimensi Profil Lulusan').trim();
-          let kalimat = [];
-
-          if (sbList.length > 0) {
-            kalimat.push(`Dalam kegiatan kokurikuler "${temaAktif}", murid menunjukkan capaian Sangat Berkembang pada dimensi ${sbList.join(', ')}.`);
-          }
-          if (bshList.length > 0) {
-            kalimat.push(`Murid menunjukkan capaian Berkembang Sesuai Harapan pada dimensi ${bshList.join(', ')}.`);
-          }
-          if (kekuatanDisiplin.length > 0) {
-            kalimat.push(`Murid mampu mengintegrasikan kompetensi lintas disiplin ilmu secara nyata, khususnya dalam ${kekuatanDisiplin.slice(0, 2).join(' serta ')}.`);
-          }
-          if (perluBimbinganList.length > 0) {
-            kalimat.push(`Perlu pendampingan dan pembiasaan berkelanjutan pada dimensi ${perluBimbinganList.join(', ')}.`);
-          }
-
-          row.catatan_kokurikuler = kalimat.join(' ');
-        },
-
-        applyRekomendasiKokurikulerLintasDisiplin() {
-          if (!this.selectedKelas || this.formKokurikuler.length === 0) return;
-
-          const rumpunMapel = {
-            keimanan: ['MPL_PAI', 'MPL_QH', 'MPL_AA', 'MPL_FIKIH', 'MPL_BTQ', 'MPL_TAHFIZH'],
-            penalaran_kritis: ['MPL_MTK', 'MPL_IPAS', 'MPL_BINDO'],
-            kreativitas: ['MPL_SBDP', 'MPL_SUNDA', 'MPL_BING'],
-            kemandirian: ['MPL_PJOK', 'MPL_PPKN', 'MPL_BARAB']
-          };
-
-          const konversiPredikatDimensi = (rataRata) => {
-            if (rataRata === null) return 'Berkembang Sesuai Harapan (BSH)';
-            if (rataRata >= 90) return 'Sangat Berkembang (SB)';
-            if (rataRata >= 80) return 'Berkembang Sesuai Harapan (BSH)';
-            if (rataRata >= 70) return 'Sedang Berkembang (SDB)';
-            return 'Mulai Berkembang (MB)';
-          };
-
-          let siswaTerproses = 0;
-
-          this.formKokurikuler.forEach(row => {
-            const sId = String(row.id_siswa).trim();
-            const nilaiSiswa = this.kelasData.nilaiIntra.filter(n => String(n.id_siswa).trim() === sId);
-
-            if (nilaiSiswa.length > 0) siswaTerproses++;
-
-            Object.keys(rumpunMapel).forEach(dimKey => {
-              const targetIds = rumpunMapel[dimKey];
-              const skorList = nilaiSiswa
-                .filter(n => targetIds.includes(String(n.id_mapel).trim()) && n.nilai_akhir !== '' && !isNaN(Number(n.nilai_akhir)))
-                .map(n => Number(n.nilai_akhir));
-
-              const avg = skorList.length > 0
-                ? skorList.reduce((acc, v) => acc + v, 0) / skorList.length
-                : null;
-
-              row.dimensi[dimKey] = konversiPredikatDimensi(avg);
-            });
-
-            this.generateCatatanKokurikuler(row);
-          });
-
-          if (siswaTerproses === 0) {
-            this.notify('Belum ada nilai Intra/Mulok yang tersimpan di kelas ini. Default BSH diterapkan.', 'error');
-          } else {
-            this.notify(`Rekomendasi kokurikuler lintas disiplin berhasil disusun untuk ${siswaTerproses} murid!`);
-          }
-        },
-
-        async saveKokurikulerBatch() {
-          this.syncTemaKokurikuler();
-          this.loading = true;
-          this.loadingText = 'Menyimpan penilaian Kokurikuler...';
-          try {
-            await this.callApi('SAVE_KOKURIKULER_BATCH', {
-              tahun_ajaran: this.master.settings.tahun_ajaran,
-              semester: this.master.settings.semester,
-              records: this.formKokurikuler
-            });
-            await this.loadNilaiKelas();
-            this.notify('Penilaian Kokurikuler (Dimensi Profil Lulusan) berhasil disimpan!');
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        // EKSTRAKURIKULER & WALI KELAS
-        hitungPeringkatKelas() {
-          const siswaList = this.siswaInSelectedKelas();
-          const rekap = siswaList.map(s => {
-            const sId = String(s.id_siswa).trim();
-            const nilaiSiswa = this.kelasData.nilaiIntra.filter(
-              n => String(n.id_siswa).trim() === sId && n.nilai_akhir !== '' && !isNaN(Number(n.nilai_akhir))
-            );
-            const total = nilaiSiswa.reduce((sum, n) => sum + Number(n.nilai_akhir), 0);
-            const rata = nilaiSiswa.length > 0 ? total / nilaiSiswa.length : 0;
-            return {
-              id_siswa: sId,
-              total,
-              rata,
-              jumlahMapel: nilaiSiswa.length
-            };
-          });
-
-          // Urutkan berdasarkan total nilai tertinggi, lalu rata-rata tertinggi
-          const sorted = [...rekap].sort((a, b) => b.total - a.total || b.rata - a.rata);
-          const rankMap = {};
-          sorted.forEach((item, idx) => {
-            rankMap[item.id_siswa] = {
-              peringkat: item.jumlahMapel > 0 ? idx + 1 : null,
-              total: item.total,
-              rata: item.rata,
-              totalSiswa: siswaList.length
-            };
-          });
-          return rankMap;
-        },
-
-        generateCatatanWaliRow(row) {
-          const totalSiswa = this.formWali.length || 1;
-          const rank = row.peringkat;
-          const rata = row.rataNilai || 0;
-          const sakit = Number(row.sakit) || 0;
-          const izin = Number(row.izin) || 0;
-          const alpa = Number(row.alpa) || 0;
-          const totalAbsen = sakit + izin + alpa;
-
-          // 1. Narasi berdasarkan peringkat & capaian akademik
-          let kalimatAkademik = '';
-          if (rank === 1) {
-            kalimatAkademik = `Alhamdulillah, ananda ${row.nama_siswa} meraih prestasi gemilang dengan menempati peringkat ke-1 dari ${totalSiswa} murid di kelas. Pertahankan semangat belajar, kerendahan hati, dan jadilah teladan kebaikan bagi teman-teman.`;
-          } else if (rank === 2 || rank === 3) {
-            kalimatAkademik = `Selamat atas pencapaian luar biasa ananda ${row.nama_siswa} yang berhasil meraih peringkat ke-${rank} dari ${totalSiswa} murid di kelas. Terus pertahankan konsistensi belajar dan tingkatkan potensi diri di semester berikutnya.`;
-          } else if (rank && rank <= 10) {
-            kalimatAkademik = `Ananda ${row.nama_siswa} menunjukkan perkembangan belajar yang sangat baik dengan menempati peringkat ke-${rank} dari ${totalSiswa} murid. Terus tingkatkan ketekunan dan fokus belajar agar dapat meraih hasil yang lebih optimal.`;
-          } else if (rank) {
-            kalimatAkademik = `Ananda ${row.nama_siswa} menunjukkan perkembangan belajar yang positif (peringkat ke-${rank} dari ${totalSiswa} murid). Terus tingkatkan motivasi belajar, kedisiplinan mengulang pelajaran di rumah, dan keberanian bertanya di kelas.`;
-          } else {
-            kalimatAkademik = `Ananda ${row.nama_siswa} menunjukkan semangat belajar dan perkembangan karakter yang baik selama semester ini.`;
-          }
-
-          // 2. Narasi berdasarkan kehadiran (Sakit, Izin, Alpa)
-          let kalimatKehadiran = '';
-          if (totalAbsen === 0) {
-            kalimatKehadiran = ' Tingkat kehadiran ananda sangat membanggakan (hadir 100% tanpa absen), mencerminkan kedisiplinan dan tanggung jawab yang tinggi.';
-          } else if (alpa === 0 && sakit > 0 && izin === 0) {
-            kalimatKehadiran = ` Ketidakhadiran ananda selama ${sakit} hari disebabkan oleh faktor kesehatan (sakit); semoga Allah Swt. senantiasa menganugerahkan kesehatan dan kekuatan agar ananda dapat mengikuti pembelajaran dengan optimal.`;
-          } else if (alpa === 0) {
-            kalimatKehadiran = ` Kehadiran ananda tergolong baik dengan keterangan sakit ${sakit} hari dan izin ${izin} hari.`;
-          } else if (alpa <= 2) {
-            kalimatKehadiran = ` Diharapkan ananda dan orang tua dapat lebih memperhatikan kedisiplinan kehadiran di sekolah (tercatat ${alpa} hari tanpa keterangan) agar tidak tertinggal materi pembelajaran.`;
-          } else {
-            kalimatKehadiran = ` Perlu perhatian dan kerja sama lebih erat antara orang tua dan sekolah terkait kedisiplinan kehadiran ananda (tercatat ${alpa} hari tanpa keterangan) demi kelancaran proses belajar ananda.`;
-          }
-
-          row.catatan_wali = (kalimatAkademik + kalimatKehadiran).trim();
-        },
-
-        generateSemuaCatatanWali() {
-          if (!this.selectedKelas || this.formWali.length === 0) return;
-          const rankMap = this.hitungPeringkatKelas();
-          let adaNilai = false;
-
-          this.formWali.forEach(row => {
-            const info = rankMap[row.id_siswa];
-            if (info && info.peringkat) {
-              row.peringkat = info.peringkat;
-              row.rataNilai = info.rata;
-              adaNilai = true;
-            }
-            this.generateCatatanWaliRow(row);
-          });
-
-          if (!adaNilai) {
-            this.notify('Catatan berdasarkan kehadiran dibuat (nilai mapel belum diinput sehingga peringkat belum tersedia).', 'error');
-          } else {
-            this.notify('Catatan wali kelas otomatis berdasarkan peringkat & kehadiran berhasil dibuat!');
-          }
-        },
-
-        prepareFormWali() {
-          const siswaList = this.siswaInSelectedKelas();
-          const rankMap = this.hitungPeringkatKelas();
-          this.formWali = siswaList.map(s => {
-            const sId = String(s.id_siswa).trim();
-            const ex = this.kelasData.dataWali.find(w => String(w.id_siswa).trim() === sId);
-            const rankInfo = rankMap[sId] || { peringkat: null, rata: 0 };
-            let pilihan = [];
-            let prestasiPramuka = '';
-            if (ex?.ekskul_pilihan_json) {
-              try {
-                const parsed = JSON.parse(ex.ekskul_pilihan_json);
-                if (Array.isArray(parsed)) {
-                  const pramukaMeta = parsed.find(item => item.is_wajib_pramuka);
-                  if (pramukaMeta) prestasiPramuka = pramukaMeta.prestasi || '';
-                  pilihan = parsed.filter(item => !item.is_wajib_pramuka);
-                }
-              } catch (e) { pilihan = []; }
-            }
-            const row = {
-              id_catatan: ex?.id_catatan || '',
-              id_siswa: sId,
-              nama_siswa: s.nama_siswa,
-              peringkat: rankInfo.peringkat,
-              rataNilai: rankInfo.rata,
-              sakit: ex?.sakit || 0,
-              izin: ex?.izin || 0,
-              alpa: ex?.alpa || 0,
-              ekskul_wajib: ex?.ekskul_wajib || 'Baik',
-              prestasi_pramuka: prestasiPramuka,
-              ekskul_pilihan: pilihan,
-              catatan_wali: ex?.catatan_wali || '',
-              status_naik: ex?.status_naik || '-'
-            };
-            if (!row.catatan_wali) {
-              this.generateCatatanWaliRow(row);
-            }
-            return row;
-          });
-        },
-
-        async saveWaliBatch() {
-          this.loading = true;
-          this.loadingText = 'Menyimpan data Ekstrakurikuler & Wali Kelas...';
-          try {
-            const payloadRecords = this.formWali.map(r => {
-              const combinedPilihan = [...(r.ekskul_pilihan || [])];
-              if (r.prestasi_pramuka && String(r.prestasi_pramuka).trim() !== '') {
-                combinedPilihan.unshift({
-                  nama: 'Pramuka (Ekstrakurikuler Wajib)',
-                  predikat: r.ekskul_wajib || 'Baik',
-                  prestasi: String(r.prestasi_pramuka).trim(),
-                  is_wajib_pramuka: true
-                });
-              }
-              return {
-                ...r,
-                ekskul_pilihan: combinedPilihan
-              };
-            });
-
-            await this.callApi('SAVE_WALI_BATCH', {
-              tahun_ajaran: this.master.settings.tahun_ajaran,
-              semester: this.master.settings.semester,
-              records: payloadRecords
-            });
-            await this.loadNilaiKelas();
-            this.notify('Data Ekstrakurikuler & Wali Kelas berhasil disimpan!');
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        // CETAK RAPOR
-        async loadRaporSiswa() {
-          if (!this.selectedSiswaPrint) {
-            this.raporData = null;
-            return;
-          }
-          this.loading = true;
-          this.loadingText = 'Menyusun lembar rapor...';
-          try {
-            const res = await this.callApi('GET_RAPOR_SISWA', {
-              tahun_ajaran: this.master.settings.tahun_ajaran,
-              semester: this.master.settings.semester,
-              id_siswa: this.selectedSiswaPrint
-            });
-            this.raporData = res.data;
-          } catch (err) {
-            this.notify(err.message, 'error');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-        getKelasOnlyName(id) {
-          const cleanId = String(id || '').trim();
-          return this.master.kelas.find(x => String(x.id_kelas).trim() === cleanId)?.nama_kelas || id;
-        },
-
-        getKelasFase(id) {
-          const cleanId = String(id || '').trim();
-          return this.master.kelas.find(x => String(x.id_kelas).trim() === cleanId)?.fase || '-';
-        },
-
-        getWaliKelasName(idKelas) {
-          const cleanId = String(idKelas || '').trim();
-          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === cleanId);
-          const wali = this.master.users.find(u => String(u.id_user).trim() === String(kls?.id_wali_kelas || '').trim());
-          return wali ? wali.nama_lengkap : this.user.nama_lengkap;
-        },
-
-        getWaliKelasNip(idKelas) {
-          const cleanId = String(idKelas || '').trim();
-          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === cleanId);
-          const wali = this.master.users.find(u => String(u.id_user).trim() === String(kls?.id_wali_kelas || '').trim());
-          return wali?.nip_nik || this.user.nip_nik || '-';
-        },
-
-        getRaporMapelByGroup(groupName) {
-          const fase = this.getKelasFase(this.raporData?.siswa?.id_kelas);
-          return this.master.mapel
-            .filter(m => {
-              const berlaku = String(m.fase_berlaku || 'A,B,C').split(',').map(x => x.trim());
-              return String(m.kelompok).trim() === groupName && berlaku.includes(fase);
-            })
-            .sort((a, b) => Number(a.urutan_cetak) - Number(b.urutan_cetak));
-        },
-
-        getNilaiSiswaMapel(idMapel) {
-          const cleanMpl = String(idMapel || '').trim();
-          return this.raporData?.nilaiIntra.find(n => String(n.id_mapel).trim() === cleanMpl);
-        },
-
-        getRaporTotalNilai() {
-          if (!this.raporData) return '-';
-          const mapelTampil = [
-            ...this.getRaporMapelByGroup('Intrakurikuler'),
-            ...this.getRaporMapelByGroup('Mulok')
-          ];
-          let total = 0;
-          let adaNilai = false;
-          mapelTampil.forEach(m => {
-            const raw = this.getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir;
-            const num = Number(raw);
-            if (raw !== undefined && raw !== '' && !isNaN(num)) {
-              total += num;
-              adaNilai = true;
-            }
-          });
-          return adaNilai ? total : '-';
-        },
-
-        getRaporPrestasiEkskulList() {
-          const wali = this.raporData?.dataWali;
-          const list = [];
-          if (wali?.ekskul_pilihan_json) {
-            try {
-              const arr = JSON.parse(wali.ekskul_pilihan_json);
-              arr.forEach(item => {
-                if (item.nama && item.prestasi && String(item.prestasi).trim() !== '') {
-                  list.push({
-                    nama: item.nama,
-                    prestasi: String(item.prestasi).trim()
-                  });
-                }
-              });
-            } catch (e) {}
-          }
-          return list;
-        },
-
-        getRaporFooterLeft() {
-          const rawSmt = String(this.master.settings.semester || 'Ganjil');
-          let smtLabel = rawSmt;
-          if (rawSmt.toLowerCase().includes('ganjil') || rawSmt.startsWith('1')) {
-            smtLabel = 'Ganjil';
-          } else if (rawSmt.toLowerCase().includes('genap') || rawSmt.startsWith('2')) {
-            smtLabel = 'Genap';
-          }
-          const ta = this.master.settings.tahun_ajaran || '2026/2027';
-          return `Rapor Semester ${smtLabel} TA. ${ta}`;
-        },
-
-        getRaporEkskulList() {
-          const wali = this.raporData?.dataWali;
-          const list = [
-            {
-              nama: 'Pramuka (Ekstrakurikuler Wajib)',
-              predikat: wali?.ekskul_wajib || 'Baik',
-              keterangan: 'Aktif mengikuti kegiatan kepramukaan dan menunjukkan sikap disiplin serta gotong royong.'
-            }
-          ];
-          if (wali?.ekskul_pilihan_json) {
-            try {
-              const arr = JSON.parse(wali.ekskul_pilihan_json);
-              arr.forEach(item => {
-                if (item.nama && !item.is_wajib_pramuka) {
-                  list.push({
-                    nama: item.nama,
-                    predikat: item.predikat || 'Baik',
-                    keterangan: `Menunjukkan partisipasi dan perkembangan keterampilan yang ${String(item.predikat || 'baik').toLowerCase()} dalam kegiatan ${item.nama}.`
-                  });
-                }
-              });
-            } catch (e) {}
-          }
-          return list;
-        }
-      };
-    }
-  </script>
-</body>
-</html>
+            <!-- BAGIAN 2: PROGRES WALI KELAS (PER ROMBEL 1A - 6B) -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+              <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-users-rectangle text-blue-700 dark:text-blue-400"></i> Progres Penginputan Wali Kelas (Per Rombel)
+                </h3>
+                <span class="text-xs text-slate-500 dark:text-slate-400" x-text="adminStats.kelasStats.length + ' Rombongan Belajar'"></span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                  <thead class="bg-blue-900 text-white text-xs uppercase">
+                    <tr>
+                      <th class="px-4 py-3 w-20 text-center">Kelas</th>
+                      <th class="px-4 py-3">Wali Kelas</th>
+                      <th class="px-3 py-3 w-20 text-center">Siswa</th>
+                      <th class="px-3 py-3 w-36 text-center">Intra &amp; Mulok</th>
+                      <th class="px-3 py-3 w-36 text-center">Kokurikuler</th>
+                      <th class="px-3 py-3 w-36 text-center">Data Wali</th>
+                      <th class="px-4 py-3 w-44">Total Progres</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    <template x-for="ks in adminStats.kelasStats" :key="ks.id_kelas">
+                      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                        <td class="px-4 py-3 text-center">
+                          <span class="font-bold text-slate-800 dark:text-white" x-text="ks.nama_kelas"></span>
+                          <div class="text-[10px] text-slate-400" x-text="'Fase ' + ks.fase"></div>
+                        </td>
+                        <td class="px-4 py-3 font-medium text-slate-800 dark:text-slate-100" x-text="ks.wali_nama"></td>
+                        <td class="px-3 py
