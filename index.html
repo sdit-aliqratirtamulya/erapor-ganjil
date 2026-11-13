@@ -595,7 +595,7 @@
                         <th class="px-4 py-3 w-12">No</th>
                         <th class="px-4 py-3 w-48">Nama Peserta Didik</th>
                         <th class="px-4 py-3 w-48">1. Ekskul Wajib: Pramuka</th>
-                        <th class="px-4 py-3">2. Ekstrakurikuler Pilihan (Dapat memilih lebih dari satu)</th>
+                        <th class="px-4 py-3">2. Ekstrakurikuler Pilihan & Prestasi</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
@@ -612,24 +612,26 @@
                           </td>
                           <td class="px-4 py-3 space-y-2">
                             <template x-for="(ep, epIdx) in row.ekskul_pilihan" :key="epIdx">
-                              <div class="flex items-center gap-2">
-                                <select x-model="ep.nama" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 w-48">
+                              <div class="flex flex-wrap items-center gap-2">
+                                <select x-model="ep.nama" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 w-40">
                                   <option value="">-- Pilih Ekskul --</option>
                                   <template x-for="opt in ekskulPilihanList" :key="opt">
                                     <option :value="opt" x-text="opt"></option>
                                   </template>
                                 </select>
-                                <select x-model="ep.predikat" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 w-36">
+                                <select x-model="ep.predikat" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 w-32">
                                   <option value="Sangat Baik">Sangat Baik</option>
                                   <option value="Baik">Baik</option>
                                   <option value="Cukup">Cukup</option>
                                 </select>
+                                <input type="text" x-model="ep.prestasi" placeholder="Jenis Prestasi (opsional)"
+                                       class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 flex-1 min-w-[160px]">
                                 <button type="button" @click="row.ekskul_pilihan.splice(epIdx, 1)" class="text-red-500 hover:text-red-700 px-2">
                                   <i class="fa-solid fa-trash-can"></i>
                                 </button>
                               </div>
                             </template>
-                            <button type="button" @click="row.ekskul_pilihan.push({ nama: 'Tahfizh', predikat: 'Sangat Baik' })"
+                            <button type="button" @click="row.ekskul_pilihan.push({ nama: 'Tahfizh', predikat: 'Sangat Baik', prestasi: '' })"
                                     class="text-xs text-blue-700 dark:text-blue-400 hover:underline font-semibold flex items-center gap-1">
                               <i class="fa-solid fa-plus-circle"></i> Tambah Ekskul Pilihan
                             </button>
@@ -756,6 +758,7 @@
                 <div class="text-center border-b-2 border-black pb-3 mb-5">
                   <h1 class="text-base font-bold uppercase tracking-wide">LAPORAN HASIL BELAJAR (RAPOR)</h1>
                   <h2 class="text-sm font-bold uppercase" x-text="master.settings.nama_sekolah"></h2>
+                  <p class="text-[11px] font-semibold tracking-wide" x-text="'NPSN : ' + (master.settings.npsn || '-')"></p>
                   <p class="text-[11px]">Kp. Tangkil RT.001 RW.002 Desa Citarik Kec. Tirtamulya Kab. Karawang 41372</p>
                 </div>
 
@@ -804,6 +807,12 @@
                         <td class="border border-black px-3 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
                       </tr>
                     </template>
+                    <!-- JUMLAH NILAI KESELURUHAN -->
+                    <tr class="bg-slate-100 font-bold">
+                      <td class="border border-black px-3 py-2 text-center uppercase" colspan="2">Jumlah Nilai</td>
+                      <td class="border border-black px-2 py-2 text-center" x-text="getRaporTotalNilai()"></td>
+                      <td class="border border-black px-3 py-2"></td>
+                    </tr>
                   </tbody>
                 </table>
 
@@ -826,7 +835,7 @@
 
                 <!-- C. EKSTRAKURIKULER -->
                 <div class="font-bold mb-1.5 text-xs">C. EKSTRAKURIKULER</div>
-                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                <table class="w-full border-collapse border border-black text-[11.5px] mb-3">
                   <thead>
                     <tr class="bg-slate-100 text-center font-bold">
                       <th class="border border-black px-2 py-1.5 w-9">No</th>
@@ -842,6 +851,34 @@
                         <td class="border border-black px-3 py-1.5 font-medium" x-text="ek.nama"></td>
                         <td class="border border-black px-3 py-1.5 text-center font-semibold" x-text="ek.predikat"></td>
                         <td class="border border-black px-3 py-1.5" x-text="ek.keterangan"></td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+
+                <!-- TABEL PRESTASI EKSTRAKURIKULER -->
+                <div class="font-bold mb-1.5 text-xs">PRESTASI EKSTRAKURIKULER</div>
+                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                  <thead>
+                    <tr class="bg-slate-100 text-center font-bold">
+                      <th class="border border-black px-2 py-1.5 w-9">No</th>
+                      <th class="border border-black px-3 py-1.5 w-1/3">Kegiatan Ekstrakurikuler</th>
+                      <th class="border border-black px-3 py-1.5">Jenis Prestasi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-if="getRaporPrestasiEkskulList().length === 0">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center">1</td>
+                        <td class="border border-black px-3 py-1.5 text-center">-</td>
+                        <td class="border border-black px-3 py-1.5 text-center">-</td>
+                      </tr>
+                    </template>
+                    <template x-for="(pr, idx) in getRaporPrestasiEkskulList()" :key="idx">
+                      <tr>
+                        <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
+                        <td class="border border-black px-3 py-1.5 font-medium" x-text="pr.nama"></td>
+                        <td class="border border-black px-3 py-1.5" x-text="pr.prestasi"></td>
                       </tr>
                     </template>
                   </tbody>
@@ -902,6 +939,13 @@
                     <p class="font-bold underline" x-text="master.settings.kepala_sekolah"></p>
                     <p x-text="'NIP. ' + (master.settings.nip_kepsek || '-')"></p>
                   </div>
+                </div>
+
+                <!-- FOOTER RAPOR -->
+                <div class="mt-8 pt-2 border-t border-slate-400 flex items-center justify-between text-[10px] text-slate-700">
+                  <div class="italic" x-text="getRaporFooterLeft()"></div>
+                  <div class="font-medium text-center">Halaman Rapor</div>
+                  <div class="italic text-right" x-text="raporData.siswa.nama_siswa + ' | ' + raporData.siswa.nis + ' | ' + raporData.siswa.nisn"></div>
                 </div>
 
               </div>
@@ -1553,6 +1597,56 @@
 
         getNilaiSiswaMapel(idMapel) {
           return this.raporData?.nilaiIntra.find(n => n.id_mapel === idMapel);
+        },
+
+        getRaporTotalNilai() {
+          if (!this.raporData) return '-';
+          const mapelTampil = [
+            ...this.getRaporMapelByGroup('Intrakurikuler'),
+            ...this.getRaporMapelByGroup('Mulok')
+          ];
+          let total = 0;
+          let adaNilai = false;
+          mapelTampil.forEach(m => {
+            const raw = this.getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir;
+            const num = Number(raw);
+            if (raw !== undefined && raw !== '' && !isNaN(num)) {
+              total += num;
+              adaNilai = true;
+            }
+          });
+          return adaNilai ? total : '-';
+        },
+
+        getRaporPrestasiEkskulList() {
+          const wali = this.raporData?.dataWali;
+          const list = [];
+          if (wali?.ekskul_pilihan_json) {
+            try {
+              const arr = JSON.parse(wali.ekskul_pilihan_json);
+              arr.forEach(item => {
+                if (item.nama && item.prestasi && String(item.prestasi).trim() !== '') {
+                  list.push({
+                    nama: item.nama,
+                    prestasi: String(item.prestasi).trim()
+                  });
+                }
+              });
+            } catch (e) {}
+          }
+          return list;
+        },
+
+        getRaporFooterLeft() {
+          const rawSmt = String(this.master.settings.semester || 'Ganjil');
+          let smtLabel = rawSmt;
+          if (rawSmt.toLowerCase().includes('ganjil') || rawSmt.startsWith('1')) {
+            smtLabel = 'Ganjil';
+          } else if (rawSmt.toLowerCase().includes('genap') || rawSmt.startsWith('2')) {
+            smtLabel = 'Genap';
+          }
+          const ta = this.master.settings.tahun_ajaran || '2026/2027';
+          return `Rapor Semester ${smtLabel} TA. ${ta}`;
         },
 
         getRaporEkskulList() {
