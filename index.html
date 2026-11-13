@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>e-RDA (e-Rapor Digital Al-Iqra)</title>
+  <title>e-RDA | e-Rapor Digital Al-Iqra</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -105,16 +105,16 @@
           <div class="relative z-10 space-y-3 my-8 text-xs text-blue-100">
             <div class="flex items-center gap-3 bg-blue-900/50 p-3 rounded-xl border border-blue-700/50">
               <i class="fa-solid fa-book-open-reader text-amber-400 text-base"></i>
-              <span>CP Insya Allah terisi otomatis sesuai dengan CP TA 2026/2027</span>
+              <span>CP Kepka BKPDM No. 020/2026 & BSKAP No. 046/H/KR/2025</span>
             </div>
             <div class="flex items-center gap-3 bg-blue-900/50 p-3 rounded-xl border border-blue-700/50">
               <i class="fa-solid fa-wand-magic-sparkles text-emerald-400 text-base"></i>
-              <span>Fitur Deskripsi Rapor Otomatis Berbasis Predikat Nilai</span>
+              <span>Deskripsi Rapor Otomatis Berbasis Predikat Nilai</span>
             </div>
           </div>
 
           <div class="relative z-10 text-xs text-blue-300">
-            &copy; 2026 Tim IT SDIT AL-IQRA
+            &copy; 2026 | Tim IT SDIT AL-IQRA
           </div>
         </div>
 
@@ -149,7 +149,7 @@
                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
                   <i class="fa-solid fa-user"></i>
                 </span>
-                <input type="text" x-model="loginForm.username" required placeholder="Username"
+                <input type="text" x-model="loginForm.username" required placeholder="Masukkan username akun Anda"
                        class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-blue-700 focus:outline-none">
               </div>
             </div>
@@ -195,7 +195,7 @@
               <i class="fa-solid fa-graduation-cap"></i>
             </div>
             <div class="whitespace-nowrap">
-              <div class="font-bold text-white text-sm tracking-wide">e-RDA</div>
+              <div class="font-bold text-white text-sm tracking-wide">e-Rapor SD 2026</div>
               <div class="text-[11px] text-blue-300" x-text="master.settings.tahun_ajaran + ' • Smt ' + master.settings.semester"></div>
             </div>
           </div>
@@ -333,13 +333,13 @@
           <div x-show="activeMenu === 'dashboard'" class="space-y-6">
             <div class="bg-gradient-to-r from-blue-800 to-blue-900 rounded-2xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 class="text-xl font-bold">Welcome, <span x-text="user.nama_lengkap"></span></h1>
+                <h1 class="text-xl font-bold">Selamat Datang, <span x-text="user.nama_lengkap"></span></h1>
                 <p class="text-blue-200 text-sm mt-1">
-                  e-RDA (e-Rapor Digital Al-Iqra) • Tahun Ajaran <span x-text="master.settings.tahun_ajaran"></span>
+                  e-Rapor Kurikulum Merdeka (Pendekatan Pembelajaran Mendalam) • Tahun Ajaran <span x-text="master.settings.tahun_ajaran"></span>
                 </p>
               </div>
               <div class="bg-white/10 px-4 py-2.5 rounded-xl border border-white/20 text-xs">
-                <div class="text-blue-200">Titimangsa Rapor:</div>
+                <div class="text-blue-200">Tanggal Rapor:</div>
                 <div class="font-bold text-sm" x-text="formatTanggalIndo(master.settings.tanggal_rapor)"></div>
               </div>
             </div>
@@ -756,7 +756,7 @@
                 <div class="text-center border-b-2 border-black pb-3 mb-5">
                   <h1 class="text-base font-bold uppercase tracking-wide">LAPORAN HASIL BELAJAR (RAPOR)</h1>
                   <h2 class="text-sm font-bold uppercase" x-text="master.settings.nama_sekolah"></h2>
-                  <p class="text-[11px]" x-text="master.settings.alamat_sekolah"></p>
+                  <p class="text-[11px]">Kp. Tangkil RT.001 RW.002 Desa Citarik Kec. Tirtamulya Kab. Karawang 41372</p>
                 </div>
 
                 <!-- IDENTITAS MURID -->
@@ -767,7 +767,7 @@
                   <div class="flex"><span class="w-28">Fase</span><span class="mr-2">:</span><span x-text="getKelasFase(raporData.siswa.id_kelas)"></span></div>
                   <div class="flex"><span class="w-32">Nama Sekolah</span><span class="mr-2">:</span><span x-text="master.settings.nama_sekolah"></span></div>
                   <div class="flex"><span class="w-28">Semester</span><span class="mr-2">:</span><span x-text="master.settings.semester"></span></div>
-                  <div class="flex"><span class="w-32">Alamat Sekolah</span><span class="mr-2">:</span><span class="truncate" x-text="master.settings.alamat_sekolah"></span></div>
+                  <div class="flex"><span class="w-32">Alamat Sekolah</span><span class="mr-2">:</span><span>Kp. Tangkil Desa Citarik - Tirtamulya</span></div>
                   <div class="flex"><span class="w-28">Tahun Ajaran</span><span class="mr-2">:</span><span x-text="master.settings.tahun_ajaran"></span></div>
                 </div>
 
@@ -1186,14 +1186,14 @@
             return this.notify('Silakan masukkan URL Web App GAS terlebih dahulu.', 'error');
           }
           this.loading = true;
-          this.loadingText = 'Bismillah, Cek dulu ya...';
+          this.loadingText = 'Bismillah, cek dulu ya...';
           try {
             localStorage.setItem('erapor_gas_url', this.apiUrl.trim());
             const res = await this.callApi('LOGIN', this.loginForm);
             this.user = res.user;
             localStorage.setItem('erapor_user', JSON.stringify(res.user));
             await this.refreshMasterData();
-            this.notify('Login berhasil! Selamat datang, ' + res.user.nama_lengkap);
+            this.notify('Yey, berhasil! Selamat datang, ' + res.user.nama_lengkap);
           } catch (err) {
             this.notify(err.message, 'error');
           } finally {
@@ -1209,7 +1209,7 @@
 
         async refreshMasterData() {
           this.loading = true;
-          this.loadingText = 'Ngambil data dulu sebentar...';
+          this.loadingText = 'Ngambil Data dulu sebentar... Sabar...';
           try {
             const res = await this.callApi('GET_INIT_DATA');
             this.master = res.data;
