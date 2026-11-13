@@ -380,663 +380,626 @@
           <!-- TAB 1: DASHBOARD                                                -->
           <!-- =============================================================== -->
           <div x-show="activeMenu === 'dashboard'" class="space-y-6">
-            <div class="bg-gradient-to-r from-blue-800 to-blue-900 rounded-2xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="bg-gradient-to-r from-blue-900 to-blue-700 rounded-2xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 class="text-xl font-bold">Selamat Datang, <span x-text="user.nama_lengkap"></span></h1>
-                <p class="text-blue-200 text-sm mt-1">
-                  e-Rapor Kurikulum Merdeka (Pendekatan Pembelajaran Mendalam) • Tahun Ajaran <span x-text="master.settings.tahun_ajaran || '-'"></span>
+                <h2 class="text-xl font-bold" x-text="'Selamat Datang, ' + user.nama_lengkap"></h2>
+                <p class="text-blue-100 text-xs mt-1 leading-relaxed max-w-2xl">
+                  Sistem e-Rapor Kurikulum Merdeka Pembelajaran Mendalam (Kepka BKPDM No. 020/2026 & Kepka BSKAP No. 046/H/KR/2025).
                 </p>
               </div>
-              <div class="bg-white/10 px-4 py-2.5 rounded-xl border border-white/20 text-xs">
-                <div class="text-blue-200">Tanggal Rapor:</div>
-                <div class="font-bold text-sm" x-text="formatTanggalIndo(master.settings.tanggal_rapor)"></div>
+              <div class="bg-white/10 backdrop-blur-xs border border-white/20 rounded-xl px-4 py-3 text-xs shrink-0">
+                <div class="text-blue-200">Periode Penilaian Aktif</div>
+                <div class="font-bold text-sm mt-0.5" x-text="master.settings.tahun_ajaran + ' • Semester ' + master.settings.semester"></div>
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 flex items-center justify-center text-xl">
-                  <i class="fa-solid fa-users"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Peserta Didik Ampuan</div>
-                  <div class="text-2xl font-bold text-slate-800 dark:text-white" x-text="allowedSiswaCount()"></div>
-                </div>
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Rombongan Belajar Ampuan</div>
+                <div class="text-2xl font-bold text-slate-800 dark:text-white mt-1" x-text="allowedKelas().length + ' Kelas'"></div>
               </div>
-
-              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-xl">
-                  <i class="fa-solid fa-chalkboard"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Kelas Ampuan</div>
-                  <div class="text-2xl font-bold text-slate-800 dark:text-white" x-text="allowedKelas().length"></div>
-                </div>
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Total Peserta Didik</div>
+                <div class="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-1" x-text="allowedSiswaCount() + ' Murid'"></div>
               </div>
-
-              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 flex items-center justify-center text-xl">
-                  <i class="fa-solid fa-book-open"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Mata Pelajaran</div>
-                  <div class="text-2xl font-bold text-slate-800 dark:text-white" x-text="master.mapel.length"></div>
-                </div>
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Mata Pelajaran (Intra & Mulok)</div>
+                <div class="text-2xl font-bold text-emerald-600 mt-1" x-text="allowedMapel().length + ' Mapel'"></div>
               </div>
-
-              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xl">
-                  <i class="fa-solid fa-layer-group"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Fase Pembelajaran</div>
-                  <div class="text-lg font-bold text-slate-800 dark:text-white">Fase A, B, C</div>
-                </div>
+              <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tanggal Pembagian Rapor</div>
+                <div class="text-base font-bold text-slate-800 dark:text-white mt-1.5" x-text="formatTanggalIndo(master.settings.tanggal_rapor)"></div>
               </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-3 text-sm">
-              <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                <i class="fa-solid fa-circle-info text-blue-700 dark:text-blue-400"></i> Informasi Pemetaan Otomatis &amp; Referensi CP 2026
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+              <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-blue-700 dark:text-blue-400"></i> Panduan Alur Penginputan Nilai Rapor
               </h3>
-              <ul class="list-disc pl-5 space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
-                <li><b>Daftar Siswa Otomatis:</b> Wali kelas otomatis melihat siswa sesuai kelas perwaliannya. Guru Mapel Tahfizh otomatis melihat daftar siswa sesuai kelompok kelas ampuan (<b>Kelas 1A–3B</b> atau <b>Kelas 4A–6B</b>).</li>
-                <li><b>Penyesuaian Fase A (Kelas 1 &amp; 2):</b> Mata pelajaran <i>Ilmu Pengetahuan Alam dan Sosial (IPAS)</i> otomatis tidak dimunculkan pada Fase A.</li>
-                <li><b>Predikat &amp; Deskripsi Otomatis:</b> Predikat (<b>A, B, C, D</b>) dan narasi Capaian Kompetensi terbentuk otomatis berdasarkan nilai akhir yang diinput serta merujuk langsung pada <b>Kepka BKPDM No. 020 Tahun 2026</b> (PAI &amp; Keagamaan Islam) dan <b>Kepka BSKAP No. 046/H/KR/2025</b>.</li>
-              </ul>
+              <ol class="list-decimal list-inside space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <li><strong>Nilai Intra & Mulok:</strong> Pilih Kelas dan Mata Pelajaran, lalu masukkan Nilai Akhir (0–100). Predikat dan Deskripsi Capaian Kompetensi (sesuai jenjang kelas 1–6) akan terisi otomatis.</li>
+                <li><strong>Kokurikuler (DPL):</strong> Tentukan tema projek dan pilih capaian 4 Dimensi Profil Lulusan (atau gunakan tombol <em>Rekomendasi Lintas Disiplin</em> dari nilai Intra & Mulok).</li>
+                <li><strong>Ekstrakurikuler:</strong> Masukkan predikat Pramuka (wajib), prestasi Pramuka (jika ada), serta kegiatan ekstrakurikuler pilihan murid.</li>
+                <li><strong>Absensi & Catatan Wali:</strong> Isi rekap ketidakhadiran (Sakit, Izin, Alpa), status kenaikan/kelulusan, dan gunakan fitur catatan wali otomatis berbasis peringkat & kehadiran.</li>
+                <li><strong>Cetak Rapor PDF:</strong> Pilih nama murid untuk meninjau pratinjau rapor lengkap lalu klik tombol <strong>Cetak / Simpan PDF</strong>.</li>
+              </ol>
             </div>
           </div>
 
           <!-- =============================================================== -->
-          <!-- TAB 2: INPUT NILAI INTRAKURIKULER & MULOK (PREDIKAT OTOMATIS)    -->
+          <!-- TAB 2: NILAI INTRAKURIKULER & MUATAN LOKAL                      -->
           <!-- =============================================================== -->
-          <div x-show="activeMenu === 'nilai_intra'" class="space-y-5">
-            <div>
-              <h2 class="text-lg font-bold text-slate-800 dark:text-white">Input Nilai Intrakurikuler &amp; Muatan Lokal</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Isi nilai akhir (0–100). Predikat dan Deskripsi Capaian Kompetensi akan terisi otomatis sesuai regulasi CP 2025/2026.</p>
+          <div x-show="activeMenu === 'nilai_intra'" class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Input Nilai Intrakurikuler & Muatan Lokal</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Predikat & Deskripsi Capaian Pembelajaran (Kepka BKPDM 020/2026 & BSKAP 046/2025) terisi otomatis per tingkat kelas.</p>
+              </div>
+              <button @click="saveNilaiIntraBatch()"
+                      class="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2.5 px-5 rounded-xl text-xs shadow flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Nilai Mapel Ini
+              </button>
             </div>
 
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">1. Pilih Kelas Ampuan</label>
-                <select x-model="selectedKelas" @change="onKelasChange()" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                  <option value="">-- Pilih Kelas --</option>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih Kelas</label>
+                <select x-model="selectedKelas" @change="onKelasChange()"
+                        class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium focus:ring-2 focus:ring-blue-700 focus:outline-none">
                   <template x-for="k in allowedKelas()" :key="k.id_kelas">
                     <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas + ' (Fase ' + k.fase + ')'"></option>
                   </template>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">2. Pilih Mata Pelajaran</label>
-                <select x-model="selectedMapel" @change="prepareFormNilaiIntra()" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                  <option value="">-- Pilih Mata Pelajaran --</option>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih Mata Pelajaran</label>
+                <select x-model="selectedMapel" @change="prepareFormNilaiIntra()"
+                        class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium focus:ring-2 focus:ring-blue-700 focus:outline-none">
                   <template x-for="m in allowedMapel()" :key="m.id_mapel">
-                    <option :value="m.id_mapel" x-text="m.nama_mapel + ' (' + m.kelompok + ')'"></option>
+                    <option :value="m.id_mapel" x-text="m.nama_mapel + ' [' + m.kelompok + ']'"></option>
                   </template>
                 </select>
               </div>
-              <div class="flex items-end">
-                <button @click="saveNilaiIntraBatch()" :disabled="!selectedKelas || !selectedMapel"
-                        class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2 px-4 rounded-xl text-sm shadow transition flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-floppy-disk"></i> Simpan Nilai Mapel
-                </button>
-              </div>
             </div>
 
-            <template x-if="selectedKelas && selectedMapel">
-              <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table class="w-full text-sm text-left">
-                    <thead class="bg-blue-900 text-white text-xs uppercase">
-                      <tr>
-                        <th class="px-4 py-3 w-12">No</th>
-                        <th class="px-4 py-3 w-52">Nama Peserta Didik</th>
-                        <th class="px-4 py-3 w-28 text-center">Nilai (0-100)</th>
-                        <th class="px-4 py-3 w-36 text-center">Predikat</th>
-                        <th class="px-4 py-3">Deskripsi Capaian Kompetensi Otomatis</th>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                  <thead class="bg-blue-900 text-white text-xs uppercase">
+                    <tr>
+                      <th class="px-4 py-3 w-12 text-center">No</th>
+                      <th class="px-4 py-3 w-28">NIS</th>
+                      <th class="px-4 py-3 w-56">Nama Murid</th>
+                      <th class="px-4 py-3 w-28 text-center">Nilai (0-100)</th>
+                      <th class="px-4 py-3 w-32 text-center">Predikat</th>
+                      <th class="px-4 py-3">Deskripsi Capaian Kompetensi Otomatis (Dapat Diedit)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    <template x-if="formNilaiIntra.length === 0">
+                      <tr><td colspan="6" class="p-6 text-center text-slate-400 text-xs">Tidak ada data peserta didik pada kelas ini.</td></tr>
+                    </template>
+                    <template x-for="(row, idx) in formNilaiIntra" :key="row.id_siswa">
+                      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                        <td class="px-4 py-3 text-center text-slate-500 font-medium" x-text="idx + 1"></td>
+                        <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300" x-text="row.nis"></td>
+                        <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100" x-text="row.nama_siswa"></td>
+                        <td class="px-4 py-3 text-center">
+                          <input type="number" min="0" max="100" x-model="row.nilai_akhir" @input="updatePredikatDanDeskripsi(row)"
+                                 class="w-20 text-center font-bold border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg py-1.5 px-2 focus:ring-2 focus:ring-blue-700 focus:outline-none">
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                          <span x-show="row.predikat"
+                                :class="{
+                                  'bg-emerald-100 text-emerald-800 border-emerald-300': row.predikat === 'A',
+                                  'bg-blue-100 text-blue-800 border-blue-300': row.predikat === 'B',
+                                  'bg-amber-100 text-amber-800 border-amber-300': row.predikat === 'C',
+                                  'bg-red-100 text-red-800 border-red-300': row.predikat === 'D'
+                                }"
+                                class="inline-block px-2.5 py-1 rounded-lg text-xs font-bold border">
+                            <span x-text="row.predikat"></span> (<span x-text="getLabelPredikat(row.predikat)"></span>)
+                          </span>
+                        </td>
+                        <td class="px-4 py-3">
+                          <textarea rows="2" x-model="row.deskripsi_otomatis"
+                                    class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2 focus:ring-2 focus:ring-blue-700 focus:outline-none"></textarea>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                      <template x-for="(row, idx) in formNilaiIntra" :key="row.id_siswa">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
-                          <td class="px-4 py-3 font-medium text-slate-500 dark:text-slate-400" x-text="idx + 1"></td>
-                          <td class="px-4 py-3">
-                            <div class="font-bold text-slate-800 dark:text-slate-100" x-text="row.nama_siswa"></div>
-                            <div class="text-xs text-slate-400" x-text="'NIS: ' + row.nis + ' • NISN: ' + row.nisn"></div>
-                          </td>
-                          <td class="px-4 py-3 text-center">
-                            <input type="number" min="0" max="100" x-model.number="row.nilai_akhir" @input="updatePredikatDanDeskripsi(row)"
-                                   class="w-20 text-center font-bold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-600">
-                          </td>
-                          <td class="px-4 py-3 text-center">
-                            <span x-show="row.predikat"
-                                  :class="{
-                                    'bg-emerald-100 text-emerald-800 border-emerald-300': row.predikat === 'A',
-                                    'bg-blue-100 text-blue-800 border-blue-300': row.predikat === 'B',
-                                    'bg-amber-100 text-amber-800 border-amber-300': row.predikat === 'C',
-                                    'bg-red-100 text-red-800 border-red-300': row.predikat === 'D'
-                                  }"
-                                  class="inline-block px-3 py-1 rounded-lg text-xs font-bold border"
-                                  x-text="row.predikat + ' (' + getLabelPredikat(row.predikat) + ')'">
-                            </span>
-                            <span x-show="!row.predikat" class="text-xs text-slate-400">-</span>
-                          </td>
-                          <td class="px-4 py-3">
-                            <textarea x-model="row.deskripsi_otomatis" rows="3"
-                                      class="w-full text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg p-2.5 text-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 leading-relaxed"></textarea>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </div>
+                    </template>
+                  </tbody>
+                </table>
               </div>
-            </template>
+            </div>
           </div>
 
           <!-- =============================================================== -->
-          <!-- TAB 3: PENILAIAN KOKURIKULER (4 DIMENSI PROFIL LULUSAN)         -->
+          <!-- TAB 3: KOKURIKULER (4 DIMENSI PROFIL LULUSAN)                   -->
           <!-- =============================================================== -->
-          <div x-show="activeMenu === 'kokurikuler'" class="space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div x-show="activeMenu === 'kokurikuler'" class="space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
               <div>
-                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Penilaian Kokurikuler (Dimensi Profil Lulusan)</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Pilih capaian pada 4 Dimensi Profil Lulusan atau gunakan rekomendasi otomatis berbasis capaian lintas disiplin ilmu (Intra &amp; Mulok).</p>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Penilaian Kokurikuler (4 Dimensi Profil Lulusan)</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Capaian 4 Dimensi Profil Lulusan & narasi integrasi lintas disiplin ilmu.</p>
               </div>
-              <button type="button" @click="applyRekomendasiKokurikulerLintasDisiplin()" :disabled="!selectedKelas"
-                      class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2 px-4 rounded-xl text-xs shadow transition flex items-center gap-2 shrink-0">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Rekomendasi Lintas Disiplin (Intra &amp; Mulok)
-              </button>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-              <div class="md:col-span-3">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Kelas Perwalian</label>
-                <select x-model="selectedKelas" @change="onKelasChange()" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                  <option value="">-- Pilih Kelas --</option>
-                  <template x-for="k in allowedKelas()" :key="k.id_kelas">
-                    <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas"></option>
-                  </template>
-                </select>
-              </div>
-              <div class="md:col-span-6">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tema / Kegiatan Kokurikuler Semester Ini</label>
-                <input type="text" x-model="temaKokurikulerGlobal" @input="syncTemaKokurikuler()"
-                       placeholder="Contoh: Projek Gaya Hidup Berkelanjutan & Pembiasaan Akhlak Mulia"
-                       class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-              </div>
-              <div class="md:col-span-3">
-                <button @click="saveKokurikulerBatch()" :disabled="!selectedKelas"
-                        class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2 px-4 rounded-xl text-sm shadow transition flex items-center justify-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" @click="applyRekomendasiKokurikulerLintasDisiplin()"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs shadow flex items-center gap-2">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> Rekomendasi Lintas Disiplin (Intra & Mulok)
+                </button>
+                <button type="button" @click="saveKokurikulerBatch()"
+                        class="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2.5 px-5 rounded-xl text-xs shadow flex items-center gap-2">
                   <i class="fa-solid fa-floppy-disk"></i> Simpan Kokurikuler
                 </button>
               </div>
             </div>
 
-            <template x-if="selectedKelas">
-              <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table class="w-full text-sm text-left">
-                    <thead class="bg-blue-900 text-white text-xs uppercase">
-                      <tr>
-                        <th class="px-3 py-3 w-10 text-center">No</th>
-                        <th class="px-3 py-3 w-44">Nama Peserta Didik</th>
-                        <th class="px-2 py-3 w-36 text-center">1. Keimanan &amp; Ketakwaan</th>
-                        <th class="px-2 py-3 w-36 text-center">2. Penalaran Kritis</th>
-                        <th class="px-2 py-3 w-36 text-center">3. Kreativitas</th>
-                        <th class="px-2 py-3 w-36 text-center">4. Kemandirian</th>
-                        <th class="px-3 py-3 min-w-[240px]">Deskripsi Capaian Kokurikuler Otomatis</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                      <template x-for="(row, idx) in formKokurikuler" :key="row.id_siswa">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
-                          <td class="px-3 py-3 text-center font-medium text-slate-500 dark:text-slate-400" x-text="idx + 1"></td>
-                          <td class="px-3 py-3">
-                            <div class="font-bold text-slate-800 dark:text-slate-100 text-xs" x-text="row.nama_siswa"></div>
-                            <div class="text-[11px] text-slate-400" x-text="'NIS: ' + row.nis"></div>
-                          </td>
-                          <template x-for="dim in dimensiList" :key="dim.key">
-                            <td class="px-2 py-3">
-                              <select x-model="row.dimensi[dim.key]" @change="generateCatatanKokurikuler(row)"
-                                      class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 font-medium focus:ring-2 focus:ring-blue-600">
-                                <option value="Sangat Berkembang (SB)">SB (Sangat Berkembang)</option>
-                                <option value="Berkembang Sesuai Harapan (BSH)">BSH (Sesuai Harapan)</option>
-                                <option value="Sedang Berkembang (SDB)">SDB (Sedang Berkembang)</option>
-                                <option value="Mulai Berkembang (MB)">MB (Mulai Berkembang)</option>
-                              </select>
-                            </td>
-                          </template>
-                          <td class="px-3 py-3">
-                            <textarea x-model="row.catatan_kokurikuler" rows="3"
-                                      class="w-full text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg p-2 text-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 leading-relaxed"></textarea>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </template>
-          </div>
-
-          <!-- =============================================================== -->
-          <!-- TAB 4: MENU EKSTRAKURIKULER (WAJIB & PILIHAN)                   -->
-          <!-- =============================================================== -->
-          <div x-show="activeMenu === 'ekskul'" class="space-y-5">
-            <div>
-              <h2 class="text-lg font-bold text-slate-800 dark:text-white">Penilaian Kegiatan Ekstrakurikuler</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Ekstrakurikuler Wajib (<b>Pramuka</b>) dan Ekstrakurikuler Pilihan (<b>Tahfizh, English Club, Calistung, Taekwondo, Futsal, Volly, Hadroh/Marawis</b>).</p>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row gap-4 justify-between items-end">
-              <div class="w-full sm:w-72">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Kelas Perwalian</label>
-                <select x-model="selectedKelas" @change="onKelasChange()" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                  <option value="">-- Pilih Kelas --</option>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div class="md:col-span-4">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Kelas</label>
+                <select x-model="selectedKelas" @change="onKelasChange()"
+                        class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium">
                   <template x-for="k in allowedKelas()" :key="k.id_kelas">
                     <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas"></option>
                   </template>
                 </select>
               </div>
-              <button @click="saveWaliBatch()" :disabled="!selectedKelas"
-                      class="bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2 px-5 rounded-xl text-sm shadow transition flex items-center gap-2">
-                <i class="fa-solid fa-floppy-disk"></i> Simpan Nilai Ekstrakurikuler
+              <div class="md:col-span-8">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tema / Judul Kegiatan Kokurikuler Semester Ini</label>
+                <input type="text" x-model="temaKokurikulerGlobal" @input="syncTemaKokurikuler()"
+                       class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2">
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                  <thead class="bg-blue-900 text-white text-xs">
+                    <tr>
+                      <th class="px-3 py-3 w-10 text-center">No</th>
+                      <th class="px-3 py-3 w-48">Nama Murid</th>
+                      <template x-for="dim in dimensiList" :key="dim.key">
+                        <th class="px-2 py-3 w-36 text-center" x-text="dim.label"></th>
+                      </template>
+                      <th class="px-3 py-3">Narasi Deskripsi Kokurikuler (Otomatis & Dapat Diedit)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    <template x-for="(row, idx) in formKokurikuler" :key="row.id_siswa">
+                      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
+                        <td class="px-3 py-3 text-center text-slate-500 font-medium" x-text="idx + 1"></td>
+                        <td class="px-3 py-3">
+                          <div class="font-bold text-slate-800 dark:text-white text-xs" x-text="row.nama_siswa"></div>
+                          <div class="text-[11px] text-slate-400 font-mono" x-text="'NIS: ' + row.nis"></div>
+                        </td>
+                        <template x-for="dim in dimensiList" :key="dim.key">
+                          <td class="px-2 py-3">
+                            <select x-model="row.dimensi[dim.key]" @change="generateCatatanKokurikuler(row)"
+                                    class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg px-2 py-1.5 font-medium">
+                              <option value="Sangat Berkembang (SB)">SB (Sangat Berkembang)</option>
+                              <option value="Berkembang Sesuai Harapan (BSH)">BSH (Sesuai Harapan)</option>
+                              <option value="Sedang Berkembang (SDB)">SDB (Sedang Berkembang)</option>
+                              <option value="Mulai Berkembang (MB)">MB (Mulai Berkembang)</option>
+                            </select>
+                          </td>
+                        </template>
+                        <td class="px-3 py-3">
+                          <textarea rows="3" x-model="row.catatan_kokurikuler"
+                                    class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2 focus:ring-2 focus:ring-blue-700 focus:outline-none"></textarea>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- TAB 4: EKSTRAKURIKULER & PRESTASI                               -->
+          <!-- =============================================================== -->
+          <div x-show="activeMenu === 'ekskul'" class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Penilaian Ekstrakurikuler & Prestasi</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Input predikat Pramuka (Wajib), prestasi Pramuka, dan ekstrakurikuler pilihan murid.</p>
+              </div>
+              <button @click="saveWaliBatch()"
+                      class="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2.5 px-5 rounded-xl text-xs shadow flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Ekstrakurikuler
               </button>
             </div>
 
-            <template x-if="selectedKelas">
-              <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table class="w-full text-sm text-left">
-                    <thead class="bg-blue-900 text-white text-xs uppercase">
-                      <tr>
-                        <th class="px-4 py-3 w-12">No</th>
-                        <th class="px-4 py-3 w-48">Nama Peserta Didik</th>
-                        <th class="px-4 py-3 w-64">1. Ekskul Wajib: Pramuka & Prestasi</th>
-                        <th class="px-4 py-3">2. Ekstrakurikuler Pilihan & Prestasi</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                      <template x-for="(row, idx) in formWali" :key="row.id_siswa">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
-                          <td class="px-4 py-3 text-slate-500 dark:text-slate-400" x-text="idx + 1"></td>
-                          <td class="px-4 py-3 font-bold text-slate-800 dark:text-white" x-text="row.nama_siswa"></td>
-                          <td class="px-4 py-3 space-y-2">
-                            <select x-model="row.ekskul_wajib" class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-2 font-medium">
-                              <option value="Sangat Baik">Sangat Baik</option>
-                              <option value="Baik">Baik</option>
-                              <option value="Cukup">Cukup</option>
-                            </select>
-                            <input type="text" x-model="row.prestasi_pramuka" placeholder="Jenis Prestasi Pramuka (opsional)"
-                                   class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5">
-                          </td>
-                          <td class="px-4 py-3 space-y-2">
-                            <template x-for="(ep, epIdx) in row.ekskul_pilihan" :key="epIdx">
-                              <div class="flex flex-wrap items-center gap-2">
-                                <select x-model="ep.nama" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 w-40">
-                                  <option value="">-- Pilih Ekskul --</option>
-                                  <template x-for="opt in ekskulPilihanList" :key="opt">
-                                    <option :value="opt" x-text="opt"></option>
-                                  </template>
-                                </select>
-                                <select x-model="ep.predikat" class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 w-32">
-                                  <option value="Sangat Baik">Sangat Baik</option>
-                                  <option value="Baik">Baik</option>
-                                  <option value="Cukup">Cukup</option>
-                                </select>
-                                <input type="text" x-model="ep.prestasi" placeholder="Jenis Prestasi (opsional)"
-                                       class="text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2.5 py-1.5 flex-1 min-w-[160px]">
-                                <button type="button" @click="row.ekskul_pilihan.splice(epIdx, 1)" class="text-red-500 hover:text-red-700 px-2">
-                                  <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                              </div>
-                            </template>
-                            <button type="button" @click="row.ekskul_pilihan.push({ nama: 'Tahfizh', predikat: 'Sangat Baik', prestasi: '' })"
-                                    class="text-xs text-blue-700 dark:text-blue-400 hover:underline font-semibold flex items-center gap-1">
-                              <i class="fa-solid fa-plus-circle"></i> Tambah Ekskul Pilihan
-                            </button>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih Kelas</label>
+              <select x-model="selectedKelas" @change="onKelasChange()"
+                      class="w-full md:w-72 text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium">
+                <template x-for="k in allowedKelas()" :key="k.id_kelas">
+                  <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas"></option>
+                </template>
+              </select>
+            </div>
+
+            <div class="space-y-3">
+              <template x-for="(row, idx) in formWali" :key="row.id_siswa">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+                  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+                    <div class="font-bold text-sm text-slate-800 dark:text-white" x-text="(idx + 1) + '. ' + row.nama_siswa"></div>
+                    <button type="button" @click="row.ekskul_pilihan.push({ nama: 'Tahfizh', predikat: 'Baik', prestasi: '' })"
+                            class="text-xs bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-3 py-1 rounded-lg font-semibold">
+                      <i class="fa-solid fa-plus mr-1"></i> Tambah Ekskul Pilihan
+                    </button>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div class="md:col-span-4 text-xs font-bold text-blue-900 dark:text-blue-300">
+                      <i class="fa-solid fa-campground mr-1.5"></i> Pramuka (Ekstrakurikuler Wajib)
+                    </div>
+                    <div class="md:col-span-3">
+                      <select x-model="row.ekskul_wajib"
+                              class="w-full text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 font-medium">
+                        <option value="Sangat Baik">Sangat Baik</option>
+                        <option value="Baik">Baik</option>
+                        <option value="Cukup">Cukup</option>
+                      </select>
+                    </div>
+                    <div class="md:col-span-5">
+                      <input type="text" x-model="row.prestasi_pramuka" placeholder="Catatan prestasi Pramuka (opsional, misal: Juara 1 LT-I)"
+                             class="w-full text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5">
+                    </div>
+                  </div>
+
+                  <template x-for="(eks, eIdx) in row.ekskul_pilihan" :key="eIdx">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <div class="md:col-span-4">
+                        <select x-model="eks.nama"
+                                class="w-full text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 font-medium">
+                          <template x-for="pil in ekskulPilihanList" :key="pil">
+                            <option :value="pil" x-text="pil"></option>
+                          </template>
+                        </select>
+                      </div>
+                      <div class="md:col-span-3">
+                        <select x-model="eks.predikat"
+                                class="w-full text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 font-medium">
+                          <option value="Sangat Baik">Sangat Baik</option>
+                          <option value="Baik">Baik</option>
+                          <option value="Cukup">Cukup</option>
+                        </select>
+                      </div>
+                      <div class="md:col-span-4">
+                        <input type="text" x-model="eks.prestasi" placeholder="Prestasi ekskul ini (opsional)"
+                               class="w-full text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5">
+                      </div>
+                      <div class="md:col-span-1 text-right">
+                        <button type="button" @click="row.ekskul_pilihan.splice(eIdx, 1)" class="text-red-500 hover:text-red-700 p-1.5">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </template>
                 </div>
-              </div>
-            </template>
+              </template>
+            </div>
           </div>
 
           <!-- =============================================================== -->
           <!-- TAB 5: ABSENSI & CATATAN WALI KELAS                             -->
           <!-- =============================================================== -->
-          <div x-show="activeMenu === 'wali_kelas'" class="space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div x-show="activeMenu === 'wali_kelas'" class="space-y-4">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
               <div>
-                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Rekap Ketidakhadiran & Catatan Wali Kelas</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Lengkapi data absensi, catatan perkembangan murid (otomatis berdasarkan peringkat & kehadiran atau edit manual), serta status kenaikan kelas.</p>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Absensi, Status Kenaikan & Catatan Wali Kelas</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Narasi catatan wali kelas dapat diisi otomatis berdasarkan peringkat kelas & rekap ketidakhadiran.</p>
               </div>
-              <button type="button" @click="generateSemuaCatatanWali()" :disabled="!selectedKelas"
-                      class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2 px-4 rounded-xl text-xs shadow transition flex items-center gap-2 shrink-0">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Catatan Otomatis (Peringkat & Kehadiran)
-              </button>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" @click="generateSemuaCatatanWali()"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs shadow flex items-center gap-2">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Catatan Otomatis (Peringkat & Kehadiran)
+                </button>
+                <button type="button" @click="saveWaliBatch()"
+                        class="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2.5 px-5 rounded-xl text-xs shadow flex items-center gap-2">
+                  <i class="fa-solid fa-floppy-disk"></i> Simpan Data Wali Kelas
+                </button>
+              </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row gap-4 justify-between items-end">
-              <div class="w-full sm:w-72">
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Kelas Perwalian</label>
-                <select x-model="selectedKelas" @change="onKelasChange()" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                  <option value="">-- Pilih Kelas --</option>
-                  <template x-for="k in allowedKelas()" :key="k.id_kelas">
-                    <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas"></option>
-                  </template>
-                </select>
-              </div>
-              <button @click="saveWaliBatch()" :disabled="!selectedKelas"
-                      class="bg-blue-800 hover:bg-blue-900 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2 px-5 rounded-xl text-sm shadow transition flex items-center gap-2">
-                <i class="fa-solid fa-floppy-disk"></i> Simpan Data Wali Kelas
-              </button>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih Kelas</label>
+              <select x-model="selectedKelas" @change="onKelasChange()"
+                      class="w-full md:w-72 text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium">
+                <template x-for="k in allowedKelas()" :key="k.id_kelas">
+                  <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas"></option>
+                </template>
+              </select>
             </div>
 
-            <template x-if="selectedKelas">
-              <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table class="w-full text-sm text-left">
-                    <thead class="bg-slate-800 text-white text-xs uppercase">
-                      <tr>
-                        <th class="px-4 py-3 w-48">Nama Peserta Didik</th>
-                        <th class="px-2 py-3 w-24 text-center">Peringkat</th>
-                        <th class="px-3 py-3 w-20 text-center">Sakit</th>
-                        <th class="px-3 py-3 w-20 text-center">Izin</th>
-                        <th class="px-3 py-3 w-20 text-center">Alpa</th>
-                        <th class="px-4 py-3">Catatan Wali Kelas</th>
-                        <th class="px-4 py-3 w-44">Keterangan Kenaikan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                      <template x-for="row in formWali" :key="row.id_siswa">
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
-                          <td class="px-4 py-3 font-bold text-slate-800 dark:text-white" x-text="row.nama_siswa"></td>
-                          <td class="px-2 py-3 text-center">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                  <thead class="bg-blue-900 text-white text-xs uppercase">
+                    <tr>
+                      <th class="px-3 py-3 w-10 text-center">No</th>
+                      <th class="px-3 py-3 w-48">Nama Murid & Peringkat</th>
+                      <th class="px-2 py-3 w-20 text-center">Sakit</th>
+                      <th class="px-2 py-3 w-20 text-center">Izin</th>
+                      <th class="px-2 py-3 w-20 text-center">Alpa</th>
+                      <th class="px-3 py-3 w-40">Keputusan</th>
+                      <th class="px-3 py-3">Catatan Wali Kelas (Otomatis & Dapat Diedit)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    <template x-for="(row, idx) in formWali" :key="row.id_siswa">
+                      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 align-top">
+                        <td class="px-3 py-3 text-center text-slate-500 font-medium" x-text="idx + 1"></td>
+                        <td class="px-3 py-3">
+                          <div class="font-bold text-slate-800 dark:text-white text-xs" x-text="row.nama_siswa"></div>
+                          <div class="mt-1">
                             <span x-show="row.peringkat"
-                                  :class="row.peringkat <= 3 ? 'bg-amber-100 text-amber-800 border-amber-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'"
-                                  class="inline-block px-2.5 py-1 rounded-lg text-xs font-bold border"
-                                  x-text="'#' + row.peringkat + ' / ' + formWali.length">
-                            </span>
-                            <span x-show="!row.peringkat" class="text-xs text-slate-400">-</span>
-                          </td>
-                          <td class="px-2 py-3 text-center">
-                            <input type="number" min="0" x-model.number="row.sakit" @input="generateCatatanWaliRow(row)" class="w-16 text-center text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg py-1.5">
-                          </td>
-                          <td class="px-2 py-3 text-center">
-                            <input type="number" min="0" x-model.number="row.izin" @input="generateCatatanWaliRow(row)" class="w-16 text-center text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg py-1.5">
-                          </td>
-                          <td class="px-2 py-3 text-center">
-                            <input type="number" min="0" x-model.number="row.alpa" @input="generateCatatanWaliRow(row)" class="w-16 text-center text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-lg py-1.5">
-                          </td>
-                          <td class="px-4 py-3">
-                            <textarea x-model="row.catatan_wali" rows="3" placeholder="Ananda menunjukkan perkembangan belajar dan karakter yang baik..."
-                                      class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg p-2 leading-relaxed"></textarea>
-                          </td>
-                          <td class="px-4 py-3">
-                            <select x-model="row.status_naik" class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5">
-                              <option value="-">Semester Ganjil (-)</option>
-                              <option value="Naik ke Kelas Berikutnya">Naik ke Kelas Berikutnya</option>
-                              <option value="Tinggal di Kelas">Tinggal di Kelas</option>
-                              <option value="Lulus Satuan Pendidikan">Lulus</option>
-                            </select>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </div>
+                                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300"
+                                  x-text="'Peringkat #' + row.peringkat + ' / ' + formWali.length"></span>
+                            <span x-show="!row.peringkat" class="text-[11px] text-slate-400">Nilai belum lengkap</span>
+                          </div>
+                        </td>
+                        <td class="px-2 py-3 text-center">
+                          <input type="number" min="0" x-model.number="row.sakit" @input="generateCatatanWaliRow(row)"
+                                 class="w-16 text-center text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg py-1.5">
+                        </td>
+                        <td class="px-2 py-3 text-center">
+                          <input type="number" min="0" x-model.number="row.izin" @input="generateCatatanWaliRow(row)"
+                                 class="w-16 text-center text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg py-1.5">
+                        </td>
+                        <td class="px-2 py-3 text-center">
+                          <input type="number" min="0" x-model.number="row.alpa" @input="generateCatatanWaliRow(row)"
+                                 class="w-16 text-center text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg py-1.5">
+                        </td>
+                        <td class="px-3 py-3">
+                          <select x-model="row.status_naik"
+                                  class="w-full text-xs border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-lg px-2 py-1.5">
+                            <option value="-">- (Semester Ganjil)</option>
+                            <option value="Naik ke Kelas Berikutnya">Naik Kelas</option>
+                            <option value="Tinggal di Kelas Ini">Tinggal Kelas</option>
+                            <option value="Lulus">Lulus</option>
+                          </select>
+                        </td>
+                        <td class="px-3 py-3">
+                          <textarea rows="3" x-model="row.catatan_wali"
+                                    class="w-full text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg p-2 focus:ring-2 focus:ring-blue-700 focus:outline-none"></textarea>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
               </div>
-            </template>
+            </div>
           </div>
 
           <!-- =============================================================== -->
-          <!-- TAB 6: CETAK RAPOR KURIKULUM MERDEKA PEMBELAJARAN MENDALAM      -->
+          <!-- TAB 6: CETAK RAPOR PDF                                          -->
           <!-- =============================================================== -->
-          <div x-show="activeMenu === 'cetak_rapor'" class="space-y-6">
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row gap-4 justify-between items-end no-print">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-2/3">
+          <div x-show="activeMenu === 'cetak_rapor'" class="space-y-4">
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-end justify-between gap-4 no-print">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 w-full">
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">1. Kelas</label>
-                  <select x-model="selectedKelas" @change="selectedSiswaPrint = ''; raporData = null" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                    <option value="">-- Pilih Kelas --</option>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Kelas</label>
+                  <select x-model="selectedKelas" @change="onKelasChange(); selectedSiswaPrint=''; raporData=null;"
+                          class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium">
                     <template x-for="k in allowedKelas()" :key="k.id_kelas">
                       <option :value="k.id_kelas" x-text="'Kelas ' + k.nama_kelas"></option>
                     </template>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">2. Peserta Didik</label>
-                  <select x-model="selectedSiswaPrint" @change="loadRaporSiswa()" class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl px-3 py-2">
-                    <option value="">-- Pilih Nama Siswa --</option>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih Nama Murid</label>
+                  <select x-model="selectedSiswaPrint" @change="loadRaporSiswa()"
+                          class="w-full text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-3.5 py-2 font-medium">
+                    <option value="">-- Pilih Murid --</option>
                     <template x-for="s in siswaInSelectedKelas()" :key="s.id_siswa">
                       <option :value="s.id_siswa" x-text="s.nis + ' - ' + s.nama_siswa"></option>
                     </template>
                   </select>
                 </div>
               </div>
-
-              <button @click="window.print()" :disabled="!raporData"
-                      class="w-full md:w-auto bg-amber-600 hover:bg-amber-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded-xl text-sm shadow flex items-center justify-center gap-2 transition">
-                <i class="fa-solid fa-file-pdf"></i> Cetak / Simpan PDF Rapor
+              <button type="button" :disabled="!raporData" @click="window.print()"
+                      :class="!raporData ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-700'"
+                      class="bg-amber-600 text-white font-semibold py-2.5 px-5 rounded-xl text-xs shadow flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
               </button>
             </div>
 
-            <!-- TEMPLATE RAPOR KURIKULUM MERDEKA PEMBELAJARAN MENDALAM (SELALU KERTAS PUTIH) -->
             <template x-if="raporData">
-              <div id="print-area" class="bg-white max-w-4xl mx-auto p-8 md:p-10 rounded-2xl border border-slate-300 shadow-lg text-black text-[12px] leading-snug">
+              <div id="print-area" class="bg-white text-black p-8 rounded-2xl border border-slate-200 shadow-sm max-w-4xl mx-auto text-[11px] leading-snug">
                 
-                <!-- KOP RAPOR (LOGO DI BAGIAN PALING ATAS TENGAH) -->
-                <div class="flex flex-col items-center justify-center text-center border-b-2 border-black pb-3.5 mb-5">
-                  <template x-if="master.settings.logo_sekolah">
-                    <img :src="getLogoUrl()" alt="Logo Sekolah"
-                         onerror="this.style.display='none'"
-                         class="w-20 h-20 object-contain mb-2">
-                  </template>
-                  <div>
-                    <h1 class="text-base font-bold uppercase tracking-wide">LAPORAN HASIL BELAJAR (RAPOR)</h1>
-                    <h2 class="text-sm font-bold uppercase" x-text="master.settings.nama_sekolah"></h2>
-                    <p class="text-[11px] font-semibold tracking-wide" x-text="'NPSN : ' + (master.settings.npsn || '-')"></p>
-                    <p class="text-[11px]">Kp. Tangkil RT.001 RW.002 Desa Citarik Kec. Tirtamulya Kab. Karawang 41372</p>
+                <!-- LOGO & KOP SURAT -->
+                <div class="text-center border-b-2 border-black pb-3 mb-4">
+                  <div x-show="master.settings.logo_sekolah" class="flex justify-center mb-2">
+                    <img :src="getLogoUrl()" alt="Logo Sekolah" class="w-20 h-20 object-contain">
                   </div>
+                  <div class="text-sm font-bold uppercase tracking-wide">LAPORAN HASIL BELAJAR (RAPOR)</div>
+                  <div class="text-base font-extrabold uppercase mt-0.5" x-text="master.settings.nama_sekolah"></div>
+                  <div class="text-[10px] mt-0.5" x-text="'NPSN: ' + (master.settings.npsn || '-') + ' • ' + (master.settings.alamat_sekolah || '')"></div>
                 </div>
 
                 <!-- IDENTITAS MURID -->
-                <div class="grid grid-cols-2 gap-x-8 gap-y-1 mb-5 text-[11.5px]">
+                <div class="grid grid-cols-2 gap-x-8 gap-y-1 mb-4 text-[11px]">
                   <div class="flex"><span class="w-32">Nama Murid</span><span class="mr-2">:</span><span class="font-bold uppercase" x-text="raporData.siswa.nama_siswa"></span></div>
-                  <div class="flex"><span class="w-28">Kelas</span><span class="mr-2">:</span><span class="font-bold" x-text="getKelasOnlyName(raporData.siswa.id_kelas)"></span></div>
+                  <div class="flex"><span class="w-32">Kelas / Fase</span><span class="mr-2">:</span><span class="font-semibold" x-text="getKelasOnlyName(raporData.siswa.id_kelas) + ' / Fase ' + getKelasFase(raporData.siswa.id_kelas)"></span></div>
                   <div class="flex"><span class="w-32">NIS / NISN</span><span class="mr-2">:</span><span x-text="raporData.siswa.nis + ' / ' + raporData.siswa.nisn"></span></div>
-                  <div class="flex"><span class="w-28">Fase</span><span class="mr-2">:</span><span x-text="getKelasFase(raporData.siswa.id_kelas)"></span></div>
-                  <div class="flex"><span class="w-32">Nama Sekolah</span><span class="mr-2">:</span><span x-text="master.settings.nama_sekolah"></span></div>
-                  <div class="flex"><span class="w-28">Semester</span><span class="mr-2">:</span><span x-text="master.settings.semester"></span></div>
-                  <div class="flex"><span class="w-32">Alamat Sekolah</span><span class="mr-2">:</span><span>Kp. Tangkil Desa Citarik - Tirtamulya</span></div>
-                  <div class="flex"><span class="w-28">Tahun Ajaran</span><span class="mr-2">:</span><span x-text="master.settings.tahun_ajaran"></span></div>
+                  <div class="flex"><span class="w-32">Semester</span><span class="mr-2">:</span><span x-text="master.settings.semester"></span></div>
+                  <div class="flex"><span class="w-32">Sekolah</span><span class="mr-2">:</span><span x-text="master.settings.nama_sekolah"></span></div>
+                  <div class="flex"><span class="w-32">Tahun Ajaran</span><span class="mr-2">:</span><span x-text="master.settings.tahun_ajaran"></span></div>
                 </div>
 
                 <!-- A. INTRAKURIKULER & MUATAN LOKAL -->
-                <div class="font-bold mb-1.5 text-xs">A. INTRAKURIKULER</div>
-                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                <div class="font-bold uppercase mb-1.5">A. Intrakurikuler & Muatan Lokal</div>
+                <table class="w-full border-collapse border border-black mb-4 text-[10.5px]">
                   <thead>
-                    <tr class="bg-slate-100 text-center font-bold">
-                      <th class="border border-black px-2 py-2 w-9">No</th>
-                      <th class="border border-black px-3 py-2 w-48">Mata Pelajaran</th>
-                      <th class="border border-black px-2 py-2 w-16">Nilai Akhir</th>
-                      <th class="border border-black px-3 py-2">Capaian Kompetensi</th>
+                    <tr class="bg-slate-100 font-bold text-center">
+                      <th class="border border-black px-2 py-1.5 w-8">No</th>
+                      <th class="border border-black px-2 py-1.5 w-48">Mata Pelajaran</th>
+                      <th class="border border-black px-2 py-1.5 w-16">Nilai Akhir</th>
+                      <th class="border border-black px-2 py-1.5">Capaian Kompetensi</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- Kelompok Intrakurikuler -->
                     <template x-for="(m, idx) in getRaporMapelByGroup('Intrakurikuler')" :key="m.id_mapel">
                       <tr>
                         <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
-                        <td class="border border-black px-3 py-1.5 font-medium" x-text="m.nama_mapel"></td>
-                        <td class="border border-black px-2 py-1.5 text-center font-bold" x-text="getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir || '-'"></td>
-                        <td class="border border-black px-3 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
+                        <td class="border border-black px-2 py-1.5 font-medium" x-text="m.nama_mapel"></td>
+                        <td class="border border-black px-2 py-1.5 text-center font-bold" x-text="getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir ?? '-'"></td>
+                        <td class="border border-black px-2 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
                       </tr>
                     </template>
-                    <!-- Sub-header Muatan Lokal -->
-                    <tr class="bg-slate-50 font-bold">
-                      <td class="border border-black px-3 py-1.5" colspan="4">Muatan Lokal</td>
+                    <tr class="bg-slate-100 font-bold">
+                      <td colspan="4" class="border border-black px-2 py-1">Muatan Lokal</td>
                     </tr>
                     <template x-for="(m, idx) in getRaporMapelByGroup('Mulok')" :key="m.id_mapel">
                       <tr>
                         <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
-                        <td class="border border-black px-3 py-1.5 font-medium" x-text="m.nama_mapel"></td>
-                        <td class="border border-black px-2 py-1.5 text-center font-bold" x-text="getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir || '-'"></td>
-                        <td class="border border-black px-3 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
+                        <td class="border border-black px-2 py-1.5 font-medium" x-text="m.nama_mapel"></td>
+                        <td class="border border-black px-2 py-1.5 text-center font-bold" x-text="getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir ?? '-'"></td>
+                        <td class="border border-black px-2 py-1.5 text-justify" x-text="getNilaiSiswaMapel(m.id_mapel)?.deskripsi_otomatis || '-'"></td>
                       </tr>
                     </template>
-                    <!-- Baris Jumlah Nilai Keseluruhan Otomatis -->
                     <tr class="bg-slate-100 font-bold">
-                      <td class="border border-black px-3 py-2 text-center uppercase" colspan="2">Jumlah Nilai</td>
-                      <td class="border border-black px-2 py-2 text-center" x-text="getRaporTotalNilai()"></td>
-                      <td class="border border-black px-3 py-2 text-slate-500 text-[10.5px] font-normal italic">Total akumulasi nilai akhir Intrakurikuler dan Muatan Lokal</td>
+                      <td colspan="2" class="border border-black px-2 py-1.5 text-right">Jumlah Nilai</td>
+                      <td class="border border-black px-2 py-1.5 text-center" x-text="getRaporTotalNilai()"></td>
+                      <td class="border border-black px-2 py-1.5"></td>
                     </tr>
                   </tbody>
                 </table>
 
-                <!-- B. KOKURIKULER (DIMENSI PROFIL LULUSAN - PEMBELAJARAN MENDALAM) -->
-                <div class="font-bold mb-1.5 text-xs">B. KOKURIKULER (DIMENSI PROFIL LULUSAN)</div>
-                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
+                <!-- B. KOKURIKULER -->
+                <div class="font-bold uppercase mb-1.5">B. Kokurikuler (Dimensi Profil Lulusan)</div>
+                <table class="w-full border-collapse border border-black mb-4 text-[10.5px]">
                   <thead>
-                    <tr class="bg-slate-100 text-center font-bold">
-                      <th class="border border-black px-3 py-1.5 w-1/3">Tema / Kegiatan Kokurikuler</th>
-                      <th class="border border-black px-3 py-1.5">Capaian Dimensi Profil Lulusan</th>
+                    <tr class="bg-slate-100 font-bold text-center">
+                      <th class="border border-black px-2 py-1.5 w-48">Tema Kokurikuler</th>
+                      <th class="border border-black px-2 py-1.5">Deskripsi Capaian Dimensi Profil Lulusan</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td class="border border-black px-3 py-2 align-top font-medium" x-text="raporData.nilaiKokurikuler?.tema_projek || 'Projek Penguatan Dimensi Profil Lulusan'"></td>
-                      <td class="border border-black px-3 py-2 text-justify" x-text="raporData.nilaiKokurikuler?.catatan_kokurikuler || 'Murid menunjukkan perkembangan positif dalam Dimensi Profil Lulusan selama kegiatan kokurikuler berlangsung.'"></td>
+                      <td class="border border-black px-2 py-2 font-semibold align-top" x-text="raporData.nilaiKokurikuler?.tema_projek || temaKokurikulerGlobal"></td>
+                      <td class="border border-black px-2 py-2 text-justify" x-text="raporData.nilaiKokurikuler?.catatan_kokurikuler || '-'"></td>
                     </tr>
                   </tbody>
                 </table>
 
-                <!-- C. EKSTRAKURIKULER & PRESTASI EKSTRAKURIKULER -->
-                <div class="font-bold mb-1.5 text-xs">C. EKSTRAKURIKULER</div>
-                <table class="w-full border-collapse border border-black text-[11.5px] mb-3">
+                <!-- C. EKSTRAKURIKULER & PRESTASI -->
+                <div class="font-bold uppercase mb-1.5">C. Ekstrakurikuler</div>
+                <table class="w-full border-collapse border border-black mb-4 text-[10.5px]">
                   <thead>
-                    <tr class="bg-slate-100 text-center font-bold">
-                      <th class="border border-black px-2 py-1.5 w-9">No</th>
-                      <th class="border border-black px-3 py-1.5 w-56">Kegiatan Ekstrakurikuler</th>
-                      <th class="border border-black px-3 py-1.5 w-32">Predikat</th>
-                      <th class="border border-black px-3 py-1.5">Keterangan</th>
+                    <tr class="bg-slate-100 font-bold text-center">
+                      <th class="border border-black px-2 py-1.5 w-8">No</th>
+                      <th class="border border-black px-2 py-1.5 w-52">Kegiatan Ekstrakurikuler</th>
+                      <th class="border border-black px-2 py-1.5 w-28">Predikat</th>
+                      <th class="border border-black px-2 py-1.5">Keterangan</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <template x-for="(ek, idx) in getRaporEkskulList()" :key="idx">
+                    <template x-for="(eks, idx) in getRaporEkskulList()" :key="idx">
                       <tr>
                         <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
-                        <td class="border border-black px-3 py-1.5 font-medium" x-text="ek.nama"></td>
-                        <td class="border border-black px-3 py-1.5 text-center font-semibold" x-text="ek.predikat"></td>
-                        <td class="border border-black px-3 py-1.5" x-text="ek.keterangan"></td>
+                        <td class="border border-black px-2 py-1.5 font-medium" x-text="eks.nama"></td>
+                        <td class="border border-black px-2 py-1.5 text-center font-semibold" x-text="eks.predikat"></td>
+                        <td class="border border-black px-2 py-1.5" x-text="eks.keterangan"></td>
                       </tr>
                     </template>
                   </tbody>
                 </table>
 
-                <!-- TABEL PRESTASI EKSTRAKURIKULER -->
-                <div class="font-bold mb-1.5 text-[11.5px]">Prestasi Ekstrakurikuler</div>
-                <table class="w-full border-collapse border border-black text-[11.5px] mb-5">
-                  <thead>
-                    <tr class="bg-slate-100 text-center font-bold">
-                      <th class="border border-black px-2 py-1.5 w-9">No</th>
-                      <th class="border border-black px-3 py-1.5 w-64">Kegiatan Ekstrakurikuler</th>
-                      <th class="border border-black px-3 py-1.5">Jenis Prestasi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <template x-if="getRaporPrestasiEkskulList().length === 0">
-                      <tr>
-                        <td class="border border-black px-2 py-1.5 text-center">-</td>
-                        <td class="border border-black px-3 py-1.5 text-center">-</td>
-                        <td class="border border-black px-3 py-1.5 text-center">-</td>
-                      </tr>
-                    </template>
-                    <template x-for="(pr, pIdx) in getRaporPrestasiEkskulList()" :key="pIdx">
-                      <tr>
-                        <td class="border border-black px-2 py-1.5 text-center" x-text="pIdx + 1"></td>
-                        <td class="border border-black px-3 py-1.5 font-medium" x-text="pr.nama"></td>
-                        <td class="border border-black px-3 py-1.5" x-text="pr.prestasi"></td>
-                      </tr>
-                    </template>
-                  </tbody>
-                </table>
+                <template x-if="getRaporPrestasiEkskulList().length > 0">
+                  <div class="mb-4">
+                    <div class="font-bold uppercase mb-1.5">Prestasi Ekstrakurikuler</div>
+                    <table class="w-full border-collapse border border-black text-[10.5px]">
+                      <thead>
+                        <tr class="bg-slate-100 font-bold text-center">
+                          <th class="border border-black px-2 py-1.5 w-8">No</th>
+                          <th class="border border-black px-2 py-1.5 w-52">Jenis Kegiatan</th>
+                          <th class="border border-black px-2 py-1.5">Keterangan Prestasi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <template x-for="(pr, idx) in getRaporPrestasiEkskulList()" :key="idx">
+                          <tr>
+                            <td class="border border-black px-2 py-1.5 text-center" x-text="idx + 1"></td>
+                            <td class="border border-black px-2 py-1.5 font-medium" x-text="pr.nama"></td>
+                            <td class="border border-black px-2 py-1.5" x-text="pr.prestasi"></td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </template>
 
                 <!-- D. KETIDAKHADIRAN & E. CATATAN WALI KELAS -->
-                <div class="grid grid-cols-12 gap-4 mb-5 text-[11.5px]">
+                <div class="grid grid-cols-12 gap-4 mb-6">
                   <div class="col-span-5">
-                    <div class="font-bold mb-1">D. KETIDAKHADIRAN</div>
-                    <table class="w-full border-collapse border border-black">
+                    <div class="font-bold uppercase mb-1.5">D. Ketidakhadiran</div>
+                    <table class="w-full border-collapse border border-black text-[10.5px]">
                       <tr>
-                        <td class="border border-black px-3 py-1">Sakit</td>
-                        <td class="border border-black px-3 py-1 w-24 text-center" x-text="(raporData.dataWali?.sakit || 0) + ' hari'"></td>
+                        <td class="border border-black px-2.5 py-1">Sakit</td>
+                        <td class="border border-black px-2.5 py-1 text-center font-semibold" x-text="(raporData.dataWali?.sakit || 0) + ' hari'"></td>
                       </tr>
                       <tr>
-                        <td class="border border-black px-3 py-1">Izin</td>
-                        <td class="border border-black px-3 py-1 text-center" x-text="(raporData.dataWali?.izin || 0) + ' hari'"></td>
+                        <td class="border border-black px-2.5 py-1">Izin</td>
+                        <td class="border border-black px-2.5 py-1 text-center font-semibold" x-text="(raporData.dataWali?.izin || 0) + ' hari'"></td>
                       </tr>
                       <tr>
-                        <td class="border border-black px-3 py-1">Tanpa Keterangan</td>
-                        <td class="border border-black px-3 py-1 text-center" x-text="(raporData.dataWali?.alpa || 0) + ' hari'"></td>
+                        <td class="border border-black px-2.5 py-1">Tanpa Keterangan</td>
+                        <td class="border border-black px-2.5 py-1 text-center font-semibold" x-text="(raporData.dataWali?.alpa || 0) + ' hari'"></td>
                       </tr>
                     </table>
                   </div>
                   <div class="col-span-7">
-                    <div class="font-bold mb-1">E. CATATAN WALI KELAS</div>
-                    <div class="border border-black p-2.5 min-h-[76px] text-justify"
-                         x-text="raporData.dataWali?.catatan_wali || 'Ananda menunjukkan semangat belajar yang baik. Terus tingkatkan kedisiplinan, ibadah, dan kepedulian terhadap sesama.'"></div>
+                    <div class="font-bold uppercase mb-1.5">E. Catatan Wali Kelas</div>
+                    <div class="border border-black p-2.5 min-h-[76px] text-[10.5px] text-justify"
+                         x-text="raporData.dataWali?.catatan_wali || '-'"></div>
                   </div>
                 </div>
 
-                <!-- KEPUTUSAN KENAIKAN KELAS (JIKA ADA) -->
                 <template x-if="raporData.dataWali?.status_naik && raporData.dataWali.status_naik !== '-'">
-                  <div class="border border-black p-2.5 mb-5 text-[11.5px] font-bold">
-                    Keputusan: Berdasarkan pencapaian seluruh kompetensi, murid dinyatakan <span class="uppercase underline" x-text="raporData.dataWali.status_naik"></span>.
+                  <div class="border border-black p-2.5 mb-6 text-[10.5px]">
+                    <span class="font-bold">Keputusan:</span> Berdasarkan pencapaian seluruh kompetensi, murid dinyatakan:
+                    <span class="font-bold uppercase" x-text="raporData.dataWali.status_naik"></span>
                   </div>
                 </template>
 
                 <!-- TANDA TANGAN -->
-                <div class="grid grid-cols-3 text-[11.5px] text-center mt-8">
+                <div class="grid grid-cols-3 gap-4 text-center text-[11px] mt-6 break-inside-avoid">
                   <div>
-                    <p>Mengetahui,</p>
-                    <p>Orang Tua / Wali</p>
+                    <div>Mengetahui,</div>
+                    <div>Orang Tua / Wali</div>
                     <div class="h-16"></div>
-                    <p class="font-bold underline">( ........................................ )</p>
+                    <div class="font-bold underline">(........................................)</div>
                   </div>
                   <div>
-                    <p>&nbsp;</p>
-                    <p>Wali Kelas</p>
+                    <div>&nbsp;</div>
+                    <div>Wali Kelas <span x-text="getKelasOnlyName(raporData.siswa.id_kelas)"></span></div>
                     <div class="h-16"></div>
-                    <p class="font-bold underline" x-text="getWaliKelasName(raporData.siswa.id_kelas)"></p>
-                    <p x-text="'NIP/NIK. ' + getWaliKelasNip(raporData.siswa.id_kelas)"></p>
+                    <div class="font-bold underline" x-text="getWaliKelasName(raporData.siswa.id_kelas)"></div>
+                    <div class="text-[10px]" x-text="'NIP/NIK. ' + getWaliKelasNip(raporData.siswa.id_kelas)"></div>
                   </div>
                   <div>
-                    <p x-text="(master.settings.tempat_cetak || 'Cikampek') + ', ' + formatTanggalIndo(master.settings.tanggal_rapor)"></p>
-                    <p>Kepala Sekolah</p>
+                    <div x-text="(master.settings.tempat_cetak || 'Tirtamulya') + ', ' + formatTanggalIndo(master.settings.tanggal_rapor)"></div>
+                    <div>Kepala Sekolah</div>
                     <div class="h-16"></div>
-                    <p class="font-bold underline" x-text="master.settings.kepala_sekolah"></p>
-                    <p x-text="'NIP. ' + (master.settings.nip_kepsek || '-')"></p>
+                    <div class="font-bold underline" x-text="master.settings.kepala_sekolah || '-'"></div>
+                    <div class="text-[10px]" x-text="'NIP. ' + (master.settings.nip_kepsek || '-')"></div>
                   </div>
                 </div>
 
-                <!-- FOOTER RAPOR OTOMATIS -->
-                <div class="rapor-footer-fixed mt-8 pt-2 border-t border-slate-400 flex items-center justify-between text-[10px] text-slate-700">
-                  <div class="italic text-[10px]" x-text="getRaporFooterLeft()"></div>
-                  <div class="font-medium text-center text-[10px] rapor-page-number"></div>
-                  <div class="italic text-right text-[10px]" x-text="getRaporFooterRight()"></div>
+                <!-- FOOTER CETAK RAPOR -->
+                <div class="rapor-footer-fixed mt-8 pt-2 border-t border-slate-300 flex items-center justify-between text-[10px] text-slate-700">
+                  <div x-text="getRaporFooterLeft()"></div>
+                  <div class="rapor-page-number font-medium"></div>
+                  <div x-text="getRaporFooterRight()"></div>
                 </div>
 
               </div>
             </template>
           </div>
 
-          <!-- =============================================================== -->
-          <!-- TAB 7: REFERENSI SEKOLAH (ADMIN)                                -->
           <!-- =============================================================== -->
           <!-- TAB 7: STATISTIK PROGRES PENGINPUTAN (KHUSUS ADMIN)             -->
           <!-- =============================================================== -->
@@ -1178,4 +1141,1117 @@
                           <div class="text-[10px] text-slate-400" x-text="'Fase ' + ks.fase"></div>
                         </td>
                         <td class="px-4 py-3 font-medium text-slate-800 dark:text-slate-100" x-text="ks.wali_nama"></td>
-                        <td class="px-3 py
+                        <td class="px-3 py-3 text-center font-semibold text-slate-600 dark:text-slate-300" x-text="ks.jumlah_siswa"></td>
+                        <td class="px-3 py-3 text-center">
+                          <div class="text-xs font-bold tabular-nums" :class="ks.persen_intra === 100 ? 'text-emerald-600' : 'text-slate-700 dark:text-slate-200'" x-text="ks.persen_intra + '%'"></div>
+                          <div class="text-[10px] text-slate-400" x-text="ks.terisi_intra + '/' + ks.target_intra"></div>
+                        </td>
+                        <td class="px-3 py-3 text-center">
+                          <div class="text-xs font-bold tabular-nums" :class="ks.persen_kokurikuler === 100 ? 'text-emerald-600' : 'text-slate-700 dark:text-slate-200'" x-text="ks.persen_kokurikuler + '%'"></div>
+                          <div class="text-[10px] text-slate-400" x-text="ks.terisi_kokurikuler + '/' + ks.jumlah_siswa"></div>
+                        </td>
+                        <td class="px-3 py-3 text-center">
+                          <div class="text-xs font-bold tabular-nums" :class="ks.persen_wali === 100 ? 'text-emerald-600' : 'text-slate-700 dark:text-slate-200'" x-text="ks.persen_wali + '%'"></div>
+                          <div class="text-[10px] text-slate-400" x-text="ks.terisi_wali + '/' + ks.jumlah_siswa"></div>
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="flex items-center justify-between text-xs font-bold mb-1">
+                            <span :class="ks.persen_total === 100 ? 'text-emerald-600' : (ks.persen_total > 0 ? 'text-blue-700 dark:text-blue-400' : 'text-slate-400')"
+                                  x-text="ks.persen_total === 100 ? 'Selesai' : (ks.persen_total > 0 ? 'Berjalan' : 'Belum Input')"></span>
+                            <span class="tabular-nums text-slate-700 dark:text-slate-200" x-text="ks.persen_total + '%'"></span>
+                          </div>
+                          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div :class="ks.persen_total === 100 ? 'bg-emerald-600' : 'bg-blue-600'"
+                                 class="h-2 rounded-full transition-all duration-500"
+                                 :style="'width:' + ks.persen_total + '%'"></div>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- =============================================================== -->
+          <!-- TAB 8: REFERENSI SEKOLAH (ADMIN)                                -->
+          <!-- =============================================================== -->
+          <div x-show="activeMenu === 'referensi'" class="space-y-4">
+            <h2 class="text-lg font-bold text-slate-800 dark:text-white">Pengaturan & Data Referensi Sekolah</h2>
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs text-sm space-y-4">
+              <p class="text-xs text-slate-600 dark:text-slate-300">Seluruh data kelas (1A–6B), mata pelajaran Intrakurikuler & Mulok, serta plotting guru terhubung langsung dengan Google Sheets database.</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <template x-for="(val, key) in master.settings" :key="key">
+                  <div class="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div class="text-[11px] uppercase font-bold text-slate-400" x-text="key.replace('_', ' ')"></div>
+                    <div class="font-semibold text-slate-800 dark:text-slate-100 mt-0.5 text-xs" x-text="key === 'tanggal_rapor' ? formatTanggalIndo(val) : val"></div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+
+        </main>
+
+        <!-- FOOTER RUNNING TEXT -->
+        <footer class="h-10 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 flex items-center overflow-hidden shrink-0 no-print transition-colors">
+          <div class="w-full overflow-hidden">
+            <div class="animate-marquee text-xs font-medium text-slate-600 dark:text-slate-300 tracking-wide">
+              © 2026. SD IT AL-IQRA. Tirtamulya. Created by : Ari Tristian 🧟‍♂️
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </template>
+
+  <!-- ===================================================================== -->
+  <!-- LOGIKA JAVASCRIPT & BANK CP 2025/2026 (BKPDM 020/2026 & BSKAP 046)    -->
+  <!-- ===================================================================== -->
+  <script>
+    // Bank Capaian Pembelajaran (CP) Resmi per Tingkat Kelas (1–6)
+    // Merujuk pada Alur Perkembangan Kepka BKPDM No. 020/2026 & Kepka BSKAP No. 046/H/KR/2025
+    const CP_BANK_2026 = {
+      // 1. Pendidikan Agama Islam & Budi Pekerti (Kepka BKPDM No. 020 Tahun 2026)
+      MPL_PAI: {
+        1: 'mengenal huruf hijaiah dan harakatnya secara sederhana, melafalkan Surah al-Fatihah dan Surah al-Ikhlas, mengenal rukun iman dan rukun Islam, membiasakan perilaku jujur dan kasih sayang, mengenal tata cara bersuci (wudu), serta mengenal kisah keteladanan Nabi Muhammad saw. dan nabi terdahulu',
+        2: 'membaca dan membedakan huruf hijaiah berharakat serta bersambung, menghafal beberapa surah pendek pilihan, meyakini asmaulhusna pilihan, menerapkan akhlak terpuji kepada orang tua dan sesama, mempraktikkan gerakan dan bacaan salat fardu, serta menceritakan kisah keteladanan nabi dan rasul',
+        3: 'membaca dan menulis huruf hijaiah bersambung dengan tartil, menghafal surah pendek serta hadis kewajiban salat, meyakini sifat-sifat wajib Allah Swt., menerapkan perilaku hormat dan patuh kepada orang tua serta guru, menerapkan ketentuan salat berjamaah, serta menceritakan kisah Nabi Muhammad saw. masa kanak-kanak hingga remaja',
+        4: 'membaca dan menjelaskan kandungan surah pendek serta hadis tentang keragaman dan silaturahmi, meyakini iman kepada malaikat dan rasul-rasul Allah Swt., menerapkan akhlak santun dan menghargai teman, menerapkan salat sunah serta ketentuan tanda-tanda balig, serta menceritakan kisah Nabi Muhammad saw. periode Makkah',
+        5: 'membaca dan menjelaskan makna surah pendek serta hadis menyayangi anak yatim, meyakini asmaulhusna dan iman kepada hari akhir, menerapkan akhlak terpuji dalam berteman dan bermasyarakat, menerapkan ketentuan zakat fitrah, infak, sedekah, serta ibadah haji/kurban, dan menceritakan kisah Nabi Muhammad saw. periode Madinah',
+        6: 'membaca dan menjelaskan pesan pokok surah pendek serta hadis berbuat baik kepada sesama, meyakini iman kepada qada dan qadar, menerapkan sikap bertawakal, peduli lingkungan, dan toleransi, menerapkan ketentuan puasa, makanan dan minuman halal-haram, serta menceritakan kisah keteladanan Khulafaurasyidin'
+      },
+      // 2. Pendidikan Pancasila & Kewarganegaraan (Kepka BSKAP No. 046/H/KR/2025)
+      MPL_PPKN: {
+        1: 'mengenal bendera negara, lagu kebangsaan Indonesia Raya, simbol dan sila-sila Pancasila, mengenal identitas diri serta anggota keluarga, dan mematuhi aturan sederhana di lingkungan keluarga',
+        2: 'menerapkan nilai-nilai sila Pancasila di lingkungan keluarga dan sekolah, menghargai perbedaan identitas teman dalam bingkai Bhinneka Tunggal Ika, mematuhi aturan di sekolah, serta bekerja sama menjaga kebersihan lingkungan sekitar',
+        3: 'mengidentifikasi makna sila-sila Pancasila dan karakter para perumusnya, mengenal identitas diri, keluarga, serta teman sesuai budaya dan agamanya, serta melaksanakan aturan di lingkungan sekolah dan tempat tinggal',
+        4: 'menerapkan nilai-nilai Pancasila dalam kehidupan bermasyarakat, melaksanakan hak dan kewajiban sebagai warga sekolah dan warga negara secara seimbang, menghargai keragaman budaya daerah, serta bekerja sama dalam keberagaman di lingkungan wilayahnya',
+        5: 'memahami kronologi sejarah kelahiran Pancasila dan menerapkannya dalam kehidupan sehari-hari, mematuhi norma dan aturan di lingkungan masyarakat, serta melestarikan keberagaman budaya daerah dalam bingkai Bhinneka Tunggal Ika',
+        6: 'mengimplementasikan Pancasila sebagai satu kesatuan yang utuh, mempraktikkan musyawarah untuk mufakat dalam mengambil keputusan bersama, menghormati hak asasi dan keberagaman suku bangsa, serta bergotong royong menjaga persatuan NKRI'
+      },
+      // 3. Bahasa Indonesia (Kepka BSKAP No. 046/H/KR/2025)
+      MPL_BINDO: {
+        1: 'menyimak informasi sederhana dari teks aural tentang diri dan keluarga, melafalkan bunyi huruf serta membaca suku kata dan kata sederhana dengan fasih, berbicara santun, dan menulis permulaan huruf serta kata dengan benar',
+        2: 'memahami informasi dari teks aural maupun bacaan sederhana, membaca kalimat dan teks pendek dengan intonasi yang tepat, menceritakan pengalaman secara lisan dengan santun, serta menulis kalimat sederhana menggunakan huruf kapital dan tanda baca dasar',
+        3: 'memahami ide pokok dari teks aural dan bacaan cetak, membaca teks narasi dan deskripsi sederhana dengan lancar, menyampaikan pendapat dalam diskusi kelompok dengan santun, serta menulis paragraf sederhana menggunakan ejaan yang sesuai',
+        4: 'menganalisis ide pokok dan ide pendukung dari teks aural maupun bacaan cetak/elektronik, menyampaikan gagasan dengan pilihan kata dan intonasi yang tepat, serta menulis berbagai tipe teks (narasi, prosedur, dan deskripsi) sesuai kaidah kebahasaan',
+        5: 'memahami dan menyimpulkan informasi dari teks aural, visual, dan audiovisual, mempresentasikan gagasan secara runtut dan santun, serta menulis teks eksplanasi, laporan pengamatan, dan surat sederhana dengan kosakata yang tepat',
+        6: 'menganalisis dan mengevaluasi informasi dari berbagai sumber teks, berdiskusi dan mempresentasikan gagasan secara kritis dan persuasif, serta menulis berbagai tipe teks secara kreatif dengan memadukan makna denotatif dan konotatif'
+      },
+      // 4. Matematika (Kepka BSKAP No. 046/H/KR/2025)
+      MPL_MTK: {
+        1: 'membilang dan memahami bilangan cacah sampai 20, melakukan penjumlahan dan pengurangan bilangan sampai 20, membandingkan panjang dan berat benda secara langsung, mengenal bangun datar dan bangun ruang sederhana, serta mengelompokkan data benda',
+        2: 'memahami bilangan cacah sampai 100, melakukan penjumlahan dan pengurangan sampai 100, mengenal pecahan setengah dan seperempat, mengukur panjang dan berat dengan satuan tidak baku, mengenal ciri bangun datar, serta menyajikan data dengan piktogram',
+        3: 'memahami bilangan cacah sampai 1.000, melakukan operasi penjumlahan, pengurangan, perkalian, dan pembagian dasar, mengenal pecahan sederhana, mengukur panjang dan berat dengan satuan baku, serta membaca data pada tabel dan diagram gambar',
+        4: 'memahami bilangan cacah sampai 10.000, menyelesaikan operasi hitung campuran, menerapkan pecahan senilai dan desimal, mengukur keliling, luas, dan volume dengan satuan baku, mendeskripsikan ciri bangun datar, serta menginterpretasi diagram batang',
+        5: 'memahami bilangan cacah sampai 100.000 serta menentukan KPK dan FPB, melakukan operasi hitung pecahan dan desimal, menghitung keliling dan luas bangun datar serta sudut, mengkonstruksi jaring-jaring kubus dan balok, serta menganalisis data',
+        6: 'memahami bilangan cacah sampai 1.000.000 dan bilangan negatif, bernalar proporsional tentang rasio dan persentase, menghitung luas permukaan dan volume bangun ruang sederhana, membaca lokasi pada sistem berpetak, serta menganalisis data dan peluang'
+      },
+      // 5. Ilmu Pengetahuan Alam dan Sosial / IPAS (Fase B & C - Kepka BSKAP No. 046/H/KR/2025)
+      MPL_IPAS: {
+        1: '',
+        2: '',
+        3: 'memahami fungsi pancaindra, siklus hidup makhluk hidup dan pelestariannya, mengenal wujud zat dan perubahannya, mengidentifikasi sumber energi di sekitar, serta mengenal denah dan bentang alam lingkungan tempat tinggal',
+        4: 'memahami hubungan bentuk dan fungsi bagian tubuh tumbuhan/hewan, menganalisis gaya dan perubahan energi dalam kehidupan sehari-hari, mengenal keragaman budaya dan kearifan lokal daerah, serta memahami peran dan tanggung jawab di masyarakat',
+        5: 'menganalisis sistem pernapasan, pencernaan, dan peredaran darah manusia, memahami ekosistem dan jaring-jaring makanan, sifat gelombang bunyi dan cahaya, serta mengenal kondisi geografis dan sejarah perjuangan bangsa Indonesia',
+        6: 'menganalisis sistem gerak dan saraf manusia, memahami krisis energi dan pelestarian lingkungan, mengenal sistem tata surya dan rotasi-revolusi bumi, serta menganalisis kegiatan ekonomi dan peran Indonesia di lingkup global'
+      },
+      // 6. Bahasa Inggris (Kepka BSKAP No. 046/H/KR/2025)
+      MPL_BING: {
+        1: 'mengenal dan mengucapkan kosakata dasar bahasa Inggris terkait sapaan, perkenalan diri, angka 1–10, dan warna dengan percaya diri',
+        2: 'mengenal kosakata bahasa Inggris terkait anggota keluarga, benda di kelas, hewan, dan buah-buahan serta merespons instruksi sederhana secara lisan',
+        3: 'memahami dan merespons teks lisan maupun tulis pendek sederhana tentang aktivitas sehari-hari, waktu, dan makanan dengan pelafalan yang baik',
+        4: 'memahami dan mengomunikasikan gagasan sederhana dalam teks lisan, tulis pendek, dan multimodal terkait hobi, lingkungan sekolah, dan kegiatan sehari-hari sesuai konteks',
+        5: 'memahami informasi spesifik dari teks pendek maupun multimodal tentang pengalaman pribadi dan deskripsi orang/benda serta mengungkapkannya secara lisan dan tertulis',
+        6: 'memahami alur informasi secara keseluruhan dari beragam teks pendek maupun multimodal tentang topik kehidupan sehari-hari serta mengomunikasikan ide dan pengalaman secara runtut'
+      },
+      // 7. Seni Budaya dan Prakarya (Kepka BSKAP No. 046/H/KR/2025)
+      MPL_SBDP: {
+        1: 'mengenal unsur rupa (titik, garis, warna), bunyi ritmis, dan gerak sederhana melalui pengamatan lingkungan sekitar serta mengekspresikannya secara gembira',
+        2: 'membuat karya seni rupa dua/tiga dimensi sederhana, menyanyikan lagu anak dengan irama yang tepat, serta memperagakan gerak tari sederhana dengan penuh percaya diri',
+        3: 'memahami prinsip dasar komposisi warna, pola irama sederhana, dan gerak tari daerah dalam menciptakan karya seni rupa maupun pertunjukan sederhana',
+        4: 'menerapkan teknik dasar seni rupa, musik, tari, atau teater untuk menciptakan karya kreatif yang mencerminkan kepekaan estetis dan budaya lokal daerah',
+        5: 'mengeksplorasi berbagai teknik dan bahan alam maupun buatan dalam menciptakan karya seni rupa, musik, atau prakarya yang bernilai estetis dan fungsional',
+        6: 'menciptakan dan menyajikan karya seni budaya dan prakarya secara mandiri maupun kolaboratif dengan memadukan teknik, inovasi, dan nilai kearifan lokal'
+      },
+      // 8. Pendidikan Jasmani Olahraga dan Kesehatan / PJOK (Kepka BSKAP No. 046/H/KR/2025)
+      MPL_PJOK: {
+        1: 'mengenal dan mempraktikkan pola gerak dasar lokomotor (berjalan, berlari, melompat) dan non-lokomotor dalam permainan sederhana serta membiasakan kebersihan diri',
+        2: 'mempraktikkan kombinasi pola gerak dasar lokomotor, non-lokomotor, dan manipulatif dalam permainan sederhana serta membiasakan perilaku hidup bersih dan sehat',
+        3: 'menerapkan variasi pola gerak dasar dalam aktivitas permainan bola kecil/besar, senam lantai dasar, dan gerak berirama dengan menjunjung sportivitas',
+        4: 'menerapkan variasi dan kombinasi pola gerak dasar dalam berbagai permainan olahraga dan aktivitas kebugaran jasmani serta menjaga kebersihan alat reproduksi dan lingkungan',
+        5: 'mempraktikkan keterampilan gerak spesifik cabang olahraga permainan, atletik, dan senam ketangkasan serta memahami bahaya merokok dan zat adiktif bagi kesehatan',
+        6: 'mempraktikkan keterampilan gerak spesifik berbagai cabang olahraga, aktivitas kebugaran jasmani, serta menerapkan pola hidup sehat, keselamatan diri, dan pencegahan cedera secara mandiri'
+      },
+      // 9. Muatan Lokal: Bahasa Sunda
+      MPL_SUNDA: {
+        1: 'ngaregepkeun sareng ngucapkeun kecap katut kalimah basajan ngeunaan ngawanohkeun diri sareng anggota kulawarga nganggo basa Sunda anu sopan',
+        2: 'nyangkem eusi carita pondok sareng kakawihan barudak Sunda, sarta ngagunakeun tatakrama basa Sunda anu merenah dina paguneman sapopoe',
+        3: 'maca sareng maham eusi dongéng atanapi pupuh Sunda, sarta nyaritakeun pangalaman sapopoe nganggo pilihan kecap basa Sunda anu luyu',
+        4: 'maham rupa-rupa téks carita pondok jeung kawih Sunda, sarta nulis kalimah maké éjahan sareng tatakrama basa Sunda anu merenah',
+        5: 'nganalisis eusi téks biantara jeung carita rayat Sunda, sarta nyarita dina sawala kelompok maké undak-usuk basa Sunda anu sopan',
+        6: 'nganalisis rupa-rupa téks sastra jeung nonsastra basa Sunda, biantara kalayan percaya diri, sarta ngamumulé budaya jeung kearifan lokal Sunda'
+      },
+      // 10. Muatan Lokal Keagamaan: Al-Qur'an Hadits (Selaras BKPDM No. 020/2026)
+      MPL_QH: {
+        1: 'mengenal dan melafalkan huruf hijaiah berharakat fathah, kasrah, dan dammah secara tartil, menghafal Surah al-Fatihah dan Surah an-Nas sampai al-Lahab, serta mengenal hadis kebersihan',
+        2: 'membaca dan menulis huruf hijaiah bersambung dengan tartil, menghafal Surah an-Nasr sampai al-Ma\'un, serta memahami kandungan hadis tentang mencintai Al-Qur\'an dan berbakti kepada orang tua',
+        3: 'membaca dan menerapkan hukum bacaan mad thabi\'i dan qalqalah pada surah-surah pendek pilihan (Surah al-Quraisy sampai at-Takasur), serta menghafal hadis tentang salat berjamaah dan persaudaraan',
+        4: 'membaca, menulis, dan menerapkan hukum bacaan idzhar dan ikhfa pada surah-surah pendek pilihan (Surah al-Qari\'ah sampai az-Zalzalah), serta mengamalkan hadis tentang niat dan silaturahmi',
+        5: 'membaca Al-Qur\'an dengan menerapkan hukum bacaan idgham dan iqlab secara fasih, menghafal dan memahami kandungan Surah al-Bayyinah sampai at-Tin, serta mengamalkan hadis tentang menyayangi anak yatim',
+        6: 'membaca Al-Qur\'an dengan memperhatikan hukum tajwid secara tartil, menghafal dan memahami pesan pokok Surah al-Insyirah sampai ad-Duha, serta mengamalkan hadis tentang berbuat baik kepada sesama dan amal saleh'
+      },
+      // 11. Muatan Lokal Keagamaan: Akidah Akhlak (Selaras BKPDM No. 020/2026)
+      MPL_AA: {
+        1: 'mengenal dua kalimat syahadat, rukun iman, dan kalimat tayyibah (basmalah dan hamdalah), serta membiasakan akhlak terpuji jujur, bersih, dan santun kepada orang tua serta guru',
+        2: 'meyakini sifat-sifat Allah Swt. melalui asmaulhusna pilihan, mengenal tugas malaikat Allah, serta membiasakan sikap disiplin, rendah hati, dan menghindari sifat tercela dalam pergaulan',
+        3: 'meyakini asmaulhusna pilihan dan iman kepada kitab-kitab Allah Swt., serta membiasakan sikap bersyukur, pantang menyerah, dan menghormati orang tua serta guru',
+        4: 'meyakini iman kepada rasul-rasul Allah Swt. dan sifat-sifat mulianya, serta membiasakan sikap amanah, berbaik sangka, santun kepada teman, dan menjauhi sifat munafik',
+        5: 'meyakini asmaulhusna dan iman kepada hari akhir, serta menerapkan akhlak terpuji dermawan, tanggung jawab, dan menjaga adab bertamu serta berteman',
+        6: 'meyakini asmaulhusna serta iman kepada qada dan qadar Allah Swt., dan menerapkan akhlak berdoa, bertawakal, toleransi terhadap sesama, serta peduli terhadap hewan dan tumbuhan'
+      },
+      // 12. Muatan Lokal Keagamaan: Fikih (Selaras BKPDM No. 020/2026)
+      MPL_FIKIH: {
+        1: 'memahami rukun Islam, melafalkan syahadatain, mempraktikkan tata cara bersuci dari najis dan berwudu dengan tertib, serta mengenal bilangan rakaat salat fardu',
+        2: 'memahami dan mempraktikkan tata cara tayamum, gerakan dan bacaan salat fardu secara tertib, serta membiasakan zikir dan doa setelah salat fardu',
+        3: 'memahami dan menerapkan ketentuan salat sunah rawatib, ketentuan puasa Ramadan secara dasar, serta tata cara salat bagi orang yang sakit',
+        4: 'memahami dan menerapkan ketentuan azan dan ikamah, salat berjamaah, salat Jumat, salat sunah duha dan idain, serta memahami tanda-tanda balig dan kewajiban taklif',
+        5: 'memahami dan menerapkan ketentuan zakat fitrah, infak, sedekah, serta tata cara pelaksanaan kurban dan ibadah haji secara sederhana',
+        6: 'memahami dan menerapkan ketentuan puasa wajib dan puasa sunah, membedakan makanan dan minuman yang halal dan haram, serta memahami ketentuan jual beli dan pinjam-meminjam'
+      },
+      // 13. Muatan Lokal: Bahasa Arab
+      MPL_BARAB: {
+        1: 'menyimak, menirukan, dan melafalkan mufradat (kosakata) bahasa Arab sederhana tentang perkenalan diri, anggota keluarga, dan alat tulis sekolah',
+        2: 'melafalkan mufradat bahasa Arab terkait benda di rumah, nama-nama hari, dan warna serta menyalin huruf hijaiah terpisah maupun bersambung dengan benar',
+        3: 'memahami dan mempraktikkan hiwar (percakapan) sederhana terkait aktivitas di madrasah/sekolah dan nama-nama pelajaran dalam bahasa Arab',
+        4: 'memahami dan mempraktikkan hiwar sederhana terkait anggota tubuh, profesi, dan alamat rumah serta menulis kalimat pendek berbahasa Arab dengan struktur dasar',
+        5: 'memahami teks bacaan sederhana berbahasa Arab tentang kegiatan sehari-hari dan kegemaran serta melakukan tanya jawab lisan dengan pelafalan yang tepat',
+        6: 'memahami teks bacaan berbahasa Arab tentang waktu, wisata, dan lingkungan sekitar serta menyusun kalimat sederhana sesuai kaidah bahasa Arab dasar'
+      },
+      // 14. Muatan Lokal: Baca Tulis Al-Qur'an (BTQ)
+      MPL_BTQ: {
+        1: 'mengenal bentuk dan makhraj huruf hijaiah tunggal berharakat fathah, kasrah, dan dammah serta menyalin huruf hijaiah tunggal dengan rapi',
+        2: 'membedakan bacaan harakat tanwin, sukun, dan tasydid serta menyalin huruf hijaiah bersambung awal, tengah, dan akhir dengan tepat',
+        3: 'membaca rangkaian ayat Al-Qur\'an dengan makhraj yang jelas, menerapkan kaidah mad thabi\'i dan ghunnah, serta menulis kata dan kalimat Al-Qur\'an dengan benar',
+        4: 'membaca ayat-ayat Al-Qur\'an dengan menerapkan kaidah qalqalah dan hukum nun sukun/tanwin (idzhar, idgham, iqlab, ikhfa) secara tartil',
+        5: 'membaca Al-Qur\'an secara tartil dengan menerapkan hukum mim sukun (ikhfa syafawi, idgham mimi, idzhar syafawi) dan lam ta\'rif, serta menulis ayat Al-Qur\'an dengan rapi',
+        6: 'membaca Al-Qur\'an secara fasih dan tartil dengan menerapkan hukum mad far\'i serta tanda-tanda waqaf secara tepat, dan menyalin ayat Al-Qur\'an sesuai kaidah khat dasar'
+      },
+      // 15. Muatan Lokal: Tahfizh
+      MPL_TAHFIZH: {
+        1: 'menghafal surah-surah pendek pilihan dalam Juz 30 (Surah an-Nas sampai al-Fil) dengan pelafalan makhraj yang jelas dan adab tilawah yang baik',
+        2: 'menghafal dan menjaga kelancaran hafalan surah-surah pendek dalam Juz 30 (Surah al-Humazah sampai al-Zalzalah) dengan bacaan yang jelas dan tartil',
+        3: 'menghafal dan memurojaah surah-surah dalam Juz 30 (Surah al-Bayyinah sampai ad-Duha) secara tartil sesuai kaidah tajwid dasar',
+        4: 'menghafal dan menjaga kelancaran hafalan surah-surah dalam Juz 30 (Surah al-Lail sampai al-Buruj) dengan ketepatan makhraj dan hukum tajwid yang konsisten',
+        5: 'menghafal dan memurojaah surah-surah dalam Juz 30 (Surah al-Insyiqaq sampai an-Naba\') secara tartil, fasih, dan lancar',
+        6: 'menghafal dan menjaga kelancaran hafalan Juz 30 secara utuh serta surah-surah pilihan pada Juz 29 dengan bacaan yang tartil dan sesuai kaidah ilmu tajwid'
+      }
+    };
+
+    function eraporApp() {
+      return {
+        apiUrl: localStorage.getItem('erapor_gas_url') || '',
+        showApiInput: !localStorage.getItem('erapor_gas_url'),
+        user: JSON.parse(localStorage.getItem('erapor_user') || 'null'),
+        activeMenu: 'dashboard',
+        sidebarOpen: window.innerWidth >= 768,
+        darkMode: localStorage.getItem('erapor_theme') === 'dark',
+        digitalClock: '',
+        clockInterval: null,
+        loading: false,
+        loadingText: 'Memuat data...',
+        toast: { show: false, message: '', type: 'success' },
+
+        loginForm: { username: '', password: '' },
+
+        master: {
+          settings: {
+            nama_sekolah: 'SD IT AL-IQRA',
+            npsn: '20269988',
+            logo_sekolah: '',
+            tahun_ajaran: '2026/2027',
+            semester: '1 (Ganjil)',
+            tanggal_rapor: '19 Desember 2026',
+            tempat_cetak: 'Tirtamulya'
+          },
+          kelas: [],
+          mapel: [],
+          siswa: [],
+          plotting: [],
+          users: []
+        },
+
+        selectedKelas: '',
+        selectedMapel: '',
+        kelasData: { nilaiIntra: [], nilaiKokurikuler: [], dataWali: [] },
+        formNilaiIntra: [],
+        formKokurikuler: [],
+        formWali: [],
+        temaKokurikulerGlobal: 'Projek Penguatan Dimensi Profil Lulusan & Pembiasaan Karakter',
+
+        // 4 Dimensi Profil Lulusan yang Digunakan
+        dimensiList: [
+          { key: 'keimanan', label: '1. Keimanan & Ketakwaan thd Tuhan YME' },
+          { key: 'penalaran_kritis', label: '2. Penalaran Kritis' },
+          { key: 'kreativitas', label: '3. Kreativitas' },
+          { key: 'kemandirian', label: '4. Kemandirian' }
+        ],
+
+        // Daftar Ekstrakurikuler Pilihan
+        ekskulPilihanList: [
+          'Tahfizh',
+          'English Club',
+          'Calistung',
+          'Taekwondo',
+          'Futsal',
+          'Volly',
+          'Hadroh/Marawis'
+        ],
+
+        selectedSiswaPrint: '',
+        raporData: null,
+
+        adminStats: {
+          kelasStats: [],
+          guruStats: []
+        },
+
+        async initApp() {
+          this.startClock();
+          if (this.user && this.apiUrl) {
+            await this.refreshMasterData();
+            if (this.user.role === 'admin') {
+              await this.loadAdminStats();
+            }
+          }
+        },
+
+        toggleTheme() {
+          this.darkMode = !this.darkMode;
+          localStorage.setItem('erapor_theme', this.darkMode ? 'dark' : 'light');
+        },
+
+        getLogoUrl() {
+          const raw = String(this.master.settings.logo_sekolah || '').trim();
+          if (!raw) return '';
+          // Konversi otomatis link share Google Drive menjadi direct image link
+          const driveMatch = raw.match(/\/d\/([a-zA-Z0-9_-]+)/) || raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+          if (raw.includes('drive.google.com') && driveMatch && driveMatch[1]) {
+            return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+          }
+          return raw;
+        },
+
+        selectMenu(menu) {
+          this.activeMenu = menu;
+          if (window.innerWidth < 768) {
+            this.sidebarOpen = false;
+          }
+        },
+
+        startClock() {
+          const update = () => {
+            const now = new Date();
+            const jam = String(now.getHours()).padStart(2, '0');
+            const menit = String(now.getMinutes()).padStart(2, '0');
+            const detik = String(now.getSeconds()).padStart(2, '0');
+            this.digitalClock = `${jam}:${menit}:${detik} WIB`;
+          };
+          update();
+          if (this.clockInterval) clearInterval(this.clockInterval);
+          this.clockInterval = setInterval(update, 1000);
+        },
+
+        formatTanggalIndo(rawVal) {
+          if (!rawVal) return '-';
+          const bulanIndo = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+          ];
+
+          // Jika sudah berformat "19 Desember 2026"
+          const str = String(rawVal).trim();
+          if (/^\d{1,2}\s+[A-Za-z]+\s+\d{4}$/.test(str)) {
+            return str;
+          }
+
+          // Jika berformat DD/MM/YYYY atau DD-MM-YYYY
+          const dmyMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+          if (dmyMatch) {
+            const d = parseInt(dmyMatch[1], 10);
+            const m = parseInt(dmyMatch[2], 10) - 1;
+            const y = dmyMatch[3];
+            if (bulanIndo[m]) return `${d} ${bulanIndo[m]} ${y}`;
+          }
+
+          // Jika berformat ISO Date (contoh dari Google Sheets: 2026-12-18T17:00:00.000Z atau YYYY-MM-DD)
+          const parsed = new Date(str);
+          if (!isNaN(parsed.getTime())) {
+            const d = parsed.getDate();
+            const m = bulanIndo[parsed.getMonth()];
+            const y = parsed.getFullYear();
+            return `${d} ${m} ${y}`;
+          }
+
+          return str;
+        },
+
+        notify(message, type = 'success') {
+          this.toast = { show: true, message, type };
+          setTimeout(() => { this.toast.show = false; }, 3500);
+        },
+
+        async callApi(action, payload = {}) {
+          if (!this.apiUrl) throw new Error('URL Web App Google Apps Script belum diisi!');
+          const response = await fetch(this.apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action, payload })
+          });
+          const resJson = await response.json();
+          if (resJson.status !== 'success') throw new Error(resJson.message || 'Kesalahan server');
+          return resJson;
+        },
+
+        async login() {
+          if (!this.apiUrl) {
+            this.showApiInput = true;
+            return this.notify('Silakan masukkan URL Web App GAS terlebih dahulu.', 'error');
+          }
+          this.loading = true;
+          this.loadingText = 'Bismillah, cek dulu ya...';
+          try {
+            localStorage.setItem('erapor_gas_url', this.apiUrl.trim());
+            const res = await this.callApi('LOGIN', this.loginForm);
+            this.user = res.user;
+            localStorage.setItem('erapor_user', JSON.stringify(res.user));
+            await this.refreshMasterData();
+            if (res.user.role === 'admin') {
+              await this.loadAdminStats();
+            }
+            this.notify('Yey, berhasil! Selamat datang, ' + res.user.nama_lengkap);
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        logout() {
+          this.user = null;
+          localStorage.removeItem('erapor_user');
+          this.activeMenu = 'dashboard';
+        },
+
+        async refreshMasterData() {
+          this.loading = true;
+          this.loadingText = 'Ngambil Data dulu sebentar... Sabar...';
+          try {
+            const res = await this.callApi('GET_INIT_DATA');
+            this.master = {
+              ...this.master,
+              ...res.data,
+              settings: { ...this.master.settings, ...(res.data.settings || {}) }
+            };
+
+            const klsList = this.allowedKelas();
+            if (klsList.length > 0) {
+              const waliKlsId = String(this.user.kelas_wali || '').trim();
+              if (this.user.role === 'wali_kelas' && waliKlsId) {
+                this.selectedKelas = waliKlsId;
+              } else if (!this.selectedKelas || !klsList.some(k => String(k.id_kelas).trim() === String(this.selectedKelas).trim())) {
+                this.selectedKelas = String(klsList[0].id_kelas).trim();
+              }
+              await this.onKelasChange();
+            }
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        formatRole(role) {
+          const map = {
+            admin: 'Administrator Sekolah',
+            wali_kelas: 'Wali Kelas',
+            guru_mapel: 'Guru Mata Pelajaran'
+          };
+          return map[role] || role;
+        },
+
+        // Filter Kelas Otomatis sesuai Wali Kelas atau Plotting Guru Tahfizh (1A-3B / 4A-6B)
+        allowedKelas() {
+          if (this.user.role === 'admin') return this.master.kelas;
+          if (this.user.role === 'wali_kelas') {
+            const uKelas = String(this.user.kelas_wali || '').trim();
+            const uId = String(this.user.id_user || '').trim();
+            return this.master.kelas.filter(k =>
+              String(k.id_kelas).trim() === uKelas || String(k.id_wali_kelas).trim() === uId
+            );
+          }
+          const uId = String(this.user.id_user || '').trim();
+          const plotKelasIds = this.master.plotting
+            .filter(p => String(p.id_guru).trim() === uId)
+            .map(p => String(p.id_kelas).trim());
+          return this.master.kelas.filter(k => plotKelasIds.includes(String(k.id_kelas).trim()));
+        },
+
+        allowedSiswaCount() {
+          const klsIds = this.allowedKelas().map(k => String(k.id_kelas).trim());
+          return this.master.siswa.filter(s => klsIds.includes(String(s.id_kelas).trim())).length;
+        },
+
+        // Filter Mata Pelajaran sesuai Fase Kelas (Fase A tanpa IPAS) dan Role Guru
+        allowedMapel() {
+          const selKls = String(this.selectedKelas || '').trim();
+          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === selKls);
+          const fase = kls ? String(kls.fase).trim() : '';
+
+          let list = this.master.mapel.filter(m => {
+            if (!fase) return true;
+            const berlaku = String(m.fase_berlaku || 'A,B,C').split(',').map(x => x.trim());
+            return berlaku.includes(fase);
+          });
+
+          if (this.user.role === 'guru_mapel') {
+            const uId = String(this.user.id_user || '').trim();
+            const plotMapelIds = this.master.plotting
+              .filter(p => String(p.id_guru).trim() === uId && (!selKls || String(p.id_kelas).trim() === selKls))
+              .map(p => String(p.id_mapel).trim());
+            list = list.filter(m => plotMapelIds.includes(String(m.id_mapel).trim()));
+          }
+
+          return list.sort((a, b) => Number(a.urutan_cetak) - Number(b.urutan_cetak));
+        },
+
+        siswaInSelectedKelas() {
+          const selKls = String(this.selectedKelas || '').trim();
+          return this.master.siswa.filter(s => String(s.id_kelas).trim() === selKls);
+        },
+
+        async onKelasChange() {
+          const mapels = this.allowedMapel();
+          if (mapels.length > 0 && !mapels.some(m => String(m.id_mapel).trim() === String(this.selectedMapel).trim())) {
+            this.selectedMapel = String(mapels[0].id_mapel).trim();
+          }
+          await this.loadNilaiKelas();
+        },
+
+        async loadNilaiKelas() {
+          if (!this.selectedKelas) return;
+          this.loading = true;
+          this.loadingText = 'Memuat daftar peserta didik & nilai...';
+          try {
+            const res = await this.callApi('GET_NILAI_KELAS', {
+              tahun_ajaran: this.master.settings.tahun_ajaran,
+              semester: this.master.settings.semester,
+              id_kelas: this.selectedKelas
+            });
+            this.kelasData = res.data;
+            this.prepareFormNilaiIntra();
+            this.prepareFormKokurikuler();
+            this.prepareFormWali();
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        prepareFormNilaiIntra() {
+          const siswaList = this.siswaInSelectedKelas();
+          const selMpl = String(this.selectedMapel || '').trim();
+          this.formNilaiIntra = siswaList.map(s => {
+            const sId = String(s.id_siswa).trim();
+            const ex = this.kelasData.nilaiIntra.find(n => String(n.id_siswa).trim() === sId && String(n.id_mapel).trim() === selMpl);
+            return {
+              id_nilai: ex?.id_nilai || '',
+              id_siswa: sId,
+              nis: s.nis,
+              nisn: s.nisn,
+              nama_siswa: s.nama_siswa,
+              nilai_akhir: ex?.nilai_akhir !== undefined ? ex.nilai_akhir : '',
+              predikat: ex?.predikat || '',
+              deskripsi_otomatis: ex?.deskripsi_otomatis || ''
+            };
+          });
+        },
+
+        // Konversi Nilai -> Predikat Otomatis & Deskripsi CP 2025/2026 Spesifik per Tingkat Kelas (1–6)
+        updatePredikatDanDeskripsi(row) {
+          const val = Number(row.nilai_akhir);
+          if (row.nilai_akhir === '' || row.nilai_akhir === null || isNaN(val)) {
+            row.predikat = '';
+            row.deskripsi_otomatis = '';
+            return;
+          }
+
+          let predikat = 'D';
+          if (val >= 90) predikat = 'A';
+          else if (val >= 80) predikat = 'B';
+          else if (val >= 70) predikat = 'C';
+          row.predikat = predikat;
+
+          const selKls = String(this.selectedKelas || '').trim();
+          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === selKls);
+
+          // Ambil tingkat kelas (1-6) dari kolom tingkat atau dari karakter angka pertama nama_kelas (misal: "1A" -> 1)
+          let tingkat = kls ? parseInt(String(kls.tingkat || '').trim(), 10) : NaN;
+          if (isNaN(tingkat) && kls && kls.nama_kelas) {
+            const matchAngka = String(kls.nama_kelas).match(/\d+/);
+            if (matchAngka) tingkat = parseInt(matchAngka[0], 10);
+          }
+          if (isNaN(tingkat) || tingkat < 1 || tingkat > 6) {
+            const faseFallback = kls ? String(kls.fase).trim() : 'A';
+            tingkat = faseFallback === 'A' ? 1 : (faseFallback === 'B' ? 3 : 5);
+          }
+
+          const cpObj = CP_BANK_2026[String(this.selectedMapel).trim()];
+          const cpText = (cpObj && cpObj[tingkat]) ? cpObj[tingkat] : `memahami dan menerapkan materi pembelajaran kelas ${tingkat} sesuai capaian pembelajaran`;
+
+          const templateNarasi = {
+            A: `Menunjukkan penguasaan yang sangat baik dan mendalam dalam ${cpText}.`,
+            B: `Menunjukkan penguasaan yang baik dalam ${cpText}.`,
+            C: `Cukup menguasai dalam ${cpText}, namun perlu pembiasaan dan latihan lebih lanjut agar semakin optimal.`,
+            D: `Perlu bimbingan dan pendampingan khusus dalam ${cpText}.`
+          };
+
+          row.deskripsi_otomatis = templateNarasi[predikat];
+        },
+
+        getLabelPredikat(p) {
+          const labels = { A: 'Sangat Baik', B: 'Baik', C: 'Cukup', D: 'Perlu Bimbingan' };
+          return labels[p] || '';
+        },
+
+        async saveNilaiIntraBatch() {
+          this.loading = true;
+          this.loadingText = 'Menyimpan nilai mata pelajaran...';
+          try {
+            const validRecords = this.formNilaiIntra.filter(r => r.nilai_akhir !== '');
+            await this.callApi('SAVE_NILAI_BATCH', {
+              tahun_ajaran: this.master.settings.tahun_ajaran,
+              semester: this.master.settings.semester,
+              id_mapel: this.selectedMapel,
+              records: validRecords
+            });
+            await this.loadNilaiKelas();
+            this.notify('Nilai dan deskripsi otomatis berhasil disimpan!');
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        // KOKURIKULER (4 DIMENSI PROFIL LULUSAN)
+        prepareFormKokurikuler() {
+          const siswaList = this.siswaInSelectedKelas();
+          this.formKokurikuler = siswaList.map(s => {
+            const sId = String(s.id_siswa).trim();
+            const ex = this.kelasData.nilaiKokurikuler.find(k => String(k.id_siswa).trim() === sId);
+            let dimObj = {};
+            this.dimensiList.forEach(d => { dimObj[d.key] = 'Berkembang Sesuai Harapan (BSH)'; });
+            if (ex?.dimensi_json) {
+              try {
+                const parsed = JSON.parse(ex.dimensi_json);
+                this.dimensiList.forEach(d => {
+                  if (parsed[d.key]) dimObj[d.key] = parsed[d.key];
+                });
+              } catch (e) {}
+            }
+            if (ex?.tema_projek) this.temaKokurikulerGlobal = ex.tema_projek;
+
+            const row = {
+              id_kokurikuler: ex?.id_kokurikuler || '',
+              id_siswa: sId,
+              nis: s.nis,
+              nama_siswa: s.nama_siswa,
+              tema_projek: ex?.tema_projek || this.temaKokurikulerGlobal,
+              dimensi: dimObj,
+              catatan_kokurikuler: ex?.catatan_kokurikuler || ''
+            };
+            if (!row.catatan_kokurikuler) this.generateCatatanKokurikuler(row);
+            return row;
+          });
+        },
+
+        syncTemaKokurikuler() {
+          this.formKokurikuler.forEach(r => { r.tema_projek = this.temaKokurikulerGlobal; });
+        },
+
+        generateCatatanKokurikuler(row) {
+          const sbList = [];
+          const bshList = [];
+          const perluBimbinganList = [];
+
+          const mapDisiplinIlmu = {
+            keimanan: 'nilai-nilai keagamaan dan pembiasaan ibadah (PAI, Al-Qur\'an Hadits, Akidah Akhlak, Fikih, BTQ, dan Tahfizh)',
+            penalaran_kritis: 'pemecahan masalah dan literasi-numerasi (Matematika, IPAS, dan Bahasa Indonesia)',
+            kreativitas: 'ekspresi karya dan komunikasi budaya (SBdP, Bahasa Sunda, dan Bahasa Inggris)',
+            kemandirian: 'tanggung jawab, kedisiplinan, dan ketangguhan diri (Pendidikan Pancasila, PJOK, dan Bahasa Arab)'
+          };
+
+          const kekuatanDisiplin = [];
+
+          this.dimensiList.forEach(d => {
+            const cleanName = d.label.replace(/^\d+\.\s*/, '');
+            const status = row.dimensi[d.key];
+            if (status === 'Sangat Berkembang (SB)') {
+              sbList.push(cleanName);
+              kekuatanDisiplin.push(mapDisiplinIlmu[d.key]);
+            } else if (status === 'Berkembang Sesuai Harapan (BSH)') {
+              bshList.push(cleanName);
+              kekuatanDisiplin.push(mapDisiplinIlmu[d.key]);
+            } else {
+              perluBimbinganList.push(cleanName);
+            }
+          });
+
+          const temaAktif = (row.tema_projek || this.temaKokurikulerGlobal || 'Projek Penguatan Dimensi Profil Lulusan').trim();
+          let kalimat = [];
+
+          if (sbList.length > 0) {
+            kalimat.push(`Dalam kegiatan kokurikuler "${temaAktif}", murid menunjukkan capaian Sangat Berkembang pada dimensi ${sbList.join(', ')}.`);
+          }
+          if (bshList.length > 0) {
+            kalimat.push(`Murid menunjukkan capaian Berkembang Sesuai Harapan pada dimensi ${bshList.join(', ')}.`);
+          }
+          if (kekuatanDisiplin.length > 0) {
+            kalimat.push(`Murid mampu mengintegrasikan kompetensi lintas disiplin ilmu secara nyata, khususnya dalam ${kekuatanDisiplin.slice(0, 2).join(' serta ')}.`);
+          }
+          if (perluBimbinganList.length > 0) {
+            kalimat.push(`Perlu pendampingan dan pembiasaan berkelanjutan pada dimensi ${perluBimbinganList.join(', ')}.`);
+          }
+
+          row.catatan_kokurikuler = kalimat.join(' ');
+        },
+
+        applyRekomendasiKokurikulerLintasDisiplin() {
+          if (!this.selectedKelas || this.formKokurikuler.length === 0) return;
+
+          const rumpunMapel = {
+            keimanan: ['MPL_PAI', 'MPL_QH', 'MPL_AA', 'MPL_FIKIH', 'MPL_BTQ', 'MPL_TAHFIZH'],
+            penalaran_kritis: ['MPL_MTK', 'MPL_IPAS', 'MPL_BINDO'],
+            kreativitas: ['MPL_SBDP', 'MPL_SUNDA', 'MPL_BING'],
+            kemandirian: ['MPL_PJOK', 'MPL_PPKN', 'MPL_BARAB']
+          };
+
+          const konversiPredikatDimensi = (rataRata) => {
+            if (rataRata === null) return 'Berkembang Sesuai Harapan (BSH)';
+            if (rataRata >= 90) return 'Sangat Berkembang (SB)';
+            if (rataRata >= 80) return 'Berkembang Sesuai Harapan (BSH)';
+            if (rataRata >= 70) return 'Sedang Berkembang (SDB)';
+            return 'Mulai Berkembang (MB)';
+          };
+
+          let siswaTerproses = 0;
+
+          this.formKokurikuler.forEach(row => {
+            const sId = String(row.id_siswa).trim();
+            const nilaiSiswa = this.kelasData.nilaiIntra.filter(n => String(n.id_siswa).trim() === sId);
+
+            if (nilaiSiswa.length > 0) siswaTerproses++;
+
+            Object.keys(rumpunMapel).forEach(dimKey => {
+              const targetIds = rumpunMapel[dimKey];
+              const skorList = nilaiSiswa
+                .filter(n => targetIds.includes(String(n.id_mapel).trim()) && n.nilai_akhir !== '' && !isNaN(Number(n.nilai_akhir)))
+                .map(n => Number(n.nilai_akhir));
+
+              const avg = skorList.length > 0
+                ? skorList.reduce((acc, v) => acc + v, 0) / skorList.length
+                : null;
+
+              row.dimensi[dimKey] = konversiPredikatDimensi(avg);
+            });
+
+            this.generateCatatanKokurikuler(row);
+          });
+
+          if (siswaTerproses === 0) {
+            this.notify('Belum ada nilai Intra/Mulok yang tersimpan di kelas ini. Default BSH diterapkan.', 'error');
+          } else {
+            this.notify(`Rekomendasi kokurikuler lintas disiplin berhasil disusun untuk ${siswaTerproses} murid!`);
+          }
+        },
+
+        async saveKokurikulerBatch() {
+          this.syncTemaKokurikuler();
+          this.loading = true;
+          this.loadingText = 'Menyimpan penilaian Kokurikuler...';
+          try {
+            await this.callApi('SAVE_KOKURIKULER_BATCH', {
+              tahun_ajaran: this.master.settings.tahun_ajaran,
+              semester: this.master.settings.semester,
+              records: this.formKokurikuler
+            });
+            await this.loadNilaiKelas();
+            this.notify('Penilaian Kokurikuler (Dimensi Profil Lulusan) berhasil disimpan!');
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        // EKSTRAKURIKULER & WALI KELAS
+        hitungPeringkatKelas() {
+          const siswaList = this.siswaInSelectedKelas();
+          const rekap = siswaList.map(s => {
+            const sId = String(s.id_siswa).trim();
+            const nilaiSiswa = this.kelasData.nilaiIntra.filter(
+              n => String(n.id_siswa).trim() === sId && n.nilai_akhir !== '' && !isNaN(Number(n.nilai_akhir))
+            );
+            const total = nilaiSiswa.reduce((sum, n) => sum + Number(n.nilai_akhir), 0);
+            const rata = nilaiSiswa.length > 0 ? total / nilaiSiswa.length : 0;
+            return {
+              id_siswa: sId,
+              total,
+              rata,
+              jumlahMapel: nilaiSiswa.length
+            };
+          });
+
+          // Urutkan berdasarkan total nilai tertinggi, lalu rata-rata tertinggi
+          const sorted = [...rekap].sort((a, b) => b.total - a.total || b.rata - a.rata);
+          const rankMap = {};
+          sorted.forEach((item, idx) => {
+            rankMap[item.id_siswa] = {
+              peringkat: item.jumlahMapel > 0 ? idx + 1 : null,
+              total: item.total,
+              rata: item.rata,
+              totalSiswa: siswaList.length
+            };
+          });
+          return rankMap;
+        },
+
+        generateCatatanWaliRow(row) {
+          const totalSiswa = this.formWali.length || 1;
+          const rank = row.peringkat;
+          const rata = row.rataNilai || 0;
+          const sakit = Number(row.sakit) || 0;
+          const izin = Number(row.izin) || 0;
+          const alpa = Number(row.alpa) || 0;
+          const totalAbsen = sakit + izin + alpa;
+
+          // 1. Narasi berdasarkan peringkat & capaian akademik
+          let kalimatAkademik = '';
+          if (rank === 1) {
+            kalimatAkademik = `Alhamdulillah, ananda ${row.nama_siswa} meraih prestasi gemilang dengan menempati peringkat ke-1 dari ${totalSiswa} murid di kelas. Pertahankan semangat belajar, kerendahan hati, dan jadilah teladan kebaikan bagi teman-teman.`;
+          } else if (rank === 2 || rank === 3) {
+            kalimatAkademik = `Selamat atas pencapaian luar biasa ananda ${row.nama_siswa} yang berhasil meraih peringkat ke-${rank} dari ${totalSiswa} murid di kelas. Terus pertahankan konsistensi belajar dan tingkatkan potensi diri di semester berikutnya.`;
+          } else if (rank && rank <= 10) {
+            kalimatAkademik = `Ananda ${row.nama_siswa} menunjukkan perkembangan belajar yang sangat baik dengan menempati peringkat ke-${rank} dari ${totalSiswa} murid. Terus tingkatkan ketekunan dan fokus belajar agar dapat meraih hasil yang lebih optimal.`;
+          } else if (rank) {
+            kalimatAkademik = `Ananda ${row.nama_siswa} menunjukkan perkembangan belajar yang positif (peringkat ke-${rank} dari ${totalSiswa} murid). Terus tingkatkan motivasi belajar, kedisiplinan mengulang pelajaran di rumah, dan keberanian bertanya di kelas.`;
+          } else {
+            kalimatAkademik = `Ananda ${row.nama_siswa} menunjukkan semangat belajar dan perkembangan karakter yang baik selama semester ini.`;
+          }
+
+          // 2. Narasi berdasarkan kehadiran (Sakit, Izin, Alpa)
+          let kalimatKehadiran = '';
+          if (totalAbsen === 0) {
+            kalimatKehadiran = ' Tingkat kehadiran ananda sangat membanggakan (hadir 100% tanpa absen), mencerminkan kedisiplinan dan tanggung jawab yang tinggi.';
+          } else if (alpa === 0 && sakit > 0 && izin === 0) {
+            kalimatKehadiran = ` Ketidakhadiran ananda selama ${sakit} hari disebabkan oleh faktor kesehatan (sakit); semoga Allah Swt. senantiasa menganugerahkan kesehatan dan kekuatan agar ananda dapat mengikuti pembelajaran dengan optimal.`;
+          } else if (alpa === 0) {
+            kalimatKehadiran = ` Kehadiran ananda tergolong baik dengan keterangan sakit ${sakit} hari dan izin ${izin} hari.`;
+          } else if (alpa <= 2) {
+            kalimatKehadiran = ` Diharapkan ananda dan orang tua dapat lebih memperhatikan kedisiplinan kehadiran di sekolah (tercatat ${alpa} hari tanpa keterangan) agar tidak tertinggal materi pembelajaran.`;
+          } else {
+            kalimatKehadiran = ` Perlu perhatian dan kerja sama lebih erat antara orang tua dan sekolah terkait kedisiplinan kehadiran ananda (tercatat ${alpa} hari tanpa keterangan) demi kelancaran proses belajar ananda.`;
+          }
+
+          row.catatan_wali = (kalimatAkademik + kalimatKehadiran).trim();
+        },
+
+        generateSemuaCatatanWali() {
+          if (!this.selectedKelas || this.formWali.length === 0) return;
+          const rankMap = this.hitungPeringkatKelas();
+          let adaNilai = false;
+
+          this.formWali.forEach(row => {
+            const info = rankMap[row.id_siswa];
+            if (info && info.peringkat) {
+              row.peringkat = info.peringkat;
+              row.rataNilai = info.rata;
+              adaNilai = true;
+            }
+            this.generateCatatanWaliRow(row);
+          });
+
+          if (!adaNilai) {
+            this.notify('Catatan berdasarkan kehadiran dibuat (nilai mapel belum diinput sehingga peringkat belum tersedia).', 'error');
+          } else {
+            this.notify('Catatan wali kelas otomatis berdasarkan peringkat & kehadiran berhasil dibuat!');
+          }
+        },
+
+        prepareFormWali() {
+          const siswaList = this.siswaInSelectedKelas();
+          const rankMap = this.hitungPeringkatKelas();
+          this.formWali = siswaList.map(s => {
+            const sId = String(s.id_siswa).trim();
+            const ex = this.kelasData.dataWali.find(w => String(w.id_siswa).trim() === sId);
+            const rankInfo = rankMap[sId] || { peringkat: null, rata: 0 };
+            let pilihan = [];
+            let prestasiPramuka = '';
+            if (ex?.ekskul_pilihan_json) {
+              try {
+                const parsed = JSON.parse(ex.ekskul_pilihan_json);
+                if (Array.isArray(parsed)) {
+                  const pramukaMeta = parsed.find(item => item.is_wajib_pramuka);
+                  if (pramukaMeta) prestasiPramuka = pramukaMeta.prestasi || '';
+                  pilihan = parsed.filter(item => !item.is_wajib_pramuka);
+                }
+              } catch (e) { pilihan = []; }
+            }
+            const row = {
+              id_catatan: ex?.id_catatan || '',
+              id_siswa: sId,
+              nama_siswa: s.nama_siswa,
+              peringkat: rankInfo.peringkat,
+              rataNilai: rankInfo.rata,
+              sakit: ex?.sakit || 0,
+              izin: ex?.izin || 0,
+              alpa: ex?.alpa || 0,
+              ekskul_wajib: ex?.ekskul_wajib || 'Baik',
+              prestasi_pramuka: prestasiPramuka,
+              ekskul_pilihan: pilihan,
+              catatan_wali: ex?.catatan_wali || '',
+              status_naik: ex?.status_naik || '-'
+            };
+            if (!row.catatan_wali) {
+              this.generateCatatanWaliRow(row);
+            }
+            return row;
+          });
+        },
+
+        async saveWaliBatch() {
+          this.loading = true;
+          this.loadingText = 'Menyimpan data Ekstrakurikuler & Wali Kelas...';
+          try {
+            const payloadRecords = this.formWali.map(r => {
+              const combinedPilihan = [...(r.ekskul_pilihan || [])];
+              if (r.prestasi_pramuka && String(r.prestasi_pramuka).trim() !== '') {
+                combinedPilihan.unshift({
+                  nama: 'Pramuka (Ekstrakurikuler Wajib)',
+                  predikat: r.ekskul_wajib || 'Baik',
+                  prestasi: String(r.prestasi_pramuka).trim(),
+                  is_wajib_pramuka: true
+                });
+              }
+              return {
+                ...r,
+                ekskul_pilihan: combinedPilihan
+              };
+            });
+
+            await this.callApi('SAVE_WALI_BATCH', {
+              tahun_ajaran: this.master.settings.tahun_ajaran,
+              semester: this.master.settings.semester,
+              records: payloadRecords
+            });
+            await this.loadNilaiKelas();
+            this.notify('Data Ekstrakurikuler & Wali Kelas berhasil disimpan!');
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        // CETAK RAPOR
+        async loadRaporSiswa() {
+          if (!this.selectedSiswaPrint) {
+            this.raporData = null;
+            return;
+          }
+          this.loading = true;
+          this.loadingText = 'Menyusun lembar rapor...';
+          try {
+            const res = await this.callApi('GET_RAPOR_SISWA', {
+              tahun_ajaran: this.master.settings.tahun_ajaran,
+              semester: this.master.settings.semester,
+              id_siswa: this.selectedSiswaPrint
+            });
+            this.raporData = res.data;
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        getKelasOnlyName(id) {
+          const cleanId = String(id || '').trim();
+          return this.master.kelas.find(x => String(x.id_kelas).trim() === cleanId)?.nama_kelas || id;
+        },
+
+        getKelasFase(id) {
+          const cleanId = String(id || '').trim();
+          return this.master.kelas.find(x => String(x.id_kelas).trim() === cleanId)?.fase || '-';
+        },
+
+        getWaliKelasName(idKelas) {
+          const cleanId = String(idKelas || '').trim();
+          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === cleanId);
+          const wali = this.master.users.find(u => String(u.id_user).trim() === String(kls?.id_wali_kelas || '').trim());
+          return wali ? wali.nama_lengkap : this.user.nama_lengkap;
+        },
+
+        getWaliKelasNip(idKelas) {
+          const cleanId = String(idKelas || '').trim();
+          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === cleanId);
+          const wali = this.master.users.find(u => String(u.id_user).trim() === String(kls?.id_wali_kelas || '').trim());
+          return wali?.nip_nik || this.user.nip_nik || '-';
+        },
+
+        getRaporMapelByGroup(groupName) {
+          const fase = this.getKelasFase(this.raporData?.siswa?.id_kelas);
+          return this.master.mapel
+            .filter(m => {
+              const berlaku = String(m.fase_berlaku || 'A,B,C').split(',').map(x => x.trim());
+              return String(m.kelompok).trim() === groupName && berlaku.includes(fase);
+            })
+            .sort((a, b) => Number(a.urutan_cetak) - Number(b.urutan_cetak));
+        },
+
+        getNilaiSiswaMapel(idMapel) {
+          const cleanMpl = String(idMapel || '').trim();
+          return this.raporData?.nilaiIntra.find(n => String(n.id_mapel).trim() === cleanMpl);
+        },
+
+        getRaporTotalNilai() {
+          if (!this.raporData) return '-';
+          const mapelTampil = [
+            ...this.getRaporMapelByGroup('Intrakurikuler'),
+            ...this.getRaporMapelByGroup('Mulok')
+          ];
+          let total = 0;
+          let adaNilai = false;
+          mapelTampil.forEach(m => {
+            const raw = this.getNilaiSiswaMapel(m.id_mapel)?.nilai_akhir;
+            const num = Number(raw);
+            if (raw !== undefined && raw !== '' && !isNaN(num)) {
+              total += num;
+              adaNilai = true;
+            }
+          });
+          return adaNilai ? total : '-';
+        },
+
+        getRaporPrestasiEkskulList() {
+          const wali = this.raporData?.dataWali;
+          const list = [];
+          if (wali?.ekskul_pilihan_json) {
+            try {
+              const arr = JSON.parse(wali.ekskul_pilihan_json);
+              arr.forEach(item => {
+                if (item.nama && item.prestasi && String(item.prestasi).trim() !== '') {
+                  list.push({
+                    nama: item.nama,
+                    prestasi: String(item.prestasi).trim()
+                  });
+                }
+              });
+            } catch (e) {}
+          }
+          return list;
+        },
+
+        getRaporFooterLeft() {
+          const rawSmt = String(this.master.settings.semester || 'Ganjil');
+          let smtLabel = rawSmt;
+          if (rawSmt.toLowerCase().includes('ganjil') || rawSmt.startsWith('1')) {
+            smtLabel = 'Ganjil';
+          } else if (rawSmt.toLowerCase().includes('genap') || rawSmt.startsWith('2')) {
+            smtLabel = 'Genap';
+          }
+          const ta = this.master.settings.tahun_ajaran || '2026/2027';
+          return `Rapor Semester ${smtLabel} TA. ${ta}`;
+        },
+
+        formatTitleCase(str) {
+          return String(str || '')
+            .toLowerCase()
+            .replace(/\b\w/g, char => char.toUpperCase());
+        },
+
+        getRaporFooterRight() {
+          const s = this.raporData?.siswa;
+          if (!s) return '';
+          return `${this.formatTitleCase(s.nama_siswa)} | ${s.nis} | ${s.nisn}`;
+        },
+
+        getRaporEkskulList() {
+          const wali = this.raporData?.dataWali;
+          const list = [
+            {
+              nama: 'Pramuka (Ekstrakurikuler Wajib)',
+              predikat: wali?.ekskul_wajib || 'Baik',
+              keterangan: 'Aktif mengikuti kegiatan kepramukaan dan menunjukkan sikap disiplin serta gotong royong.'
+            }
+          ];
+          if (wali?.ekskul_pilihan_json) {
+            try {
+              const arr = JSON.parse(wali.ekskul_pilihan_json);
+              arr.forEach(item => {
+                if (item.nama && !item.is_wajib_pramuka) {
+                  list.push({
+                    nama: item.nama,
+                    predikat: item.predikat || 'Baik',
+                    keterangan: `Menunjukkan partisipasi dan perkembangan keterampilan yang ${String(item.predikat || 'baik').toLowerCase()} dalam kegiatan ${item.nama}.`
+                  });
+                }
+              });
+            } catch (e) {}
+          }
+          return list;
+        },
+
+        // STATISTIK PROGRES ADMIN
+        async loadAdminStats() {
+          if (this.user?.role !== 'admin') return;
+          this.loading = true;
+          this.loadingText = 'Menghitung statistik progres guru & wali kelas...';
+          try {
+            const res = await this.callApi('GET_ADMIN_STATS', {
+              tahun_ajaran: this.master.settings.tahun_ajaran,
+              semester: this.master.settings.semester
+            });
+            this.adminStats = res.data || { kelasStats: [], guruStats: [] };
+          } catch (err) {
+            this.notify(err.message, 'error');
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        getOverallAdminProgress() {
+          const list = this.adminStats.kelasStats || [];
+          const aktif = list.filter(k => k.jumlah_siswa > 0);
+          if (aktif.length === 0) return { total: 0, intra: 0, kokurikuler: 0, wali: 0 };
+
+          const sumIntra = aktif.reduce((acc, k) => acc + k.persen_intra, 0);
+          const sumKoku = aktif.reduce((acc, k) => acc + k.persen_kokurikuler, 0);
+          const sumWali = aktif.reduce((acc, k) => acc + k.persen_wali, 0);
+
+          const intra = Math.round(sumIntra / aktif.length);
+          const kokurikuler = Math.round(sumKoku / aktif.length);
+          const wali = Math.round(sumWali / aktif.length);
+          const total = Math.round((intra + kokurikuler + wali) / 3);
+
+          return { total, intra, kokurikuler, wali };
+        }
+      };
+    }
+  </script>
+</body>
+</html>
