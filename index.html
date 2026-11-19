@@ -172,29 +172,6 @@
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Gunakan akun Guru, Wali Kelas, atau Administrator sekolah Anda.</p>
           </div>
 
-          <div class="mb-5 bg-slate-50 dark:bg-slate-800/70 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <label class="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                <i class="fa-solid fa-server text-blue-700 dark:text-blue-400"></i> Koneksi Server Google Apps Script
-              </label>
-              <button type="button" @click="showApiInput = !showApiInput" class="text-xs text-blue-700 dark:text-blue-400 hover:underline font-medium">
-                <span x-text="showApiInput ? 'Sembunyikan' : 'Atur URL'"></span>
-              </button>
-            </div>
-            <div x-show="showApiInput" class="space-y-2 pt-1">
-              <div>
-                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">URL Web App e-RDA Utama:</span>
-                <input type="url" x-model="apiUrl" placeholder="https://script.google.com/macros/s/.../exec"
-                       class="w-full text-xs px-3 py-2 mt-0.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none">
-              </div>
-              <div>
-                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">URL Web App e-Rapor ASAS (Sumber Nilai):</span>
-                <input type="url" x-model="asasApiUrl" placeholder="https://script.google.com/macros/s/.../exec"
-                       class="w-full text-xs px-3 py-2 mt-0.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:outline-none">
-              </div>
-            </div>
-          </div>
-
           <form @submit.prevent="login()" class="space-y-4">
             <div>
               <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Username</label>
@@ -327,9 +304,15 @@
           </button>
 
           <!-- Chip User -->
-          <div class="hidden md:flex items-center gap-2 pl-2 pr-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <div class="w-7 h-7 rounded-lg bg-blue-800 text-white flex items-center justify-center text-xs font-bold"
-                 x-text="user.nama_lengkap ? user.nama_lengkap.charAt(0).toUpperCase() : 'U'"></div>
+          <div class="hidden md:flex items-center gap-2.5 pl-1.5 pr-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div class="w-8 h-8 rounded-lg bg-blue-800 text-white flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
+              <img x-show="getUserPhotoUrl(user)" :src="getUserPhotoUrl(user)" alt="Foto Profil"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                   class="w-full h-full object-cover">
+              <span :style="getUserPhotoUrl(user) ? 'display:none' : 'display:flex'"
+                    class="w-full h-full items-center justify-center"
+                    x-text="user.nama_lengkap ? user.nama_lengkap.charAt(0).toUpperCase() : 'U'"></span>
+            </div>
             <div class="leading-tight">
               <div class="text-xs font-bold text-slate-800 dark:text-white max-w-[130px] truncate" x-text="user.nama_lengkap"></div>
               <div class="text-[10px] text-slate-500 dark:text-slate-400" x-text="formatRole(user.role)"></div>
@@ -355,15 +338,29 @@
           <!-- Banner Sambutan & Ringkasan Periode -->
           <div class="bg-gradient-to-r from-blue-950 via-blue-800 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
             <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div class="space-y-2 max-w-2xl">
-                <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-semibold border border-white/20">
-                  <i class="fa-solid fa-sparkles text-amber-300"></i>
-                  <span x-text="formatRole(user.role)"></span>
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 max-w-2xl">
+                <!-- Foto Profil Wali Kelas / Guru -->
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/15 p-1.5 border-2 border-white/30 shadow-xl shrink-0">
+                  <div class="w-full h-full rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-blue-950 flex items-center justify-center font-extrabold text-3xl overflow-hidden">
+                    <img x-show="getUserPhotoUrl(user)" :src="getUserPhotoUrl(user)" alt="Foto Profil"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         class="w-full h-full object-cover">
+                    <span :style="getUserPhotoUrl(user) ? 'display:none' : 'display:flex'"
+                          class="w-full h-full items-center justify-center"
+                          x-text="user.nama_lengkap ? user.nama_lengkap.charAt(0).toUpperCase() : 'U'"></span>
+                  </div>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight" x-text="'Assalamu\'alaikum, ' + user.nama_lengkap"></h1>
-                <p class="text-blue-100 text-xs sm:text-sm leading-relaxed">
-                  Pilih modul aplikasi di bawah ini untuk mulai mengelola penilaian rapor Kurikulum Merdeka, menarik nilai dari e-Rapor ASAS, hingga mencetak rapor peserta didik.
-                </p>
+
+                <div class="space-y-2">
+                  <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-semibold border border-white/20">
+                    <i class="fa-solid fa-sparkles text-amber-300"></i>
+                    <span x-text="formatRole(user.role)"></span>
+                  </div>
+                  <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight" x-text="'Assalamu\'alaikum, ' + user.nama_lengkap"></h1>
+                  <p class="text-blue-100 text-xs sm:text-sm leading-relaxed">
+                    Pilih modul aplikasi di bawah ini untuk mulai mengelola penilaian rapor Kurikulum Merdeka, menarik nilai dari e-Rapor ASAS, hingga mencetak rapor peserta didik.
+                  </p>
+                </div>
               </div>
 
               <!-- 4 Stat Mini di dalam Banner -->
@@ -1182,7 +1179,19 @@
                         <span class="font-bold text-slate-800 dark:text-white" x-text="ks.nama_kelas"></span>
                         <div class="text-[10px] text-slate-400" x-text="'Fase ' + ks.fase"></div>
                       </td>
-                      <td class="px-4 py-3 font-medium text-slate-800 dark:text-slate-100" x-text="ks.wali_nama"></td>
+                      <td class="px-4 py-3">
+                        <div class="flex items-center gap-2.5">
+                          <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                            <img x-show="getWaliPhotoByKelas(ks.id_kelas)" :src="getWaliPhotoByKelas(ks.id_kelas)" alt="Foto"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                 class="w-full h-full object-cover">
+                            <span :style="getWaliPhotoByKelas(ks.id_kelas) ? 'display:none' : 'display:flex'"
+                                  class="w-full h-full items-center justify-center"
+                                  x-text="ks.wali_nama ? ks.wali_nama.charAt(0).toUpperCase() : 'W'"></span>
+                          </div>
+                          <span class="font-medium text-slate-800 dark:text-slate-100" x-text="ks.wali_nama"></span>
+                        </div>
+                      </td>
                       <td class="px-3 py-3 text-center font-semibold text-slate-600 dark:text-slate-300" x-text="ks.jumlah_siswa"></td>
                       <td class="px-3 py-3 text-center">
                         <div class="text-xs font-bold tabular-nums" :class="ks.persen_intra === 100 ? 'text-emerald-600' : 'text-slate-700 dark:text-slate-200'" x-text="ks.persen_intra + '%'"></div>
@@ -1406,7 +1415,6 @@
       return {
         apiUrl: localStorage.getItem('erapor_gas_url') || DEFAULT_ERDA_API_URL,
         asasApiUrl: localStorage.getItem('erapor_asas_api_url') || DEFAULT_ASAS_API_URL,
-        showApiInput: false,
         user: JSON.parse(localStorage.getItem('erapor_user') || 'null'),
         activeMenu: 'launcher',
         quickSwitcherOpen: false,
@@ -1627,14 +1635,32 @@
           localStorage.setItem('erapor_theme', this.darkMode ? 'dark' : 'light');
         },
 
-        getLogoUrl() {
-          const raw = String(this.master.settings.logo_sekolah || '').trim();
+        convertDriveImageUrl(rawUrl) {
+          const raw = String(rawUrl || '').trim();
           if (!raw) return '';
           const driveMatch = raw.match(/\/d\/([a-zA-Z0-9_-]+)/) || raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
           if (raw.includes('drive.google.com') && driveMatch && driveMatch[1]) {
             return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
           }
           return raw;
+        },
+
+        getLogoUrl() {
+          return this.convertDriveImageUrl(this.master.settings.logo_sekolah);
+        },
+
+        getUserPhotoUrl(userObj) {
+          if (!userObj) return '';
+          const raw = userObj.foto_profil || userObj.foto || userObj.avatar || '';
+          return this.convertDriveImageUrl(raw);
+        },
+
+        getWaliPhotoByKelas(idKelas) {
+          const cleanId = String(idKelas || '').trim();
+          const kls = this.master.kelas.find(k => String(k.id_kelas).trim() === cleanId);
+          if (!kls) return '';
+          const wali = this.master.users.find(u => String(u.id_user).trim() === String(kls.id_wali_kelas || '').trim());
+          return this.getUserPhotoUrl(wali);
         },
 
         selectMenu(menu) {
